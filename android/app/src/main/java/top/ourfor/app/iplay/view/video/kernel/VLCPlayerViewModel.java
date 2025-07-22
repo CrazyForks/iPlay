@@ -1,4 +1,4 @@
-package top.ourfor.app.iplay.view.video;
+package top.ourfor.app.iplay.view.video.kernel;
 
 import static top.ourfor.lib.mpv.TrackItem.AudioTrackName;
 import static top.ourfor.lib.mpv.TrackItem.SubtitleTrackName;
@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import top.ourfor.app.iplay.view.player.Player;
+import top.ourfor.app.iplay.view.video.PlayerEventListener;
+import top.ourfor.app.iplay.view.video.PlayerPropertyType;
 import top.ourfor.lib.mpv.TrackItem;
 
 @Slf4j

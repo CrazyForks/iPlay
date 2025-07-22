@@ -10,6 +10,9 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import top.ourfor.app.iplay.config.AppSetting;
 import top.ourfor.app.iplay.view.player.Player;
+import top.ourfor.app.iplay.view.video.kernel.ExoPlayerViewModel;
+import top.ourfor.app.iplay.view.video.kernel.MPVPlayerViewModel;
+import top.ourfor.app.iplay.view.video.kernel.VLCPlayerViewModel;
 
 @Slf4j
 @Getter
