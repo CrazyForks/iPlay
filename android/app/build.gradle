@@ -96,6 +96,9 @@ dependencies {
     // SwipeRefreshLayout
     implementation(libs.swiperefreshlayout)
 
+    // Splash Screen
+    implementation libs.androidx.core.splashscreen
+
 
     implementation libs.flexbox
 
