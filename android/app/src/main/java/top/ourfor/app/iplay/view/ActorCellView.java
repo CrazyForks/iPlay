@@ -35,6 +35,7 @@ public class ActorCellView extends ConstraintLayout implements UpdateModelAction
             return;
         }
         binding.actorName.setText(actor.getName());
+        binding.actorRole.setText(actor.getRole());
         GlideApp.with(this)
                 .load(actor.getImage().getPrimary())
                 .placeholder(R.drawable.actor_avatar)
