@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -25,6 +26,7 @@ import top.ourfor.app.iplay.page.home.MediaViewCell;
 import top.ourfor.app.iplay.util.DeviceUtil;
 import top.ourfor.app.iplay.util.NavigationUtil;
 import top.ourfor.app.iplay.view.GridLayoutManager;
+import top.ourfor.app.iplay.view.ListDiffModel;
 import top.ourfor.app.iplay.view.ListItemClickEvent;
 import top.ourfor.app.iplay.view.ListView;
 import top.ourfor.app.iplay.view.infra.TextView;
@@ -127,7 +129,7 @@ public class MediaStarListViewCell extends ConstraintLayout implements UpdateMod
                 listLayout.topMargin = 0;
                 listView.setLayoutParams(listLayout);
             }
-            listView.viewModel.items = data.getMedias();
+            listView.viewModel.items = data.getMedias().stream().map(item -> ListDiffModel.<MediaModel>builder().data(item).isSelected(false).build()).collect(Collectors.toList());
             int width = DeviceUtil.dpToPx( starModel.getType() == MediaType.Episode ? 174 : 111);
             int spanCount = DeviceUtil.screenSize(getContext()).getWidth() / width;
             listView.listView.setLayoutManager(new GridLayoutManager(getContext(), spanCount));

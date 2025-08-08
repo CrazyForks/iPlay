@@ -129,8 +129,7 @@ public class HomePage implements SiteUpdateAction, ThemeUpdateAction, SiteListUp
 
     @SuppressLint("ClickableViewAccessibility")
     private void showSiteSelectPanel() {
-        val site = store.getSite();
-        siteListView.viewModel.isSelected = (model) -> model.getUser().equals(site.getUser()) && model.getId().equals(site.getId());
+        siteListView.viewModel.isSelected = (model) -> model.getUser().equals(store.getSite().getUser()) && model.getId().equals(store.getSite().getId());
         siteListView.setItems(store.getSites());
         siteListView.setOnTouchListener((v1, event) -> {
             if (!siteListView.listView.canScrollVertically(-1)) {

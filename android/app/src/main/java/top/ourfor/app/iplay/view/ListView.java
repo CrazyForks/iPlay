@@ -16,6 +16,7 @@ import com.airbnb.lottie.LottieAnimationView;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import lombok.val;
 import top.ourfor.app.iplay.databinding.ListViewBinding;
@@ -56,21 +57,22 @@ public class ListView<T> extends ConstraintLayout {
             emptyTipView.setVisibility(newItems == null || newItems.isEmpty() ? VISIBLE : GONE);
         });
         if (viewModel.items == null) {
-            viewModel.items = newItems == null ? new CopyOnWriteArrayList<>() : new CopyOnWriteArrayList<>(newItems);
+            viewModel.items = newItems == null ? new CopyOnWriteArrayList<>() : new CopyOnWriteArrayList<>(newItems.stream().map(item -> ListDiffModel.<T>builder().data(item).isSelected(viewModel.isSelected != null && viewModel.isSelected.test(item)).build()).collect(Collectors.toList()));
             post(() -> viewModel.notifyDataSetChanged());
             return;
         }
-        val oldItems = viewModel.items;
-        val diffResult = DiffUtil.calculateDiff(new ListDiff(oldItems, newItems), true);
+        val oldModels = viewModel.items;
+        var newModels = newItems == null ? null : newItems.stream().map(item -> ListDiffModel.<T>builder().data(item).isSelected(viewModel.isSelected != null && viewModel.isSelected.test(item)).build()).collect(Collectors.toList());
+        val diffResult = DiffUtil.calculateDiff(new ListDiff(oldModels, newModels), true);
         viewModel.items.clear();
-        if (newItems != null) viewModel.items.addAll(newItems);
+        if (newItems != null) viewModel.items.addAll(newModels);
         post(() -> {
             diffResult.dispatchUpdatesTo(viewModel);
         });
     }
 
     public void resetItems(List<T> newItems) {
-        viewModel.items = newItems;
+        viewModel.items = newItems.stream().map(item -> ListDiffModel.<T>builder().data(item).isSelected(viewModel.isSelected != null && viewModel.isSelected.test(item)).build()).collect(Collectors.toList());
         post(() -> {
             try {
                 viewModel.notifyDataSetChanged();
@@ -117,10 +119,10 @@ public class ListView<T> extends ConstraintLayout {
     }
 
     public class ListDiff extends DiffUtil.Callback {
-        private final List<T> oldItems;
-        private final List<T> newItems;
+        private final List<ListDiffModel<T>> oldItems;
+        private final List<ListDiffModel<T>> newItems;
 
-        ListDiff(List<T> oldItems, List<T> newItems) {
+        ListDiff(List<ListDiffModel<T>> oldItems, List<ListDiffModel<T>> newItems) {
             this.oldItems = oldItems;
             this.newItems = newItems;
         }
