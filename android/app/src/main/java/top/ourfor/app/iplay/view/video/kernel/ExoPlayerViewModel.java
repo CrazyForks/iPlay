@@ -1,4 +1,4 @@
-package top.ourfor.app.iplay.view.video;
+package top.ourfor.app.iplay.view.video.kernel;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -19,6 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import top.ourfor.app.iplay.util.DeviceUtil;
 import top.ourfor.app.iplay.view.player.Player;
+import top.ourfor.app.iplay.view.video.PlayerEventListener;
+import top.ourfor.app.iplay.view.video.PlayerPropertyType;
+import top.ourfor.app.iplay.view.video.PlayerSourceModel;
 
 @Slf4j
 public class ExoPlayerViewModel implements Player {

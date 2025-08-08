@@ -1,4 +1,4 @@
-package top.ourfor.app.iplay.view.video;
+package top.ourfor.app.iplay.view.video.kernel;
 
 import static top.ourfor.app.iplay.module.Bean.XGET;
 import static top.ourfor.app.iplay.view.video.PlayerPropertyType.DemuxerCacheState;
@@ -32,6 +32,9 @@ import top.ourfor.app.iplay.bean.IJSONAdapter;
 import top.ourfor.app.iplay.util.HTTPUtil;
 import top.ourfor.app.iplay.util.PathUtil;
 import top.ourfor.app.iplay.view.player.Player;
+import top.ourfor.app.iplay.view.video.PlayerEventListener;
+import top.ourfor.app.iplay.view.video.PlayerPropertyType;
+import top.ourfor.app.iplay.view.video.PlayerSourceModel;
 import top.ourfor.lib.mpv.MPV;
 import top.ourfor.lib.mpv.TrackItem;
 

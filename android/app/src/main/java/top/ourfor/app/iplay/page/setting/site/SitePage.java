@@ -48,7 +48,7 @@ import top.ourfor.app.iplay.view.infra.ToolbarAction;
 @ViewController(name = "site_page")
 public class SitePage implements Page, SiteListUpdateAction, SiteUpdateAction {
     private SitePageBinding binding = null;
-    private ListView<SiteModel> listView = null;
+    private ListView<SiteModel> siteListView = null;
     private SiteLineManageView siteLineListView = null;
 
     @Getter
@@ -88,20 +88,20 @@ public class SitePage implements Page, SiteListUpdateAction, SiteUpdateAction {
     }
 
     void setupUI(Context context) {
-        listView = binding.siteList;
+        siteListView = binding.siteList;
     }
 
     void bind(Context context) {
-        listView.viewModel.viewCell = SiteViewCell.class;
-        listView.viewModel.onClick = (event) -> {
+        siteListView.viewModel.viewCell = SiteViewCell.class;
+        siteListView.viewModel.onClick = (event) -> {
             log.info("site event clicked: {}", event);
             IAppStore store = XGET(IAppStore.class);
             store.switchSite(event.getModel());
             Toast.makeText(context, "Switch site success", Toast.LENGTH_SHORT).show();
         };
         val store = XGET(IAppStore.class);
-        listView.viewModel.isSelected = (model) -> model.getUser().equals(store.getSite().getUser()) && model.getId().equals(store.getSite().getId());
-        listView.setItems(store.getSites());
+        siteListView.viewModel.isSelected = (model) -> model.getUser().equals(store.getSite().getUser()) && model.getId().equals(store.getSite().getId());
+        siteListView.setItems(store.getSites());
 
     }
 
@@ -125,8 +125,8 @@ public class SitePage implements Page, SiteListUpdateAction, SiteUpdateAction {
                 updateSiteList();
             });
         }
-        listView.viewModel.isSelected = (model) -> model.getUser().equals(currentSite.getUser()) && model.getId().equals(currentSite.getId());
-        listView.setItems(store.getSites());
+        siteListView.viewModel.isSelected = (model) -> model.getUser().equals(currentSite.getUser()) && model.getId().equals(currentSite.getId());
+        siteListView.setItems(store.getSites());
     }
 
     @Override

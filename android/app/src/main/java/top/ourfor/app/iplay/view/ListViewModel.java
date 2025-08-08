@@ -18,7 +18,7 @@ import top.ourfor.app.iplay.action.UpdateModelAction;
 import top.ourfor.app.iplay.util.DeviceUtil;
 
 public class ListViewModel<T, V extends View> extends RecyclerView.Adapter {
-    public List<T> items;
+    public List<ListDiffModel<T>> items;
     public Class<? extends V> viewCell;
     public Consumer<ListItemClickEvent<T>> onClick;
     public Consumer<SwipeRefreshLayout> onRefresh;
@@ -39,7 +39,7 @@ public class ListViewModel<T, V extends View> extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (items == null || items.size() <= position || !(holder instanceof ViewHolder viewHolder)) return;
-        T model = items.get(position);
+        T model = items.get(position).getData();
         viewHolder.onClick = (event) -> {
             if (onClick == null) {
                 if (viewHolder.view instanceof UpdateModelAction view) {
@@ -47,7 +47,7 @@ public class ListViewModel<T, V extends View> extends RecyclerView.Adapter {
                 }
                 return;
             };
-            val data = this.items.get(event.getPosition());
+            val data = this.items.get(event.getPosition()).getData();
             onClick.accept((ListItemClickEvent<T>) event.withModel(data));
             if (isSelected == null) return;
             notifyDataSetChanged();
