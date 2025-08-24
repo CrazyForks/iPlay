@@ -67,16 +67,22 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
 
         numberValueView = new PlayerNumberValueView(context);
         numberValueView.setAlpha(0);
+        LayoutParams numberValueLayout = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        numberValueLayout.leftToLeft = LayoutParams.PARENT_ID;
+        numberValueLayout.topToTop = LayoutParams.PARENT_ID;
+        numberValueLayout.rightToRight = LayoutParams.PARENT_ID;
+        numberValueLayout.topMargin = 100;
+
+        addView(numberValueView, numberValueLayout);
+
         speedupTipView = new PlayerSpeedupTipView(context);
         speedupTipView.setAlpha(0);
-        LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        params.leftToLeft = LayoutParams.PARENT_ID;
-        params.topToTop = LayoutParams.PARENT_ID;
-        params.rightToRight = LayoutParams.PARENT_ID;
-        params.topMargin = 100;
-
-        addView(numberValueView, params);
-        addView(speedupTipView, params);
+        LayoutParams speedupTipLayout = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        speedupTipLayout.leftToLeft = LayoutParams.PARENT_ID;
+        speedupTipLayout.topToTop = LayoutParams.PARENT_ID;
+        speedupTipLayout.rightToRight = LayoutParams.PARENT_ID;
+        speedupTipLayout.topMargin = 100;
+        addView(speedupTipView, speedupTipLayout);
         activityIndicator = binding.loading;
 
         scaleDetector = new ScaleGestureDetector(context, new ScaleListener());
