@@ -13,9 +13,21 @@
 
 ![Alt](https://repobeats.axiom.co/api/embed/442b21fb8b1ed2cc170510527ec68880ebbeb2b4.svg "Repobeats analytics image")
 
-### 🌐 A cross-platform media player
+### 🌐 Play Anywhere, Anytime, On Any Device
 
-<img src="./doc/image/windows.preview.png" />
+<table>
+<tr>
+<td colspan="6"><img src="./doc/image/windows.home.png" />
+</td>
+</tr>
+<tr>
+<td colspan="4" rowspan="2"><img src="./doc/image/windows.detail.png" /></td>
+<td><img src="./doc/image/windows.album.png" /></td>
+<td><img src="./doc/image/windows.history.png" /></td>
+</tr>
+<tr>
+</tr>
+</table>
 
 Supports `Android`, `iOS`, `MacOS`, `XBox` and `Windows`
 
@@ -76,15 +88,23 @@ Coming soon
 
 ## 📚 Third-party Dependencies
 
-### Player
+### 📺 Player
 
 - [mpv](https://github.com/mpv-player/mpv)
+- [vlc](https://github.com/videolan/vlc)
+- [exo](https://github.com/google/ExoPlayer)
+
+### 📦 Utils
+
+- [okhttp](https://github.com/square/okhttp)
+- [lombok](https://github.com/rzwitserloot/lombok)
 
 ## 🎨 UI Design
 
 - [Player UI Design](https://www.figma.com/file/2LMy996hxF2DZ2jB8eU0Fv/Video-Player-For-Web-%26-Mobile-(Community)?type=design&node-id=18-4120&mode=design&t=4xkVhM84OdC0jy9x-0)
 - [Icon](https://www.figma.com/file/9Df5CaFUEomVzn20gRpaX3/Radix-Icons?type=design&node-id=0-1&mode=design&t=rpFwTmQyZQhc016k-0)
 - [UI Element](https://www.figma.com/file/B5TV95tj8PrCHwsSa3wV0N/Flat-Icon-Set-(Community)?type=design&node-id=2092-13469&mode=design&t=w8YD9Lw37sz019zc-0)
+- [Fluent UI System Icons](https://github.com/microsoft/fluentui-system-icons)
 
 ## 📣 Feedback & Communication
 

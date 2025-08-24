@@ -309,8 +309,9 @@ public class PlayerView extends ConstraintLayout
                     isLeftLongPress = x < width / 2;
                 }
                 if (isLeftLongPress) {
-                    contentView.viewModel.speed(0.75f);
-                    eventView.speedupTipView.setText("0.75x");
+                    // TODO: handle left side long press
+                    contentView.viewModel.speed(1.75f);
+                    eventView.speedupTipView.setText("1.75x");
                     eventView.speedupTipView.show();
                 } else {
                     eventView.speedupTipView.setText("1.75x");
