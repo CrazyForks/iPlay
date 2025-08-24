@@ -6,4 +6,7 @@ public enum PlayerGestureType {
     Seek,
     Volume,
     Brightness,
+    PlayOrPause,
+    LongPressStart,
+    LongPressEnd,
 }

@@ -218,6 +218,10 @@ public class PlayerControlView extends ConstraintLayout implements PlayerEventLi
         return getAlpha() != 0;
     }
 
+    public void togglePlayback() {
+        binding.play.performClick();
+    }
+
     public void toggleVisible() {
         float newAlpha = 1.0f;
         if (getAlpha() == 1.0f) {

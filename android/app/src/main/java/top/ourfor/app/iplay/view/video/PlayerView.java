@@ -17,6 +17,7 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.util.Size;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -296,6 +297,30 @@ public class PlayerView extends ConstraintLayout
                 delta = ((Float) value).intValue();
                 setBrightnessValue((int) (brightnessValue + delta));
                 eventView.numberValueView.setProgress((int) (brightnessValue + delta));
+                break;
+            case PlayOrPause:
+                controlView.togglePlayback();
+                break;
+            case LongPressStart:
+                var isLeftLongPress = false;
+                if (value instanceof MotionEvent event) {
+                    float x = event.getX();
+                    int width = getWidth();
+                    isLeftLongPress = x < width / 2;
+                }
+                if (isLeftLongPress) {
+                    contentView.viewModel.speed(0.75f);
+                    eventView.speedupTipView.setText("0.75x");
+                    eventView.speedupTipView.show();
+                } else {
+                    eventView.speedupTipView.setText("1.75x");
+                    eventView.speedupTipView.show();
+                    contentView.viewModel.speed(1.75f);
+                }
+                break;
+            case LongPressEnd:
+                contentView.viewModel.speed(1f);
+                eventView.speedupTipView.hide();
                 break;
             default:
                 // Handle null or other cases

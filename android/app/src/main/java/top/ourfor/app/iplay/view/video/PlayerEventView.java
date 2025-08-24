@@ -32,7 +32,7 @@ import top.ourfor.app.iplay.databinding.PlayerEventBinding;
 
 @Slf4j
 @Setter
-public class PlayerEventView extends ConstraintLayout implements GestureDetector.OnGestureListener, PlayerSelectDelegate<PlayerSelectModel<Object>> {
+public class PlayerEventView extends ConstraintLayout implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener, PlayerSelectDelegate<PlayerSelectModel<Object>> {
     static int ICON_SMALL_SIZE = 72;
     private PlayerEventBinding binding;
     private GestureDetector detector;
@@ -43,6 +43,7 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
     public PlayerEventDelegate delegate;
     public PlayerSelectDelegate trackSelectDelegate;
     public PlayerNumberValueView numberValueView;
+    public PlayerSpeedupTipView speedupTipView;
     private PlayerSelectView selectView;
     public LottieAnimationView activityIndicator;
 
@@ -51,6 +52,7 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
 
     private ScaleGestureDetector scaleDetector;
 //    private RotateGestureDetector rotateDetector;
+    private boolean isLongPressTriggered = false;
 
     public PlayerEventView(@NonNull Context context) {
         super(context);
@@ -61,16 +63,26 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
 
     private void setupUI(Context context) {
         detector = new GestureDetector(context, this);
+        detector.setOnDoubleTapListener(this);
 
         numberValueView = new PlayerNumberValueView(context);
         numberValueView.setAlpha(0);
-        LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        params.leftToLeft = LayoutParams.PARENT_ID;
-        params.topToTop = LayoutParams.PARENT_ID;
-        params.rightToRight = LayoutParams.PARENT_ID;
-        params.topMargin = 100;
+        LayoutParams numberValueLayout = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        numberValueLayout.leftToLeft = LayoutParams.PARENT_ID;
+        numberValueLayout.topToTop = LayoutParams.PARENT_ID;
+        numberValueLayout.rightToRight = LayoutParams.PARENT_ID;
+        numberValueLayout.topMargin = 100;
 
-        addView(numberValueView, params);
+        addView(numberValueView, numberValueLayout);
+
+        speedupTipView = new PlayerSpeedupTipView(context);
+        speedupTipView.setAlpha(0);
+        LayoutParams speedupTipLayout = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        speedupTipLayout.leftToLeft = LayoutParams.PARENT_ID;
+        speedupTipLayout.topToTop = LayoutParams.PARENT_ID;
+        speedupTipLayout.rightToRight = LayoutParams.PARENT_ID;
+        speedupTipLayout.topMargin = 100;
+        addView(speedupTipView, speedupTipLayout);
         activityIndicator = binding.loading;
 
         scaleDetector = new ScaleGestureDetector(context, new ScaleListener());
@@ -104,10 +116,7 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
 
     @Override
     public boolean onSingleTapUp(@NonNull MotionEvent e) {
-        boolean inIgnoredArea = isInIgnoredArea(e);
-        log.debug("press in ignore area ?" + (inIgnoredArea ? "YES" : "NO"));
-        if (!inIgnoredArea) delegate.onEvent(PlayerGestureType.HideControl, 0);
-        return !inIgnoredArea;
+        return false;
     }
 
     @Override
@@ -149,7 +158,10 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
     @Override
     public void onLongPress(@NonNull MotionEvent e) {
         log.debug("Long press");
-
+        isLongPressTriggered = true;
+        if (delegate != null) {
+            delegate.onEvent(PlayerGestureType.LongPressStart, e);
+        }
     }
 
     @Override
@@ -162,6 +174,13 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
         if (event.getAction() == MotionEvent.ACTION_UP) {
             log.debug("action up");
             numberValueView.hide();
+            if (isLongPressTriggered) {
+                isLongPressTriggered = false;
+                if (delegate != null) {
+                    delegate.onEvent(PlayerGestureType.LongPressEnd, event);
+                    return true;
+                }
+            }
         }
         var oldScale = scale;
         scaleDetector.onTouchEvent(event);
@@ -250,6 +269,29 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
     @Override
     public void onClose() {
         closeSelectView();
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(@NonNull MotionEvent motionEvent) {
+        boolean inIgnoredArea = isInIgnoredArea(motionEvent);
+        log.debug("press in ignore area ?" + (inIgnoredArea ? "YES" : "NO"));
+        if (!inIgnoredArea) delegate.onEvent(PlayerGestureType.HideControl, 0);
+        return !inIgnoredArea;
+    }
+
+    @Override
+    public boolean onDoubleTap(@NonNull MotionEvent motionEvent) {
+        log.debug("double tapped");
+        if (delegate != null) {
+            delegate.onEvent(PlayerGestureType.PlayOrPause, null);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTapEvent(@NonNull MotionEvent motionEvent) {
+        return false;
     }
 
     private class RotateListener extends RotateGestureDetector.SimpleOnRotateGestureListener {
