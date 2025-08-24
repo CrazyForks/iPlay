@@ -53,6 +53,7 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
     private ScaleGestureDetector scaleDetector;
 //    private RotateGestureDetector rotateDetector;
     private boolean isLongPressTriggered = false;
+    private boolean isEventInIgnoreArea;
 
     public PlayerEventView(@NonNull Context context) {
         super(context);
@@ -92,7 +93,11 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
     @Override
     public boolean onDown(@NonNull MotionEvent e) {
         gestureType = PlayerGestureType.None;
-        return !isInIgnoredArea(e);
+        if (isInIgnoredArea(e)) {
+            isEventInIgnoreArea = true;
+            return false;
+        }
+        return true;
     }
 
     public void showLoadIndicator(boolean visible) {
@@ -157,7 +162,8 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
 
     @Override
     public void onLongPress(@NonNull MotionEvent e) {
-        log.debug("Long press");
+        if (isInIgnoredArea(e) || isEventInIgnoreArea) return;
+        log.debug("Long press, {}", e);
         isLongPressTriggered = true;
         if (delegate != null) {
             delegate.onEvent(PlayerGestureType.LongPressStart, e);
@@ -173,6 +179,7 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
             log.debug("action up");
+            isEventInIgnoreArea = false;
             numberValueView.hide();
             if (isLongPressTriggered) {
                 isLongPressTriggered = false;
