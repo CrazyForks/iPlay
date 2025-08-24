@@ -96,8 +96,8 @@ public class TagView extends ConstraintLayout {
         setBackgroundColor(theme.backgroundColor());
         val drawable = new GradientDrawable();
         drawable.setShape(GradientDrawable.RECTANGLE);
-        drawable.setCornerRadius(DeviceUtil.dpToPx(5));
-        drawable.setStroke(DeviceUtil.dpToPx(2), theme.borderColor());
+        drawable.setCornerRadius(DeviceUtil.dpToPx(6));
+//        drawable.setStroke(DeviceUtil.dpToPx(2), theme.borderColor());
         drawable.setColor(theme.backgroundColor());
         setBackground(drawable);
         setClipToOutline(true);
