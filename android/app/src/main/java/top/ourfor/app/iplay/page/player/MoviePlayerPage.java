@@ -138,7 +138,10 @@ public class MoviePlayerPage implements Page {
         if (media == null) return;
         val name = media.getSeriesName() != null ? media.getSeriesName() : media.getName();
         DanDanPlayApi.search(name, result -> {
-            if (result == null) return;
+            if (result == null) {
+                playerView.getControlView().post(() -> playerView.getControlView().commentButton.setVisibility(View.GONE));
+                return;
+            }
             val animes = result.getAnimes();
             if (animes == null || animes.isEmpty()) {
                 playerView.getControlView().post(() -> playerView.getControlView().commentButton.setVisibility(View.GONE));

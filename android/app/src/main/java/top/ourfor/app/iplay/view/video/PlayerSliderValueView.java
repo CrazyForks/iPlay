@@ -34,7 +34,7 @@ public class PlayerSliderValueView extends ConstraintLayout {
 
     public void setProgress(int progress) {
         post(() -> {
-            var abs_progress = Math.abs(progress) + 0.0f;
+            var abs_progress = Math.max(progress, 0) + 0.0f;
             if (abs_progress > binding.slider.getValueTo()) {
                 abs_progress = binding.slider.getValueTo();
             }

@@ -68,7 +68,7 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
         detector.setOnDoubleTapListener(this);
 
         brightnessValueView = new PlayerSliderValueView(context);
-        brightnessValueView.updateIcon(com.microsoft.fluent.mobile.icons.R.drawable.ic_fluent_lightbulb_filament_24_filled);
+        brightnessValueView.updateIcon(com.microsoft.fluent.mobile.icons.R.drawable.ic_fluent_weather_sunny_24_filled);
         brightnessValueView.setAlpha(0);
         LayoutParams brightnessViewLayout = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         brightnessViewLayout.leftToLeft = LayoutParams.PARENT_ID;
@@ -79,7 +79,7 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
         addView(brightnessValueView, brightnessViewLayout);
 
         volumeValueView = new PlayerSliderValueView(context);
-        volumeValueView.updateIcon(com.microsoft.fluent.mobile.icons.R.drawable.ic_fluent_headphones_sound_wave_24_filled);
+        volumeValueView.updateIcon(com.microsoft.fluent.mobile.icons.R.drawable.ic_fluent_speaker_2_24_filled);
         volumeValueView.setAlpha(0);
         LayoutParams volumeViewLayout = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         volumeViewLayout.leftToLeft = LayoutParams.PARENT_ID;

@@ -103,7 +103,7 @@ public class PlayerView extends ConstraintLayout
     }
 
     public void setSources(List<PlayerSourceModel> sources) {
-        log.info("sources", sources);
+        log.info("sources {}", sources);
         this.sources = sources;
         ArrayList<PlayerSourceModel> subtitles = new ArrayList<>();
         for (var source : sources) {
@@ -118,7 +118,7 @@ public class PlayerView extends ConstraintLayout
                 setTitle(source.getValue());
             }
         }
-        if (subtitles.size() > 0) {
+        if (!subtitles.isEmpty()) {
             contentView.viewModel.loadSubtitle(subtitles);
         }
     }
