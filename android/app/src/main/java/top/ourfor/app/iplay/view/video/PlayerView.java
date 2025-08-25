@@ -264,11 +264,11 @@ public class PlayerView extends ConstraintLayout
                 PlayerGestureType targetType = (PlayerGestureType) value;
                 if (targetType == PlayerGestureType.Brightness) {
                     eventView.numberValueView.setMaxValue(getBrightnessMaxValue());
-                    eventView.numberValueView.updateIcon(R.drawable.lightbulb_min);
+                    eventView.numberValueView.updateIcon(com.microsoft.fluent.mobile.icons.R.drawable.ic_fluent_lightbulb_filament_24_filled);
                     eventView.numberValueView.show();
                 } else if (targetType == PlayerGestureType.Volume) {
                     eventView.numberValueView.setMaxValue(getVolumeMaxValue());
-                    eventView.numberValueView.updateIcon(R.drawable.waveform);
+                    eventView.numberValueView.updateIcon(com.microsoft.fluent.mobile.icons.R.drawable.ic_fluent_headphones_sound_wave_24_filled);
                     eventView.numberValueView.show();
                 }
                 break;
@@ -314,9 +314,9 @@ public class PlayerView extends ConstraintLayout
                     eventView.speedupTipView.setText("1.75x");
                     eventView.speedupTipView.show();
                 } else {
-                    eventView.speedupTipView.setText("1.75x");
+                    eventView.speedupTipView.setText("2.25x");
                     eventView.speedupTipView.show();
-                    contentView.viewModel.speed(1.75f);
+                    contentView.viewModel.speed(2.25f);
                 }
                 break;
             case LongPressEnd:

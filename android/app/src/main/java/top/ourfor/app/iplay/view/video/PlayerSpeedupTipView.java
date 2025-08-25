@@ -32,7 +32,7 @@ public class PlayerSpeedupTipView extends ConstraintLayout {
     private void setupUI(Context context) {
         GradientDrawable gradientDrawable = new GradientDrawable();
         gradientDrawable.setColor(normalColor);
-        gradientDrawable.setCornerRadius(DeviceUtil.dpToPx(8));
+        gradientDrawable.setCornerRadius(DeviceUtil.dpToPx(12));
         setBackground(gradientDrawable);
     }
 
