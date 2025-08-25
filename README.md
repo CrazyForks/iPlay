@@ -15,7 +15,7 @@
 
 ### 🌐 Play Anywhere, Anytime, On Any Device
 
-<table>
+<table style="overflow:visible">
 <tr>
 <td colspan="6"><img src="./doc/image/windows.home.png" />
 </td>
