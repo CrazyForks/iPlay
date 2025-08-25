@@ -205,17 +205,17 @@ public class MusicPlayerView extends ConstraintLayout
                 volumeValue = getVolumeValue();
                 PlayerGestureType targetType = (PlayerGestureType) value;
                 if (targetType == PlayerGestureType.Brightness) {
-                    eventView.numberValueView.setMaxValue(getBrightnessMaxValue());
-                    eventView.numberValueView.updateIcon(R.drawable.lightbulb_min);
-                    eventView.numberValueView.show();
+                    eventView.brightnessValueView.setMaxValue(getBrightnessMaxValue());
+                    eventView.brightnessValueView.updateIcon(R.drawable.lightbulb_min);
+                    eventView.brightnessValueView.show();
                 } else if (targetType == PlayerGestureType.Volume) {
-                    eventView.numberValueView.setMaxValue(getVolumeMaxValue());
-                    eventView.numberValueView.updateIcon(R.drawable.waveform);
-                    eventView.numberValueView.show();
+                    eventView.brightnessValueView.setMaxValue(getVolumeMaxValue());
+                    eventView.brightnessValueView.updateIcon(R.drawable.waveform);
+                    eventView.brightnessValueView.show();
                 }
                 break;
             case HideControl:
-                eventView.numberValueView.hide();
+                eventView.brightnessValueView.hide();
                 if (eventView.isSelectViewPresent()) {
                     eventView.closeSelectView();
                 } else {
@@ -233,12 +233,12 @@ public class MusicPlayerView extends ConstraintLayout
             case Volume:
                 delta = ((Float) value).intValue();
                 setVolumeValue((int) (volumeValue + delta));
-                eventView.numberValueView.setProgress((int) (volumeValue + delta));
+                eventView.brightnessValueView.setProgress((int) (volumeValue + delta));
                 break;
             case Brightness:
                 delta = ((Float) value).intValue();
                 setBrightnessValue((int) (brightnessValue + delta));
-                eventView.numberValueView.setProgress((int) (brightnessValue + delta));
+                eventView.brightnessValueView.setProgress((int) (brightnessValue + delta));
                 break;
             default:
                 // Handle null or other cases

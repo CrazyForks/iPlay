@@ -10,13 +10,15 @@ import android.view.LayoutInflater;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import lombok.extern.slf4j.Slf4j;
 import top.ourfor.app.iplay.databinding.PlayerNumberValueViewBinding;
 import top.ourfor.app.iplay.util.DeviceUtil;
 
-public class PlayerNumberValueView extends ConstraintLayout {
-    private PlayerNumberValueViewBinding binding;
+@Slf4j
+public class PlayerSliderValueView extends ConstraintLayout {
+    private final PlayerNumberValueViewBinding binding;
 
-    public PlayerNumberValueView(@NonNull Context context) {
+    public PlayerSliderValueView(@NonNull Context context) {
         super(context);
         binding = PlayerNumberValueViewBinding.inflate(LayoutInflater.from(context), this, true);
         setupUI(context);
@@ -32,8 +34,15 @@ public class PlayerNumberValueView extends ConstraintLayout {
 
     public void setProgress(int progress) {
         post(() -> {
-            var abs_progress = Math.abs(progress);
-            binding.slider.setValue(abs_progress);
+            var abs_progress = Math.abs(progress) + 0.0f;
+            if (abs_progress > binding.slider.getValueTo()) {
+                abs_progress = binding.slider.getValueTo();
+            }
+            try {
+                binding.slider.setValue(abs_progress);
+            } catch (Exception e) {
+                log.error("failed set value", e);
+            }
         });
     }
 

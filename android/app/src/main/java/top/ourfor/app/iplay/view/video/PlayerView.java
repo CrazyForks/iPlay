@@ -9,12 +9,14 @@ import static top.ourfor.lib.mpv.TrackItem.VideoTrackName;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Build;
+import android.provider.Settings;
 import android.util.Size;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -154,6 +156,10 @@ public class PlayerView extends ConstraintLayout
     public PlayerView(@NonNull Context context, String url) throws IOException {
         super(context);
         setupUI(context, url);
+        brightnessValue = getBrightnessValue();
+        volumeValue = getVolumeValue();
+        log.debug("system volume {}", volumeValue);
+        log.debug("system brightness {}", brightnessValue);
         XSET(Player.class, this.contentView.viewModel);
     }
 
@@ -263,17 +269,18 @@ public class PlayerView extends ConstraintLayout
                 volumeValue = getVolumeValue();
                 PlayerGestureType targetType = (PlayerGestureType) value;
                 if (targetType == PlayerGestureType.Brightness) {
-                    eventView.numberValueView.setMaxValue(getBrightnessMaxValue());
-                    eventView.numberValueView.updateIcon(com.microsoft.fluent.mobile.icons.R.drawable.ic_fluent_lightbulb_filament_24_filled);
-                    eventView.numberValueView.show();
+                    eventView.brightnessValueView.setMaxValue(getBrightnessMaxValue());
+                    eventView.volumeValueView.hide();
+                    eventView.brightnessValueView.show();
                 } else if (targetType == PlayerGestureType.Volume) {
-                    eventView.numberValueView.setMaxValue(getVolumeMaxValue());
-                    eventView.numberValueView.updateIcon(com.microsoft.fluent.mobile.icons.R.drawable.ic_fluent_headphones_sound_wave_24_filled);
-                    eventView.numberValueView.show();
+                    eventView.volumeValueView.setMaxValue(getVolumeMaxValue());
+                    eventView.brightnessValueView.hide();
+                    eventView.volumeValueView.show();
                 }
                 break;
             case HideControl:
-                eventView.numberValueView.hide();
+                eventView.brightnessValueView.hide();
+                eventView.volumeValueView.hide();
                 if (eventView.isSelectViewPresent()) {
                     eventView.closeSelectView();
                 } else {
@@ -291,12 +298,12 @@ public class PlayerView extends ConstraintLayout
             case Volume:
                 delta = ((Float) value).intValue();
                 setVolumeValue((int) (volumeValue + delta));
-                eventView.numberValueView.setProgress((int) (volumeValue + delta));
+                eventView.volumeValueView.setProgress((int) (volumeValue + delta));
                 break;
             case Brightness:
                 delta = ((Float) value).intValue();
                 setBrightnessValue((int) (brightnessValue + delta));
-                eventView.numberValueView.setProgress((int) (brightnessValue + delta));
+                eventView.brightnessValueView.setProgress((int) (brightnessValue + delta));
                 break;
             case PlayOrPause:
                 controlView.togglePlayback();
@@ -564,12 +571,26 @@ public class PlayerView extends ConstraintLayout
         super.onDetachedFromWindow();
     }
 
+    public int getSystemBrightnessValue() {
+        try {
+            ContentResolver resolver = XGET(Activity.class).getContentResolver();
+            return Settings.System.getInt(
+                    resolver, Settings.System.SCREEN_BRIGHTNESS);
+        } catch (Settings.SettingNotFoundException e) {
+            log.error("failed get system brightness", e);
+            return 128;
+        }
+    }
+
     public int getBrightnessValue() {
         final int defVal = 50;
         Window window = getWindow();
         if (window != null) {
-            Float value = window.getAttributes().screenBrightness;
-            if (value != null) return (int) (value * 100);
+            float value = window.getAttributes().screenBrightness;
+            if (value == -1.0f) {
+                value = getSystemBrightnessValue() / 255.0f;
+            }
+            return (int) (value * 100);
         }
         return defVal;
     }

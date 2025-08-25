@@ -42,7 +42,8 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
     private PlayerGestureType gestureType;
     public PlayerEventDelegate delegate;
     public PlayerSelectDelegate trackSelectDelegate;
-    public PlayerNumberValueView numberValueView;
+    public PlayerSliderValueView brightnessValueView;
+    public PlayerSliderValueView volumeValueView;
     public PlayerSpeedupTipView speedupTipView;
     private PlayerSelectView selectView;
     public LottieAnimationView activityIndicator;
@@ -66,15 +67,27 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
         detector = new GestureDetector(context, this);
         detector.setOnDoubleTapListener(this);
 
-        numberValueView = new PlayerNumberValueView(context);
-        numberValueView.setAlpha(0);
-        LayoutParams numberValueLayout = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        numberValueLayout.leftToLeft = LayoutParams.PARENT_ID;
-        numberValueLayout.topToTop = LayoutParams.PARENT_ID;
-        numberValueLayout.rightToRight = LayoutParams.PARENT_ID;
-        numberValueLayout.topMargin = 100;
+        brightnessValueView = new PlayerSliderValueView(context);
+        brightnessValueView.updateIcon(com.microsoft.fluent.mobile.icons.R.drawable.ic_fluent_lightbulb_filament_24_filled);
+        brightnessValueView.setAlpha(0);
+        LayoutParams brightnessViewLayout = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        brightnessViewLayout.leftToLeft = LayoutParams.PARENT_ID;
+        brightnessViewLayout.topToTop = LayoutParams.PARENT_ID;
+        brightnessViewLayout.rightToRight = LayoutParams.PARENT_ID;
+        brightnessViewLayout.topMargin = 100;
 
-        addView(numberValueView, numberValueLayout);
+        addView(brightnessValueView, brightnessViewLayout);
+
+        volumeValueView = new PlayerSliderValueView(context);
+        volumeValueView.updateIcon(com.microsoft.fluent.mobile.icons.R.drawable.ic_fluent_headphones_sound_wave_24_filled);
+        volumeValueView.setAlpha(0);
+        LayoutParams volumeViewLayout = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        volumeViewLayout.leftToLeft = LayoutParams.PARENT_ID;
+        volumeViewLayout.topToTop = LayoutParams.PARENT_ID;
+        volumeViewLayout.rightToRight = LayoutParams.PARENT_ID;
+        volumeViewLayout.topMargin = 100;
+
+        addView(volumeValueView, volumeViewLayout);
 
         speedupTipView = new PlayerSpeedupTipView(context);
         speedupTipView.setAlpha(0);
@@ -180,7 +193,8 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
         if (event.getAction() == MotionEvent.ACTION_UP) {
             log.debug("action up");
             isEventInIgnoreArea = false;
-            numberValueView.hide();
+            brightnessValueView.hide();
+            volumeValueView.hide();
             if (isLongPressTriggered) {
                 isLongPressTriggered = false;
                 if (delegate != null) {
