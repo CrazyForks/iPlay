@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import top.ourfor.app.iplay.common.type.VideoDecodeType;
+import top.ourfor.app.iplay.config.AppSetting;
 import top.ourfor.app.iplay.view.player.Player;
 import top.ourfor.app.iplay.view.video.PlayerEventListener;
 import top.ourfor.app.iplay.view.video.PlayerHelper;
@@ -32,7 +34,14 @@ public class VLCPlayerViewModel implements Player {
     PlayerEventListener delegate;
 
     public VLCPlayerViewModel(View view) {
-        var options = List.of("--avcodec-hw=any");
+        var options = List.of(
+                "--aout=opensles",
+                "--audio-time-stretch",
+                "--deinterlace=1",
+                "--deinterlace-mode=blend",
+                "--no-skip-frames"
+
+        );
         var context = view.getContext();
         libVLC = new LibVLC(context, options);
         mediaPlayer = new MediaPlayer(libVLC);
@@ -117,6 +126,14 @@ public class VLCPlayerViewModel implements Player {
     public void loadVideo(String url) {
         log.info("load video: {}", url);
         var media = new Media(libVLC, Uri.parse(url));
+        val videoDecodeType = AppSetting.shared.getVideoDecodeType();
+        if (videoDecodeType == VideoDecodeType.Auto) {
+            media.setHWDecoderEnabled(true, false);
+        } else if (videoDecodeType == VideoDecodeType.Hardware) {
+            media.setHWDecoderEnabled(true, true);
+        } else {
+            media.setHWDecoderEnabled(false, true);
+        }
         mediaPlayer.setMedia(media);
         media.release();
         mediaPlayer.play();
