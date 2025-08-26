@@ -28,6 +28,7 @@ import java.util.UUID;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import top.ourfor.app.iplay.action.DispatchAction;
 import top.ourfor.app.iplay.bean.IJSONAdapter;
 import top.ourfor.app.iplay.util.HTTPUtil;
 import top.ourfor.app.iplay.util.PathUtil;
@@ -378,10 +379,12 @@ public class MPVPlayerViewModel implements Player {
 
                     if (e.type == MPV_EVENT_SHUTDOWN) {
                         log.info("destroy mpv player");
-                        if (mpv != null) {
-                            mpv.destroy();
-                            mpv = null;
-                        }
+                        XGET(DispatchAction.class).runOnUiThread(() -> {
+                            if (mpv != null) {
+                                mpv.destroy();
+                                mpv = null;
+                            }
+                        });
                         break;
                     }
 
