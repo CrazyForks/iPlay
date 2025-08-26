@@ -93,7 +93,7 @@ Java_top_ourfor_lib_mpv_MPV_setDrawable(JNIEnv *env, jobject self, jobject surfa
     mpv_handle *ctx = get_attached_mpv(env, self);
     if (ctx == nullptr) return;
     surface = env->NewGlobalRef(surface_);
-    int64_t wid = (int64_t)(intptr_t) surface;
+    auto wid = (int64_t) (surface_ == nullptr ? 0 : (intptr_t) surface);
     mpv_set_option(ctx, "wid", MPV_FORMAT_INT64, (void*) &wid);
 }
 

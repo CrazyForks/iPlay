@@ -30,10 +30,13 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import top.ourfor.app.iplay.action.DispatchAction;
 import top.ourfor.app.iplay.bean.IJSONAdapter;
+import top.ourfor.app.iplay.common.type.VideoDecodeType;
+import top.ourfor.app.iplay.config.AppSetting;
 import top.ourfor.app.iplay.util.HTTPUtil;
 import top.ourfor.app.iplay.util.PathUtil;
 import top.ourfor.app.iplay.view.player.Player;
 import top.ourfor.app.iplay.view.video.PlayerEventListener;
+import top.ourfor.app.iplay.view.video.PlayerHelper;
 import top.ourfor.app.iplay.view.video.PlayerPropertyType;
 import top.ourfor.app.iplay.view.video.PlayerSourceModel;
 import top.ourfor.lib.mpv.MPV;
@@ -51,13 +54,21 @@ public class MPVPlayerViewModel implements Player {
 
     public String url = null;
     private MPV mpv;
+    private String videoOutput = "gpu";
     public MPVPlayerViewModel(String configDir, String cacheDir, String fontDir) {
         mpv = new MPV();
         mpv.create();
         mpv.setOptionString("vo", "gpu");
         mpv.setOptionString("gpu-context", "android");
         mpv.setOptionString("opengl-es", "yes");
-        mpv.setOptionString("hwdec", "auto");
+        val videoDecodeType = AppSetting.shared.getVideoDecodeType();
+        if (videoDecodeType == VideoDecodeType.Auto) {
+            mpv.setOptionString("hwdec", "auto");
+        } else if (videoDecodeType == VideoDecodeType.Hardware) {
+            mpv.setOptionString("hwdec", "yes");
+        } else {
+            mpv.setOptionString("hwdec", "no");
+        }
         mpv.setOptionString("hwdec-codecs", "h264,hevc,mpeg4,mpeg2video,vp8,vp9,av1");
         mpv.setOptionString("ao", "audiotrack,opensles");
         mpv.setOptionString("config", "yes");
@@ -109,19 +120,21 @@ public class MPVPlayerViewModel implements Player {
     @Override
     public void setVideoOutput(String value) {
         if (mpv == null) return;
+        videoOutput = value;
         mpv.setStringProperty("vo", value);
     }
 
     public void attach(SurfaceHolder holder) {
+        mpv.setStringProperty("vo", videoOutput);
         mpv.setDrawable(holder.getSurface());
-//        mpv.setOptionString("force-window", "yes");
+        mpv.setOptionString("force-window", "yes");
     }
 
     @Override
     public void detach() {
         if (mpv == null) return;
         mpv.setStringProperty("vo", "null");
-//        mpv.setOptionString("force-window", "no");
+        mpv.setOptionString("force-window", "no");
         mpv.setDrawable(null);
     }
 
@@ -234,6 +247,12 @@ public class MPVPlayerViewModel implements Player {
     }
 
     @Override
+    public String currentVideoId() {
+        if (mpv == null) return "no";
+        return mpv.getStringProperty("vid");
+    }
+
+    @Override
     public String currentSubtitleId() {
         if (mpv == null) return "no";
         return mpv.getStringProperty("sid");
@@ -254,7 +273,11 @@ public class MPVPlayerViewModel implements Player {
     @Override
     public void useVideo(String id) {
         if (mpv == null) return;
-        mpv.command("loadfile", id);
+        if (PlayerHelper.isUrl(id)) mpv.command("loadfile", id);
+        else {
+            if (currentVideoId().equals(id)) return;
+            mpv.setOptionString("vid", id);
+        }
     }
 
     @Override

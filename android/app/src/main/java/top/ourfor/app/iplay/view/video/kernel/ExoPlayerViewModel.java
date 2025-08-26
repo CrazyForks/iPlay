@@ -244,6 +244,11 @@ public class ExoPlayerViewModel implements Player {
     }
 
     @Override
+    public String currentVideoId() {
+        return Player.super.currentVideoId();
+    }
+
+    @Override
     public void setSubtitleFontName(String subtitleFontName) {
         Player.super.setSubtitleFontName(subtitleFontName);
     }

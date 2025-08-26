@@ -19,6 +19,7 @@ import top.ourfor.app.iplay.view.video.kernel.VLCPlayerViewModel;
 public class PlayerContentView extends SurfaceView implements SurfaceHolder.Callback {
     public Player viewModel;
     public String filePath = null;
+    public String videoId = "no";
 
     public PlayerContentView(Context context) {
         super(context);
@@ -69,11 +70,16 @@ public class PlayerContentView extends SurfaceView implements SurfaceHolder.Call
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         log.debug("attach to surface");
         viewModel.attach(holder);
-        if (filePath != null) {
-            viewModel.loadVideo(filePath);
-            filePath = null;
+        if (videoId.equals("no")) {
+            if (filePath != null) {
+                viewModel.loadVideo(filePath);
+                filePath = null;
+            } else {
+                viewModel.setVideoOutput("gpu");
+            }
         } else {
-            viewModel.setVideoOutput("gpu");
+            viewModel.useVideo(videoId);
+            viewModel.resume();
         }
     }
 
@@ -85,6 +91,8 @@ public class PlayerContentView extends SurfaceView implements SurfaceHolder.Call
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
         log.debug("detaching surface");
+        videoId = viewModel.currentVideoId();
+        viewModel.pause();
         viewModel.detach();
     }
 }

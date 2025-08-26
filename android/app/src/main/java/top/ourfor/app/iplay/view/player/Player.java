@@ -34,6 +34,7 @@ public interface Player {
     default void loadSubtitle(List<PlayerSourceModel> subtitles) {}
     default String currentSubtitleId() { return "no"; }
     default String currentAudioId() { return "no"; }
+    default String currentVideoId() { return "no"; }
     default void setSubtitleFontName(String subtitleFontName) {}
     default void setSubtitleFontDirectory(String directory) {}
     default void setSubtitleDelay(double delay) {}
