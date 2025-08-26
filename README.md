@@ -15,13 +15,13 @@
 
 ### 🌐 Play Anywhere, Anytime, On Any Device
 
-<table>
+<table style="overflow:visible">
 <tr>
-<td colspan="6"><img src="./doc/image/windows.home.png" />
+<td colspan="3"><img src="./doc/image/windows.home.png" />
 </td>
 </tr>
 <tr>
-<td colspan="4" rowspan="2"><img src="./doc/image/windows.detail.png" /></td>
+<td><img src="./doc/image/windows.detail.png" /></td>
 <td><img src="./doc/image/windows.album.png" /></td>
 <td><img src="./doc/image/windows.history.png" /></td>
 </tr>
