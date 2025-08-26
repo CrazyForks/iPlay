@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import top.ourfor.app.iplay.view.player.Player;
 import top.ourfor.app.iplay.view.video.PlayerEventListener;
+import top.ourfor.app.iplay.view.video.PlayerHelper;
 import top.ourfor.app.iplay.view.video.PlayerPropertyType;
 import top.ourfor.lib.mpv.TrackItem;
 
@@ -168,6 +169,12 @@ public class VLCPlayerViewModel implements Player {
     }
 
     @Override
+    public String currentVideoId() {
+        val selectedTrack = mediaPlayer.getSelectedTrack(IMedia.Track.Type.Video);
+        return selectedTrack != null ? selectedTrack.id : "no";
+    }
+
+    @Override
     public void useSubtitle(String id) {
         mediaPlayer.selectTracks(IMedia.Track.Type.Text, id);
     }
@@ -179,7 +186,12 @@ public class VLCPlayerViewModel implements Player {
 
     @Override
     public void useVideo(String id) {
-        mediaPlayer.selectTracks(IMedia.Track.Type.Video, id);
+        if (PlayerHelper.isUrl(id)) {
+            loadVideo(id);
+        } else {
+            if (currentVideoId().equals(id)) return;
+            mediaPlayer.selectTracks(IMedia.Track.Type.Video, id);
+        }
     }
 
     @Override

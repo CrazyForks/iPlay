@@ -34,6 +34,7 @@ import top.ourfor.app.iplay.util.HTTPUtil;
 import top.ourfor.app.iplay.util.PathUtil;
 import top.ourfor.app.iplay.view.player.Player;
 import top.ourfor.app.iplay.view.video.PlayerEventListener;
+import top.ourfor.app.iplay.view.video.PlayerHelper;
 import top.ourfor.app.iplay.view.video.PlayerPropertyType;
 import top.ourfor.app.iplay.view.video.PlayerSourceModel;
 import top.ourfor.lib.mpv.MPV;
@@ -263,8 +264,11 @@ public class MPVPlayerViewModel implements Player {
     @Override
     public void useVideo(String id) {
         if (mpv == null) return;
-        if (id.contains(":") || id.contains("/")) mpv.command("loadfile", id);
-        else mpv.setOptionString("vid", id);
+        if (PlayerHelper.isUrl(id)) mpv.command("loadfile", id);
+        else {
+            if (currentVideoId().equals(id)) return;
+            mpv.setOptionString("vid", id);
+        }
     }
 
     @Override
