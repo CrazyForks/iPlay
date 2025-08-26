@@ -30,6 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import top.ourfor.app.iplay.action.DispatchAction;
 import top.ourfor.app.iplay.bean.IJSONAdapter;
+import top.ourfor.app.iplay.common.type.VideoDecodeType;
+import top.ourfor.app.iplay.config.AppSetting;
 import top.ourfor.app.iplay.util.HTTPUtil;
 import top.ourfor.app.iplay.util.PathUtil;
 import top.ourfor.app.iplay.view.player.Player;
@@ -59,7 +61,14 @@ public class MPVPlayerViewModel implements Player {
         mpv.setOptionString("vo", "gpu");
         mpv.setOptionString("gpu-context", "android");
         mpv.setOptionString("opengl-es", "yes");
-        mpv.setOptionString("hwdec", "auto");
+        val videoDecodeType = AppSetting.shared.getVideoDecodeType();
+        if (videoDecodeType == VideoDecodeType.Auto) {
+            mpv.setOptionString("hwdec", "auto");
+        } else if (videoDecodeType == VideoDecodeType.Hardware) {
+            mpv.setOptionString("hwdec", "yes");
+        } else {
+            mpv.setOptionString("hwdec", "no");
+        }
         mpv.setOptionString("hwdec-codecs", "h264,hevc,mpeg4,mpeg2video,vp8,vp9,av1");
         mpv.setOptionString("ao", "audiotrack,opensles");
         mpv.setOptionString("config", "yes");
