@@ -51,6 +51,7 @@ public class MPVPlayerViewModel implements Player {
 
     public String url = null;
     private MPV mpv;
+    private String videoOutput = "gpu";
     public MPVPlayerViewModel(String configDir, String cacheDir, String fontDir) {
         mpv = new MPV();
         mpv.create();
@@ -109,19 +110,21 @@ public class MPVPlayerViewModel implements Player {
     @Override
     public void setVideoOutput(String value) {
         if (mpv == null) return;
+        videoOutput = value;
         mpv.setStringProperty("vo", value);
     }
 
     public void attach(SurfaceHolder holder) {
+        mpv.setStringProperty("vo", videoOutput);
         mpv.setDrawable(holder.getSurface());
-//        mpv.setOptionString("force-window", "yes");
+        mpv.setOptionString("force-window", "yes");
     }
 
     @Override
     public void detach() {
         if (mpv == null) return;
         mpv.setStringProperty("vo", "null");
-//        mpv.setOptionString("force-window", "no");
+        mpv.setOptionString("force-window", "no");
         mpv.setDrawable(null);
     }
 
@@ -234,6 +237,12 @@ public class MPVPlayerViewModel implements Player {
     }
 
     @Override
+    public String currentVideoId() {
+        if (mpv == null) return "no";
+        return mpv.getStringProperty("vid");
+    }
+
+    @Override
     public String currentSubtitleId() {
         if (mpv == null) return "no";
         return mpv.getStringProperty("sid");
@@ -254,7 +263,8 @@ public class MPVPlayerViewModel implements Player {
     @Override
     public void useVideo(String id) {
         if (mpv == null) return;
-        mpv.command("loadfile", id);
+        if (id.contains(":") || id.contains("/")) mpv.command("loadfile", id);
+        else mpv.setOptionString("vid", id);
     }
 
     @Override
