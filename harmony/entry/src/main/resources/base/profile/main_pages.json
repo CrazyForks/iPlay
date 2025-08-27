@@ -1,5 +1,6 @@
 {
   "src": [
+    "pages/RootPage",
     "pages/HomePage",
     "pages/MediaPage",
     "pages/AlbumPage",

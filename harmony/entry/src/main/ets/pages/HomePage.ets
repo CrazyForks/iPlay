@@ -7,7 +7,7 @@ import { AlbumMediaList, AlbumMediasModel } from "../view/AlbumMediaList"
 
 @Entry
 @Component
-struct Index {
+export struct Index {
   @State albums: AlbumMediasModel[] = []
   @State isLoading: boolean = false
 
@@ -61,28 +61,15 @@ struct Index {
           .width(80)
           .height(80)
       }
+
     }
     .onAppear(async () => {
-      // this.albums = await this.fetchData()
-    })
-  }
-
-
-
-  onPageShow(): void {
-    store.load()
-    if (!store.site) {
-      router.pushPage("pages/LoginPage", {})
-      return
-    }
-
-    new Promise<void>(async () => {
-      this.isLoading = true
+      this.isLoading = true;
       this.albums = await this.fetchData()
       this.isLoading = false
     })
-
   }
+
 
   async fetchData() {
     // local emby server for test

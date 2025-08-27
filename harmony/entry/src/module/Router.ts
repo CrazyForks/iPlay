@@ -11,6 +11,7 @@ export interface Router {
   canGoBack(): boolean;
   goBack();
   params(): Dict;
+  clear();
 }
 
 
@@ -36,6 +37,10 @@ class ArkTsRouter implements Router {
 
   params(): Dict {
     return officialRouter.getParams()
+  }
+
+  clear(): void {
+    officialRouter.clear()
   }
 }
 
