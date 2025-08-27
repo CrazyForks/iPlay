@@ -69,7 +69,7 @@ struct Index {
     })
   }
 
-  onPageShow(): void {
+  aboutToAppear(): void {
     store.load()
     if (!store.site) {
       router.pushPage("pages/LoginPage", {})
