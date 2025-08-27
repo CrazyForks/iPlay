@@ -25,10 +25,12 @@ export interface AlbumModel {
   id: string|nil;
   title: string|nil;
   image: ImageModel|nil;
+  type: string|nil
 }
 
 export interface MediaModel {
   id: string|nil;
+  seriesId: string|nil;
   title: string|nil;
   image: ImageModel|nil;
   type: string|nil;
@@ -56,6 +58,7 @@ export interface PlaybackModel {
 
 export interface iPlayDataSourceApi {
   login(site: SiteModel): Promise<SiteModel>
+  setSite(site: SiteModel)
   getAllAlbums(): Promise<AlbumModel[]>
   getAlbumLatestMedias(id: string): Promise<MediaModel[]>
   getPlayback(id: string): Promise<PlaybackModel>

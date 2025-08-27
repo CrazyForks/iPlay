@@ -20,6 +20,14 @@ export class EmbyApi implements iPlayDataSourceApi {
     "X-Emby-Client-Version": "0.0.1",
   }
 
+  setSite(site: SiteModel): void {
+    if (site.server?.endsWith("/")) {
+      site.server = site.server.substring(0, site.server.length-1)
+    }
+    this.user = site.user
+    this.site = site
+  }
+
   async login(site: SiteModel): Promise<SiteModel> {
     let response = await this.client.request({
       url: `${site.server}/emby/Users/authenticatebyname`,
@@ -44,7 +52,9 @@ export class EmbyApi implements iPlayDataSourceApi {
     let response = await this.client.request({
       url,
       method: "get",
-      query: {},
+      query: {
+        IncludeItemTypes: "MusicAlbum"
+      },
       headers: {
         ...this.commonHeaders,
         "X-Emby-Token": this.user?.accessToken
@@ -68,7 +78,8 @@ export class EmbyApi implements iPlayDataSourceApi {
         "Limit": "16",
         "ParentId": id,
         "Recursive": "true",
-        "Fields": "BasicSyncInfo,People,Genres,SortName,Overview,CanDelete,Container,PrimaryImageAspectRatio,Prefix,DateCreated,ProductionYear,Status,EndDate"
+        "Fields": "BasicSyncInfo,People,Genres,SortName,Overview,CanDelete,Container,PrimaryImageAspectRatio,Prefix,DateCreated,ProductionYear,Status,EndDate",
+        "ExcludeFields": "VideoChapters,VideoMediaSources,MediaStreams"
       },
       headers: {
         ...this.commonHeaders,
@@ -109,7 +120,7 @@ export class EmbyApi implements iPlayDataSourceApi {
         let model: MediaSourceModel = {
           name: source.Name,
           type: "video",
-          url: `${this.site?.server}/${source.DirectStreamUrl}`
+          url: `${this.site?.server}${source.DirectStreamUrl}`
         }
         return model
       })
@@ -135,6 +146,7 @@ export class EmbyApi implements iPlayDataSourceApi {
     let medias = response.Items
     return medias.map(media => {
       let model = MediaModelToModel(media, this.site?.server)
+      model.seriesId = id;
       return model
     });
   }

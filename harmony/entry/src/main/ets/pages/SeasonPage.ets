@@ -3,6 +3,7 @@ import { Dict, router } from '../../../module/Router'
 import { store } from '../store/Store'
 import { ActorCellView } from '../view/ActorCellView'
 import { MediaCellView } from '../view/MediaCellView'
+import { MediaInlineCellView } from '../view/MediaInlineCellView'
 
 @Entry
 @Component
@@ -10,6 +11,7 @@ struct SeasonPage {
   @State params: Dict = router.params()
   @State media: MediaModel|nil = null
   @State episodes: MediaModel[]|nil = null
+  @State isLoading: boolean = false
 
   private  seasonEpisodes: MediaModel[][]|nil = null
 
@@ -18,59 +20,48 @@ struct SeasonPage {
   }
 
   build() {
-    Scroll() {
-      Column() {
-        Row() {
-          List() {
-            ForEach(this.episodes, (item: MediaModel, idx: number) => {
-              ListItem() {
-                Text(item.title ?? "")
-                  .fontColor("#ffffff")
-                  .margin(5)
-              }
-              .backgroundColor("#000000")
-              .borderRadius(5)
-              .onClick(() => {
-              })
-            }, (item: MediaModel) => item.id)
-          }
-          .height(32)
-          .listDirection(Axis.Vertical)
-        }
-        .padding(5)
-        .width("100%")
-        .height("auto")
-        .flexGrow(0)
-        .flexShrink(1)
-        .margin({ top: 10 })
-
-        Row() {
+    Stack( {alignContent: Alignment.Center }) {
+      Scroll() {
+        Column() {
           List({ space: 5, initialIndex: 0 }) {
             ForEach(this.episodes, (item: MediaModel) => {
               ListItem() {
-                MediaCellView({
+                MediaInlineCellView({
                   model: item
                 })
               }
-              .borderRadius(5)
             }, (item: MediaModel) => item.id)
           }
-          .height(180)
-          .listDirection(Axis.Horizontal)
+          .padding(5)
+          .width("100%")
+          .flexGrow(0)
+          .flexShrink(1)
+          .margin({ top: 10 })
         }
-        .padding(5)
-        .width("100%")
-        .height("auto")
-        .flexGrow(0)
-        .flexShrink(1)
-        .margin({ top: 10 })
+        .height("100%")
+      }
+
+      if (this.isLoading) {
+        LoadingProgress()
+          .width(80)
+          .height(80)
       }
     }
+    .width("100%")
+    .height("100%")
   }
 
   onPageShow(): void {
     this.media = this.params["media"]
     this.episodes = this.params["episodes"]
+    if (this.episodes == undefined) {
+      new Promise<void>(async () => {
+        this.isLoading = true
+        let episodes = await store.api?.getEpisodes(this.media?.seriesId,  this.media?.id);
+        this.episodes = episodes
+        this.isLoading = false
+      })
+    }
   }
 
   imageUrl() {

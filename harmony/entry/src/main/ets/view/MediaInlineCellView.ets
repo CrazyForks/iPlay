@@ -4,7 +4,7 @@ import { router } from "../../../module/Router";
 
 
 @Component
-export struct MediaCellView {
+export struct MediaInlineCellView {
   @Prop model: MediaModel|nil;
   @Prop layout: string|nil
 
@@ -15,20 +15,33 @@ export struct MediaCellView {
   }
 
   build() {
-    Column() {
+    Row() {
+      Flex() {
         Image(this.imageUrl())
           .width(this.cellWidth())
           .aspectRatio(this.cellImageAspect())
           .margin(5)
           .borderRadius(10)
           .backgroundColor("#e5e5e5")
-        Text(this.model?.title)
-          .fontSize(15)
-          .fontWeight(FontWeight.Normal)
-          .lineBreakStrategy(LineBreakStrategy.HIGH_QUALITY)
-          .textAlign(TextAlign.Center)
-          .maxLines(1)
-          .width(100)
+          .flexShrink(0)
+        Column() {
+          Text(this.model?.title)
+            .fontSize(15)
+            .fontWeight(FontWeight.Normal)
+            .lineBreakStrategy(LineBreakStrategy.HIGH_QUALITY)
+            .textAlign(TextAlign.Center)
+            .maxLines(1)
+
+          Text(this.model?.overview)
+            .fontSize(12)
+            .foregroundColor(Color.Gray)
+            .fontWeight(FontWeight.Normal)
+            .lineBreakStrategy(LineBreakStrategy.HIGH_QUALITY)
+            .textAlign(TextAlign.Center)
+            .maxLines(4)
+        }
+        .flexGrow(1)
+      }
     }
     .onClick(() => {
       logger.info(this.model?.title);
@@ -57,27 +70,13 @@ export struct MediaCellView {
 
   cellWidth() {
     let type = this.model?.type?.toLowerCase()
-    let width = 100;
-    if (this.layout == "auto") {
-      if (type == "movie" || type == "episode") {
-        width = 160;
-      } else if (type == "album") {
-        width = 110
-      }
-    }
+    let width = 160;
     return width
   }
 
   cellImageAspect() {
     let type = this.model?.type?.toLowerCase()
-    let width = 2/3;
-    if (this.layout == "auto") {
-      if (type == "movie" || type == "episode") {
-        width = 16/9;
-      } else if (type == "album") {
-        width = 16/9
-      }
-    }
+    let width = 16/9;
     return width
   }
 

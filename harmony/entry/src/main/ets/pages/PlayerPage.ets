@@ -2,9 +2,10 @@ import video from '@ohos.multimedia.media';
 import window from '@ohos.window';
 import { BusinessError } from '@ohos.base';
 import { Dict, router } from '../../../module/Router';
-import { PlaybackModel } from '../../../api/iPlayDataSource';
+import { MediaModel, PlaybackModel } from '../../../api/iPlayDataSource';
 import { FontIcon } from '../view/FontIcon';
 import { IconDef } from '../view/IconDef';
+import { store } from '../store/Store';
 
 @Entry
 @Component
@@ -15,6 +16,8 @@ struct FullscreenVideoPlayer {
   @State currentTime: number = 0;
   @State duration: number = 0;
   @State isFullScreen: boolean = false;
+  @State title: string = ""
+  @State isLoading: boolean = false;
 
   private videoSrc: string = '';
 
@@ -25,6 +28,19 @@ struct FullscreenVideoPlayer {
     let playback = this.params["playback"] as PlaybackModel
     if (playback != undefined) {
       this.videoSrc = playback.sources?.[0].url ?? ""
+    } else {
+      new Promise<void>(async () => {
+        this.isLoading = true
+        let playback = await this.fetchPlayback()
+        if (playback) {
+          this.videoSrc = playback.sources?.[0].url ?? ""
+        }
+        this.isLoading = false
+      })
+    }
+    let media = this.params["media"] as MediaModel
+    if (media != undefined) {
+        this.title = media.title ?? ""
     }
     window.getLastWindow(this.getUIContext().getHostContext()).then((win: window.Window) => {
       this.windowClass = win;
@@ -38,10 +54,24 @@ struct FullscreenVideoPlayer {
     });
   }
 
+  async fetchPlayback() {
+    let media = this.params["media"] as MediaModel
+    if (media == undefined) {
+      return
+    }
+    let playback = await store.api?.getPlayback(media?.id ?? "")
+    return playback
+  }
+
   build() {
     Stack() {
       this.VideoPlayerComponent()
       this.ControlPanel()
+      if (this.isLoading) {
+        LoadingProgress()
+          .width(80)
+          .height(80)
+      }
     }
     .onClick(() => {
       this.toggleControls()
@@ -76,7 +106,7 @@ struct FullscreenVideoPlayer {
   @Builder ControlPanel() {
       Column() {
         Row() {
-          Text("Title")
+          Text(this.title)
             .fontColor("#ffffffff")
             .margin({top: 10})
         }
@@ -125,14 +155,17 @@ struct FullscreenVideoPlayer {
             icon: IconDef.ic_fluent_top_speed_24_filled
           })
             .margin(5)
+            .enabled(false)
           FontIcon({
             icon: IconDef.ic_fluent_orientation_24_filled
           })
             .margin(5)
+            .enabled(false)
           FontIcon({
             icon: IconDef.ic_fluent_news_24_filled
           })
             .margin(5)
+            .enabled(false)
         }
         .width('90%')
         .flexGrow(0)

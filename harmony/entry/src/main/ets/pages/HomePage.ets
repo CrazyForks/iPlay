@@ -9,12 +9,14 @@ import { AlbumMediaList, AlbumMediasModel } from "../view/AlbumMediaList"
 @Component
 struct Index {
   @State albums: AlbumMediasModel[] = []
+  @State isLoading: boolean = false
 
   constructor() {
     super()
   }
 
   build() {
+    Stack ({ alignContent: Alignment.Center }) {
     Column() {
       List({ space: 5, initialIndex: 0 }) {
         ForEach(this.albums, (item: AlbumMediasModel) => {
@@ -53,6 +55,13 @@ struct Index {
     .width('100%')
     .height("100%")
     .padding({ top: 5 })
+
+      if (this.isLoading) {
+        LoadingProgress()
+          .width(80)
+          .height(80)
+      }
+    }
     .onAppear(async () => {
       // this.albums = await this.fetchData()
     })
@@ -68,7 +77,9 @@ struct Index {
     }
 
     new Promise<void>(async () => {
+      this.isLoading = true
       this.albums = await this.fetchData()
+      this.isLoading = false
     })
 
   }
@@ -80,14 +91,16 @@ struct Index {
     if (api == null || site == null) {
       return []
     }
-    await api.login(site);
+    api.setSite(site)
     let albums = await api.getAllAlbums()
+    albums = albums.filter(item => item.type != "music")
     albums.forEach(album => console.info("album: " + album.title + album.image?.primary))
     let album = new AlbumMediasModel();
     album.type = "albums"
     album.medias = albums.map(item => {
       let media: MediaModel = {
         id: item.id,
+        seriesId: "",
         title: item.title,
         image: item.image,
         type: "album",
