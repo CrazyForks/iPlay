@@ -54,6 +54,19 @@ struct FullscreenVideoPlayer {
     });
   }
 
+  aboutToDisappear() {
+    window.getLastWindow(this.getUIContext().getHostContext()).then((win: window.Window) => {
+      this.windowClass = win;
+      let block = async () => {
+        await win.setPreferredOrientation(window.Orientation.PORTRAIT);
+        await win.setWindowSystemBarEnable(['status', 'navigation']); // 隐藏状态栏
+        await win.setWindowLayoutFullScreen(false);
+        this.isFullScreen = false
+      }
+      block()
+    });
+  }
+
   async fetchPlayback() {
     let media = this.params["media"] as MediaModel
     if (media == undefined) {
@@ -233,11 +246,5 @@ struct FullscreenVideoPlayer {
     const min = Math.floor(seconds / 60);
     const sec = Math.floor(seconds % 60);
     return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-  }
-
-  aboutToDisappear() {
-    if (this.windowClass) {
-      this.windowClass.setPreferredOrientation(window.Orientation.PORTRAIT);
-    }
   }
 }
