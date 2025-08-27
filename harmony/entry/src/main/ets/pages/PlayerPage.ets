@@ -19,7 +19,7 @@ struct FullscreenVideoPlayer {
   @State title: string = ""
   @State isLoading: boolean = false;
 
-  private videoSrc: string = '';
+  @State videoSrc: string = '';
 
   // 获取窗口对象
   private windowClass: window.Window | null = null;
@@ -65,7 +65,9 @@ struct FullscreenVideoPlayer {
 
   build() {
     Stack() {
-      this.VideoPlayerComponent()
+      if (this.videoSrc !== '') {
+        this.VideoPlayerComponent()
+      }
       this.ControlPanel()
       if (this.isLoading) {
         LoadingProgress()
