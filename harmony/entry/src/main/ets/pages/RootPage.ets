@@ -20,6 +20,7 @@ struct Index {
       Image(this.currentIndex === index ? selectedImg : normalImg)
         .width($r('app.float.mainPage_baseTab_size'))
         .height($r('app.float.mainPage_baseTab_size'))
+        .margin({ top: '8vp'})
         .opacity(this.currentIndex === index ? 1.0 : 0.85)
       Text(title)
         .margin({ top: $r('app.float.mainPage_baseTab_top') })

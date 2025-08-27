@@ -21,7 +21,13 @@ export struct Index {
         if (this.medias?.length ?? 0 > 0) {
           Row() {
             Text("喜爱的电影")
+              .flexGrow(1)
+
+            Text("查看更多")
+              .flexShrink(0)
+              .fontSize(11)
           }
+          .width('100%')
         }
         Row() {
           Grid() {

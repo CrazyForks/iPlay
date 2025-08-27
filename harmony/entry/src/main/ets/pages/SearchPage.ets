@@ -22,12 +22,13 @@ export struct Index {
           .flexGrow(1)
           .height(40)
           .border({ width: 1, color: '#cccccc' })
-          .borderRadius(4)
+          .borderRadius(11)
           .onChange((value: string) => {
             this.keyword = value;
           })
         Button("搜索")
-          .borderRadius(5)
+          .borderRadius(2)
+          .margin({left: 8})
           .onClick(() => {
               this.search(this.keyword ?? "")
           })

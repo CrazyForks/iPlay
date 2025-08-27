@@ -1,0 +1,11 @@
+{
+  "app": {
+    "bundleName": "top.ourfor.app.iPlay",
+    "patchVersionCode": 2000016,
+    "versionCode": 1000000
+  },
+  "module": {
+    "name": "entry",
+    "type": "hotreload"
+  }
+}

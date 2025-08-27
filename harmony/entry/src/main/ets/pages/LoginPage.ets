@@ -1,10 +1,7 @@
 import { EmbyApi } from '../../../api/emby/EmbyApi';
-import { ActorModel, MediaModel, nil, SiteModel } from '../../../api/iPlayDataSource'
+import { SiteModel } from '../../../api/iPlayDataSource'
 import { logger } from '../../../module/Log';
-import { Dict, router } from '../../../module/Router'
 import { store } from '../store/Store';
-import { ActorCellView } from '../view/ActorCellView'
-import { promptAction } from '@kit.ArkUI';
 
 @Entry
 @Component
@@ -16,6 +13,12 @@ struct LoginPage {
 
   build() {
     Column() {
+      Row() {
+        Text("输入你的Emby站点信息")
+          .fontSize(22)
+          .fontWeight("bold")
+          .margin({ top: 12 , bottom: 18 })
+      }
       Row() {
         Text('服务器')
           .fontSize(16)
