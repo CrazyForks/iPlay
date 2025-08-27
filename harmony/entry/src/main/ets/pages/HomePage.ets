@@ -1,5 +1,7 @@
 import { EmbyApi } from "../../../api/emby/EmbyApi"
 import { SiteModel, MediaModel } from "../../../api/iPlayDataSource"
+import { context } from "../../../bean/BeanContainer"
+import { SiteAction } from "../../../bean/SiteAction"
 import { kv } from "../../../module/KVStorage"
 import { router } from "../../../module/Router"
 import { store } from "../store/Store"
@@ -64,9 +66,13 @@ export struct Index {
 
     }
     .onAppear(async () => {
+      context.watch("SiteAction", this)
       this.isLoading = true;
       this.albums = await this.fetchData()
       this.isLoading = false
+    })
+    .onDisAppear(() => {
+      context.unwatch("SiteAction", this)
     })
   }
 
@@ -116,5 +122,21 @@ export struct Index {
     }))
     albumMedias = [resumeAlbum, ...albumMedias].filter(item => item.medias.length > 0)
     return [album, ...albumMedias]
+  }
+
+  onPageShow(): void {
+    new Promise<void>(async () => {
+      this.isLoading = true;
+      this.albums = await this.fetchData()
+      this.isLoading = false
+    })
+  }
+
+  onSiteUpdate(site: SiteModel) {
+    new Promise<void>(async () => {
+      this.isLoading = true;
+      this.albums = await this.fetchData()
+      this.isLoading = false
+    })
   }
 }

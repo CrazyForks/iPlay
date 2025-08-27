@@ -114,14 +114,14 @@ struct FullscreenVideoPlayer {
         }
         .flexGrow(0)
         Row() {
-          FontIcon({
-            icon: IconDef.ic_fluent_device_eq_24_filled
-          })
-            .margin(5)
-          FontIcon({
-            icon: IconDef.ic_fluent_closed_caption_24_filled
-          })
-            .margin(5)
+          // FontIcon({
+          //   icon: IconDef.ic_fluent_device_eq_24_filled
+          // })
+          //   .margin(5)
+          // FontIcon({
+          //   icon: IconDef.ic_fluent_closed_caption_24_filled
+          // })
+          //   .margin(5)
         }
         .justifyContent(FlexAlign.End)
         .width('90%')
@@ -153,21 +153,21 @@ struct FullscreenVideoPlayer {
             })
           Column()
             .flexGrow(1)
-          FontIcon({
-            icon: IconDef.ic_fluent_top_speed_24_filled
-          })
-            .margin(5)
-            .enabled(false)
-          FontIcon({
-            icon: IconDef.ic_fluent_orientation_24_filled
-          })
-            .margin(5)
-            .enabled(false)
-          FontIcon({
-            icon: IconDef.ic_fluent_news_24_filled
-          })
-            .margin(5)
-            .enabled(false)
+          // FontIcon({
+          //   icon: IconDef.ic_fluent_top_speed_24_filled
+          // })
+          //   .margin(5)
+          //   .enabled(false)
+          // FontIcon({
+          //   icon: IconDef.ic_fluent_orientation_24_filled
+          // })
+          //   .margin(5)
+          //   .enabled(false)
+          // FontIcon({
+          //   icon: IconDef.ic_fluent_news_24_filled
+          // })
+          //   .margin(5)
+          //   .enabled(false)
         }
         .width('90%')
         .flexGrow(0)

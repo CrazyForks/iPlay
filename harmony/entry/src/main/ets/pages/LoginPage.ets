@@ -1,5 +1,7 @@
 import { EmbyApi } from '../../../api/emby/EmbyApi';
 import { SiteModel } from '../../../api/iPlayDataSource'
+import { context } from '../../../bean/BeanContainer';
+import { SiteAction } from '../../../bean/SiteAction';
 import { logger } from '../../../module/Log';
 import { store } from '../store/Store';
 
@@ -122,6 +124,7 @@ struct LoginPage {
               bottom: '50%',
             });
             setTimeout(() => {
+              context.action<SiteAction>("SiteAction", bean => bean.onSiteUpdate(site))
               this.getUIContext().getRouter().back()
             })
             this.loading = false;
