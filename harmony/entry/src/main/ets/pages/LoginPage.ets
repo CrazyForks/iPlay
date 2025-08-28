@@ -1,10 +1,9 @@
 import { EmbyApi } from '../../../api/emby/EmbyApi';
-import { ActorModel, MediaModel, nil, SiteModel } from '../../../api/iPlayDataSource'
+import { SiteModel } from '../../../api/iPlayDataSource'
+import { context } from '../../../bean/BeanContainer';
+import { SiteAction } from '../../../bean/SiteAction';
 import { logger } from '../../../module/Log';
-import { Dict, router } from '../../../module/Router'
 import { store } from '../store/Store';
-import { ActorCellView } from '../view/ActorCellView'
-import { promptAction } from '@kit.ArkUI';
 
 @Entry
 @Component
@@ -12,9 +11,16 @@ struct LoginPage {
   @State serverAddress: string = '';
   @State username: string = '';
   @State password: string = '';
+  @State loading: boolean = false;
 
   build() {
     Column() {
+      Row() {
+        Text("输入你的Emby站点信息")
+          .fontSize(22)
+          .fontWeight("bold")
+          .margin({ top: 12 , bottom: 18 })
+      }
       Row() {
         Text('服务器')
           .fontSize(16)
@@ -50,7 +56,7 @@ struct LoginPage {
           })
       }
       .width('100%')
-      .margin({top: 15})
+      .margin({ top: 15 })
 
 
       Row() {
@@ -70,60 +76,76 @@ struct LoginPage {
           })
       }
       .width('100%')
-      .margin({top: 15})
+      .margin({ top: 15 })
 
 
-      Button('登 录')
-        .width('90%')
-        .height(40)
-        .margin({ top: 30 })
-        .backgroundColor('#007DFF')
-        .fontColor(Color.White)
-        .onClick(() => {
-          if (this.serverAddress && this.username && this.password) {
-            console.log('尝试登录：', this.serverAddress);
-            let api = new EmbyApi()
-            let site: SiteModel = {
+      Button() {
+        if (this.loading) {
+          Row() {
+            LoadingProgress() // 内置加载进度组件
+              .color(Color.White)
+            Text("登录中...")
+              .foregroundColor(Color.White)
+          }
+        } else {
+          Text("登录")
+            .foregroundColor(Color.White)
+        }
+      }
+      .width('90%')
+      .height(40)
+      .margin({ top: 30 })
+      .backgroundColor('#007DFF')
+      .fontColor(Color.White)
+      .onClick(() => {
+        if (this.serverAddress && this.username && this.password) {
+          console.log('尝试登录：', this.serverAddress);
+          this.loading = true;
+          let api = new EmbyApi()
+          let site: SiteModel = {
+            id: null,
+            type: "emby",
+            server: this.serverAddress,
+            user: {
               id: null,
-              type: "emby",
-              server: this.serverAddress,
-              user: {
-                id: null,
-                username: this.username,
-                password: this.password,
-                accessToken: null,
-              },
-              extra: undefined
-            }
-            api.login(site).then(site => {
-                store.api = api
-                store.addSite(site)
-                logger.info(`${site}`)
-              this.getUIContext().getPromptAction().showToast({
-                message: `登录成功`,
-                duration: 2000,
-                bottom: '50%',
-              });
-              setTimeout(() => {
-                this.getUIContext().getRouter().back()
-              })
-            }).catch((err: object) => {
-              logger.error(`${err}`)
-              this.getUIContext().getPromptAction().showToast({
-                message: `${err}`,
-                duration: 2000,  // 显示时长（毫秒）
-                bottom: '50%'   // 距离底部位置
-              });
-            })
-          } else {
+              username: this.username,
+              password: this.password,
+              accessToken: null,
+            },
+            extra: undefined
+          }
+          api.login(site).then(site => {
+            store.api = api
+            store.addSite(site)
+            logger.info(`${site}`)
             this.getUIContext().getPromptAction().showToast({
-              message: `请填写完整登录信息`,
-              duration: 2000,  // 显示时长（毫秒）
+              message: `登录成功`,
+              duration: 2000,
+              bottom: '50%',
+            });
+            setTimeout(() => {
+              context.action<SiteAction>("SiteAction", bean => bean.onSiteUpdate(site))
+              this.getUIContext().getRouter().back()
+            })
+            this.loading = false;
+          }).catch((err: object) => {
+            logger.error(`${err}`)
+            this.getUIContext().getPromptAction().showToast({
+              message: `${err}`,
+              duration: 2000, // 显示时长（毫秒）
               bottom: '50%'   // 距离底部位置
             });
-            console.error('请填写完整登录信息');
-          }
-        })
+            this.loading = false;
+          })
+        } else {
+          this.getUIContext().getPromptAction().showToast({
+            message: `请填写完整登录信息`,
+            duration: 2000, // 显示时长（毫秒）
+            bottom: '50%'   // 距离底部位置
+          });
+          console.error('请填写完整登录信息');
+        }
+      })
     }
     .width('100%')
     .height('100%')

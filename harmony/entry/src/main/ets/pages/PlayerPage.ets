@@ -2,9 +2,10 @@ import video from '@ohos.multimedia.media';
 import window from '@ohos.window';
 import { BusinessError } from '@ohos.base';
 import { Dict, router } from '../../../module/Router';
-import { PlaybackModel } from '../../../api/iPlayDataSource';
+import { MediaModel, PlaybackModel } from '../../../api/iPlayDataSource';
 import { FontIcon } from '../view/FontIcon';
 import { IconDef } from '../view/IconDef';
+import { store } from '../store/Store';
 
 @Entry
 @Component
@@ -15,8 +16,10 @@ struct FullscreenVideoPlayer {
   @State currentTime: number = 0;
   @State duration: number = 0;
   @State isFullScreen: boolean = false;
+  @State title: string = ""
+  @State isLoading: boolean = false;
 
-  private videoSrc: string = '';
+  @State videoSrc: string = '';
 
   // 获取窗口对象
   private windowClass: window.Window | null = null;
@@ -25,6 +28,19 @@ struct FullscreenVideoPlayer {
     let playback = this.params["playback"] as PlaybackModel
     if (playback != undefined) {
       this.videoSrc = playback.sources?.[0].url ?? ""
+    } else {
+      new Promise<void>(async () => {
+        this.isLoading = true
+        let playback = await this.fetchPlayback()
+        if (playback) {
+          this.videoSrc = playback.sources?.[0].url ?? ""
+        }
+        this.isLoading = false
+      })
+    }
+    let media = this.params["media"] as MediaModel
+    if (media != undefined) {
+        this.title = media.title ?? ""
     }
     window.getLastWindow(this.getUIContext().getHostContext()).then((win: window.Window) => {
       this.windowClass = win;
@@ -38,10 +54,39 @@ struct FullscreenVideoPlayer {
     });
   }
 
+  aboutToDisappear() {
+    window.getLastWindow(this.getUIContext().getHostContext()).then((win: window.Window) => {
+      this.windowClass = win;
+      let block = async () => {
+        await win.setPreferredOrientation(window.Orientation.PORTRAIT);
+        await win.setWindowSystemBarEnable(['status', 'navigation']); // 隐藏状态栏
+        await win.setWindowLayoutFullScreen(false);
+        this.isFullScreen = false
+      }
+      block()
+    });
+  }
+
+  async fetchPlayback() {
+    let media = this.params["media"] as MediaModel
+    if (media == undefined) {
+      return
+    }
+    let playback = await store.api?.getPlayback(media?.id ?? "")
+    return playback
+  }
+
   build() {
     Stack() {
-      this.VideoPlayerComponent()
+      if (this.videoSrc !== '') {
+        this.VideoPlayerComponent()
+      }
       this.ControlPanel()
+      if (this.isLoading) {
+        LoadingProgress()
+          .width(80)
+          .height(80)
+      }
     }
     .onClick(() => {
       this.toggleControls()
@@ -76,20 +121,20 @@ struct FullscreenVideoPlayer {
   @Builder ControlPanel() {
       Column() {
         Row() {
-          Text("Title")
+          Text(this.title)
             .fontColor("#ffffffff")
             .margin({top: 10})
         }
         .flexGrow(0)
         Row() {
-          FontIcon({
-            icon: IconDef.ic_fluent_device_eq_24_filled
-          })
-            .margin(5)
-          FontIcon({
-            icon: IconDef.ic_fluent_closed_caption_24_filled
-          })
-            .margin(5)
+          // FontIcon({
+          //   icon: IconDef.ic_fluent_device_eq_24_filled
+          // })
+          //   .margin(5)
+          // FontIcon({
+          //   icon: IconDef.ic_fluent_closed_caption_24_filled
+          // })
+          //   .margin(5)
         }
         .justifyContent(FlexAlign.End)
         .width('90%')
@@ -121,18 +166,21 @@ struct FullscreenVideoPlayer {
             })
           Column()
             .flexGrow(1)
-          FontIcon({
-            icon: IconDef.ic_fluent_top_speed_24_filled
-          })
-            .margin(5)
-          FontIcon({
-            icon: IconDef.ic_fluent_orientation_24_filled
-          })
-            .margin(5)
-          FontIcon({
-            icon: IconDef.ic_fluent_news_24_filled
-          })
-            .margin(5)
+          // FontIcon({
+          //   icon: IconDef.ic_fluent_top_speed_24_filled
+          // })
+          //   .margin(5)
+          //   .enabled(false)
+          // FontIcon({
+          //   icon: IconDef.ic_fluent_orientation_24_filled
+          // })
+          //   .margin(5)
+          //   .enabled(false)
+          // FontIcon({
+          //   icon: IconDef.ic_fluent_news_24_filled
+          // })
+          //   .margin(5)
+          //   .enabled(false)
         }
         .width('90%')
         .flexGrow(0)
@@ -198,11 +246,5 @@ struct FullscreenVideoPlayer {
     const min = Math.floor(seconds / 60);
     const sec = Math.floor(seconds % 60);
     return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-  }
-
-  aboutToDisappear() {
-    if (this.windowClass) {
-      this.windowClass.setPreferredOrientation(window.Orientation.PORTRAIT);
-    }
   }
 }

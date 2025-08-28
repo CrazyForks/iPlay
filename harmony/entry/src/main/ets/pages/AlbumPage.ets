@@ -20,7 +20,7 @@ struct AlbumPage {
       Grid() {
         ForEach(this.medias, (item: MediaModel) => {
           GridItem() {
-            MediaCellView({ model: item })
+            MediaCellView({ model: item, layout: "2/3" })
           }
         }, (item: MediaModel) => item.id)
       }

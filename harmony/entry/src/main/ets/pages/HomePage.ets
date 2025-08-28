@@ -1,5 +1,7 @@
 import { EmbyApi } from "../../../api/emby/EmbyApi"
 import { SiteModel, MediaModel } from "../../../api/iPlayDataSource"
+import { context } from "../../../bean/BeanContainer"
+import { SiteAction } from "../../../bean/SiteAction"
 import { kv } from "../../../module/KVStorage"
 import { router } from "../../../module/Router"
 import { store } from "../store/Store"
@@ -7,14 +9,16 @@ import { AlbumMediaList, AlbumMediasModel } from "../view/AlbumMediaList"
 
 @Entry
 @Component
-struct Index {
+export struct Index {
   @State albums: AlbumMediasModel[] = []
+  @State isLoading: boolean = false
 
   constructor() {
     super()
   }
 
   build() {
+    Stack ({ alignContent: Alignment.Center }) {
     Column() {
       List({ space: 5, initialIndex: 0 }) {
         ForEach(this.albums, (item: AlbumMediasModel) => {
@@ -53,25 +57,25 @@ struct Index {
     .width('100%')
     .height("100%")
     .padding({ top: 5 })
-    .onAppear(async () => {
-      // this.albums = await this.fetchData()
-    })
-  }
 
+      if (this.isLoading) {
+        LoadingProgress()
+          .width(80)
+          .height(80)
+      }
 
-
-  onPageShow(): void {
-    store.load()
-    if (!store.site) {
-      router.pushPage("pages/LoginPage", {})
-      return
     }
-
-    new Promise<void>(async () => {
+    .onAppear(async () => {
+      context.watch("SiteAction", this)
+      this.isLoading = true;
       this.albums = await this.fetchData()
+      this.isLoading = false
     })
-
+    .onDisAppear(() => {
+      context.unwatch("SiteAction", this)
+    })
   }
+
 
   async fetchData() {
     // local emby server for test
@@ -80,14 +84,16 @@ struct Index {
     if (api == null || site == null) {
       return []
     }
-    await api.login(site);
+    api.setSite(site)
     let albums = await api.getAllAlbums()
+    albums = albums.filter(item => item.type != "music")
     albums.forEach(album => console.info("album: " + album.title + album.image?.primary))
     let album = new AlbumMediasModel();
     album.type = "albums"
     album.medias = albums.map(item => {
       let media: MediaModel = {
         id: item.id,
+        seriesId: "",
         title: item.title,
         image: item.image,
         type: "album",
@@ -116,5 +122,21 @@ struct Index {
     }))
     albumMedias = [resumeAlbum, ...albumMedias].filter(item => item.medias.length > 0)
     return [album, ...albumMedias]
+  }
+
+  onPageShow(): void {
+    new Promise<void>(async () => {
+      this.isLoading = true;
+      this.albums = await this.fetchData()
+      this.isLoading = false
+    })
+  }
+
+  onSiteUpdate(site: SiteModel) {
+    new Promise<void>(async () => {
+      this.isLoading = true;
+      this.albums = await this.fetchData()
+      this.isLoading = false
+    })
   }
 }

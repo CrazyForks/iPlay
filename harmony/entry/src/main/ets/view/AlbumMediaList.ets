@@ -45,7 +45,8 @@ export struct AlbumMediaList {
         ForEach(this.model?.medias, (item: MediaModel) => {
           ListItem() {
             MediaCellView({
-              model: item
+              model: item,
+              layout: "auto"
             })
           }
         }, (item: MediaModel) => item.id)

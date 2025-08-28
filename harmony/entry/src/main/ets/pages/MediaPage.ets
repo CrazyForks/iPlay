@@ -42,7 +42,8 @@ struct MediaPage {
             .onClick(() => {
               store.api?.getPlayback(this.media?.id ?? "").then(playback => {
                 router.pushPage("pages/PlayerPage", {
-                  "playback": playback
+                  "playback": playback,
+                  "media": this.media
                 })
               })
             })
@@ -141,7 +142,8 @@ struct MediaPage {
             ForEach(this.episodes, (item: MediaModel) => {
               ListItem() {
                 MediaCellView({
-                  model: item
+                  model: item,
+                  layout: "auto"
                 })
               }
               .borderRadius(5)

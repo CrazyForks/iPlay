@@ -8,7 +8,7 @@ BUILD_ID 		= $(shell git rev-parse --short HEAD)
 VERSION_NAME    = "$(VERSION) $(BUILD_ID)"
 VERSION_CODE    = $(shell git rev-list --count HEAD)
 
-all: apk aab
+all: apk aab aws-aab
 
 version:
 	@echo $(VERSION_NAME)
@@ -26,6 +26,13 @@ aab:
 	cd $(ANDROID_DIR) && ./gradlew bundleRelease -PversionName=$(VERSION_NAME) -PversionCode=$(VERSION_CODE)
 	mkdir -p $(BUILD_DIR)
 	cp $(ANDROID_DIR)/app/build/outputs/bundle/release/app-release.aab $(BUILD_DIR)/$(APP_NAME).aab
+
+aws-aab:
+	# replace `applicationId "top.ourfor.app.iplay"` in android/app/build.gradle to `applicationId "top.ourfor.app.iplayx"`
+	sed -i '' 's/applicationId "top.ourfor.app.iplay"/applicationId "top.ourfor.app.iplayx"/' $(ANDROID_DIR)/app/build.gradle
+	cd $(ANDROID_DIR) && ./gradlew bundleRelease -PversionName=$(VERSION_NAME) -PversionCode=$(VERSION_CODE)
+	mkdir -p $(BUILD_DIR)
+	cp $(ANDROID_DIR)/app/build/outputs/bundle/release/app-release.aab $(BUILD_DIR)/$(APP_NAME)-aws.aab
 
 ipa:
 	@echo "📦 ipa $(VERSION_NAME)"

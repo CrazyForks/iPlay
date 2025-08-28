@@ -9,6 +9,7 @@ export class Response<T> {
 export class AlbumModel {
     Id: string;
     Name: string;
+    CollectionType: string;
 }
 
 export interface People {
@@ -40,7 +41,8 @@ export function AlbumModelToModel(self: AlbumModel) {
     return {
         id: self.Id,
         title: self.Name,
-        image: undefined
+        image: undefined,
+        type: self.CollectionType
     } as StdAlbumModel
 }
 
