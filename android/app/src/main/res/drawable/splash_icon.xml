@@ -4,7 +4,7 @@
         android:width="288dp"
         android:height="288dp">
         <shape android:shape="rectangle">
-            <solid android:color="@color/white" />
+            <solid android:color="@null" />
         </shape>
     </item>
 

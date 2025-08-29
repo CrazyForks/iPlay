@@ -109,7 +109,12 @@ public class MPVPlayerViewModel implements Player {
 
     @Override
     public Double duration() {
-        return _duration;
+        return mpv.getDoubleProperty("duration");
+    }
+
+    @Override
+    public Double progress() {
+        return mpv.getDoubleProperty("time-pos");
     }
 
     @Override

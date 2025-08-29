@@ -66,7 +66,7 @@ public class PlayerSliderValueView extends ConstraintLayout {
 
     public void show() {
         animate().alpha(1)
-                .setDuration(150)
+                .setDuration(5)
                 .start();
     }
 
