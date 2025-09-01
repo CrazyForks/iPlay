@@ -34,17 +34,17 @@ export struct Index {
           .flexGrow(1)
           .textAlign(TextAlign.Center)
         
-        Button() {
-          Image($r('app.media.more'))
-            .width(24)
-            .height(24)
-        }
-        .type(ButtonType.Normal)
-        .backgroundColor(Color.Transparent)
-        .onClick(() => {
-          // 显示更多选项
-          this.showMoreOptions()
-        })
+        // Button() {
+        //   Image($r('app.media.more'))
+        //     .width(24)
+        //     .height(24)
+        // }
+        // .type(ButtonType.Normal)
+        // .backgroundColor(Color.Transparent)
+        // .onClick(() => {
+        //   // 显示更多选项
+        //   this.showMoreOptions()
+        // })
       }
       .width('100%')
       .height(50)

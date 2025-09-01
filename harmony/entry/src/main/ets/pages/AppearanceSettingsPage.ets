@@ -99,6 +99,7 @@ export struct AppearanceSettingsPage {
             .flexGrow(1)
             
             Radio({ value: 'dark', group: 'themeMode' })
+              .enabled(false)
               .checked(this.selectedMode === AppThemeMode.DARK)
               .onChange((isChecked: boolean) => {
                 if (isChecked) {
