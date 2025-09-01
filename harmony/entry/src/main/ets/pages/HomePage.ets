@@ -198,9 +198,10 @@ export struct Index {
           }
         },
         secondaryButton: {
-          value: '取消',
+          value: '设置',
           action: () => {
-            // 关闭弹窗
+            // 跳转到设置页面
+            router.pushPage("pages/SettingsPage", {})
           }
         },
         cancel: () => {

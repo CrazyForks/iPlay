@@ -231,4 +231,45 @@ export class EmbyApi implements iPlayDataSourceApi {
       return model
     });
   }
+  
+  /**
+   * 添加或移除收藏
+   * @param itemId 项目ID
+   * @param isFavorite true表示添加收藏，false表示取消收藏
+   * @returns 操作是否成功
+   */
+  async toggleFavorite(itemId: string, isFavorite: boolean): Promise<boolean> {
+    if (!itemId || !this.user?.id || !this.site?.server || !this.user?.accessToken) {
+      return false;
+    }
+
+    // 构建URL和参数
+    let url: string;
+    if (isFavorite) {
+      // 添加收藏
+      url = `${this.site.server}/emby/Users/${this.user.id}/FavoriteItems/${itemId}`;
+    } else {
+      // 取消收藏，用query参数模拟delete操作
+      url = `${this.site.server}/emby/Users/${this.user.id}/FavoriteItems/${itemId}`;
+      url += `?X-HTTP-Method-Override=DELETE`;
+    }
+    
+    try {
+      await this.client.request({
+        url: url,
+        method: "post", // 统一使用POST，通过URL参数区分操作
+        query: {},
+        headers: {
+          ...this.commonHeaders,
+          "X-Emby-Token": this.user.accessToken
+        },
+        body: undefined
+      });
+      
+      return true;
+    } catch (error) {
+      console.error(`${isFavorite ? '添加' : '删除'}收藏失败:`, error);
+      return false;
+    }
+  }
 }

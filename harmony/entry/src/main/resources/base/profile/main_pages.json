@@ -7,6 +7,8 @@
     "pages/LoginPage",
     "pages/PlayerPage",
     "pages/SeasonPage",
-    "pages/SiteManagePage"
+    "pages/SiteManagePage",
+    "pages/SettingsPage",
+    "pages/AppearanceSettingsPage"
   ]
 }
