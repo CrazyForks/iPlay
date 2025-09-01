@@ -20,6 +20,16 @@ export class Store {
       this.sites = [...(this.sites ?? []), this.site]
       this.save()
     }
+
+    switchSite(site: SiteModel) {
+      this.site = site;
+      if (this.site != null) {
+        let api = new EmbyApi()
+        api.setSite(site)
+        this.api = api
+      }
+      this.save()
+    }
     
     // 更新主题模式
     setThemeMode(mode: AppThemeMode) {

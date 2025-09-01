@@ -16,7 +16,7 @@ export struct SiteManagePage {
     this.siteList = store.sites || []
     this.currentSiteId = store.site?.id || null
   }
-  
+
   build() {
     Stack({ alignContent: Alignment.TopEnd }) {
       Column() {
@@ -80,6 +80,10 @@ export struct SiteManagePage {
       }
       .width('100%')
       .height('100%')
+      .onAppear(() => {
+        this.siteList = store.sites || []
+        this.currentSiteId = store.site?.id || null
+      })
     }
   }
   
@@ -113,11 +117,13 @@ export struct SiteManagePage {
           })
       }
     }
-    .width('100%')
+    .width('98%')
     .padding(15)
     .borderRadius(8)
     .backgroundColor(Color.White)
-    .margin({ top: 8, bottom: 8 })
+    .borderWidth(2)
+    .borderColor(site.id === this.currentSiteId ? Color.Green : Color.Gray)
+    .margin({ top: 8, bottom: 8, left: 4, right: -4 })
   }
   
   @Builder
@@ -127,8 +133,8 @@ export struct SiteManagePage {
         .fontSize(16)
         .fontColor(Color.White)
     }
-    .width(80)
-    .height('100%')
+    .width("64")
+    .height(32)
     .backgroundColor(Color.Red)
     .onClick(() => {
       this.deleteSite(index)
@@ -137,8 +143,7 @@ export struct SiteManagePage {
   
   switchSite(index: number) {
     const site = this.siteList[index]
-    store.site = site
-    store.save()
+    store.switchSite(site)
     this.currentSiteId = site.id ?? ""
     
     // 通知其他页面站点已更新
