@@ -175,7 +175,7 @@ struct LoginPage {
             setTimeout(() => {
               context.action<SiteAction>("SiteAction", bean => bean.onSiteUpdate(site))
               this.getUIContext().getRouter().back()
-            })
+            }, 500)
             this.loading = false;
           }).catch((err: object) => {
             logger.error(`${err}`)

@@ -186,15 +186,15 @@ export struct Index {
   
   // 显示更多选项
   showMoreOptions() {
-    // 这里可以实现更多选项的菜单，例如设置、关于等
     AlertDialog.show(
       {
         title: '更多选项',
         message: '选择要进行的操作',
         primaryButton: {
-          value: '设置',
+          value: '站点管理',
           action: () => {
-            // 跳转到设置页面
+            // 跳转到站点管理页面
+            router.pushPage("pages/SiteManagePage", {})
           }
         },
         secondaryButton: {
