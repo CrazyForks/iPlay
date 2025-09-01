@@ -1,6 +1,6 @@
 import { MediaModel, nil } from '../../../api/iPlayDataSource'
 import { Dict, router } from '../../../module/Router'
-import { store } from '../store/Store'
+import { store, AppThemeMode } from '../store/Store'
 import { MediaCellView } from '../view/MediaCellView'
 
 @Entry
@@ -10,6 +10,7 @@ struct AlbumPage {
   @State medias: MediaModel[]|nil = null
   @State albumId: string|nil = null
   @State actorId: string|nil = null
+  @State isLoading: boolean = false
 
   constructor() {
     super()
@@ -19,56 +20,77 @@ struct AlbumPage {
   @State albumTitle: string = "专辑"
   
   build() {
-    Column() {
-      // 导航栏
-      Row() {
-        Button() {
-          Image($r('app.media.back'))
-            .width(24)
-            .height(24)
-        }
-        .type(ButtonType.Normal)
-        .backgroundColor(Color.Transparent)
-        .onClick(() => {
-          router.popPage()
-        })
-        
-        Text(this.albumTitle)
-          .fontSize(18)
-          .fontWeight(FontWeight.Bold)
-          .flexGrow(1)
-          .textAlign(TextAlign.Center)
-          .maxLines(1)
-          .textOverflow({ overflow: TextOverflow.Ellipsis })
-        
-        Button() {
-          Image(this.isFavorite ? $r('app.media.star_filled') : $r('app.media.star_outline'))
-            .width(24)
-            .height(24)
-        }
-        .type(ButtonType.Normal)
-        .backgroundColor(Color.Transparent)
-        .onClick(() => {
-          this.toggleFavorite()
-        })
-      }
-      .width('100%')
-      .height(50)
-      .padding({left: 10, right: 10})
-      
-      Grid() {
-        ForEach(this.medias, (item: MediaModel) => {
-          GridItem() {
-            MediaCellView({ model: item, layout: "2/3" })
+    Stack({ alignContent: Alignment.Center }) {
+      Column() {
+        // 导航栏
+        Row() {
+          Button() {
+            Image($r('app.media.back'))
+              .width(24)
+              .height(24)
+              .fillColor(store.themeMode === AppThemeMode.DARK ? Color.White : Color.Black)
           }
-        }, (item: MediaModel) => item.id)
+          .type(ButtonType.Normal)
+          .backgroundColor(Color.Transparent)
+          .onClick(() => {
+            router.popPage()
+          })
+          
+          Text(this.albumTitle)
+            .fontSize(20)
+            .fontWeight(FontWeight.Medium)
+            .flexGrow(1)
+            .textAlign(TextAlign.Center)
+            .maxLines(1)
+            .textOverflow({ overflow: TextOverflow.Ellipsis })
+            .fontColor(store.themeMode === AppThemeMode.DARK ? Color.White : Color.Black)
+          
+          Button() {
+            Image(this.isFavorite ? $r('app.media.star_filled') : $r('app.media.star_outline'))
+              .width(24)
+              .height(24)
+              .fillColor(this.isFavorite ? '#FFD700' : (store.themeMode === AppThemeMode.DARK ? Color.White : Color.Black))
+          }
+          .type(ButtonType.Normal)
+          .backgroundColor(Color.Transparent)
+          .onClick(() => {
+            this.toggleFavorite()
+          })
+        }
+        .width('100%')
+        .height(56)
+        .padding({left: 16, right: 16})
+        .backgroundColor(store.themeMode === AppThemeMode.DARK ? '#1C1C1E' : '#F5F5F5')
+        
+        Scroll() {
+          Grid() {
+            ForEach(this.medias, (item: MediaModel) => {
+              GridItem() {
+                MediaCellView({ model: item, layout: "2/3" })
+              }
+            }, (item: MediaModel) => item.id)
+          }
+          .columnsTemplate('1fr 1fr 1fr')
+          .rowsGap(12)
+          .columnsGap(12)
+          .padding(16)
+          .width('100%')
+        }
+        .scrollBar(BarState.Auto)
+        .edgeEffect(EdgeEffect.Spring)
+        .layoutWeight(1)
       }
-      .columnsTemplate('1fr 1fr 1fr')
-      .rowsGap(5)
-      .columnsGap(5)
       .width('100%')
       .height('100%')
+      
+      if (this.isLoading) {
+        LoadingProgress()
+          .width(80)
+          .height(80)
+          .color(store.themeMode === AppThemeMode.DARK ? '#7EC0EE' : '#0A84FF')
+      }
     }
+    .backgroundColor(store.themeMode === AppThemeMode.DARK ? '#121212' : '#FFFFFF')
   }
 
   onPageShow(): void {
@@ -84,6 +106,7 @@ struct AlbumPage {
     this.checkFavoriteStatus()
     
     new Promise<void>(async () => {
+      this.isLoading = true
       let query: Dict = {
         "IncludeItemTypes": "Movie,Series"
       };
@@ -94,6 +117,7 @@ struct AlbumPage {
         query["PersonIds"] = actorId
       }
       this.medias = await store.api?.getMedias(query)
+      this.isLoading = false
     })
   }
   

@@ -4,7 +4,7 @@ import { context } from "../../../bean/BeanContainer"
 import { SiteAction } from "../../../bean/SiteAction"
 import { kv } from "../../../module/KVStorage"
 import { router } from "../../../module/Router"
-import { store } from "../store/Store"
+import { AppThemeMode, store } from "../store/Store"
 import { AlbumMediaList, AlbumMediasModel } from "../view/AlbumMediaList"
 
 @Entry
@@ -26,6 +26,7 @@ export struct Index {
           Image($r('app.media.refresh'))
             .width(24)
             .height(24)
+            .fillColor(store.themeMode === AppThemeMode.DARK ? Color.White : Color.Black)
         }
         .type(ButtonType.Normal)
         .backgroundColor(Color.Transparent)
@@ -34,15 +35,17 @@ export struct Index {
         })
         
         Text("主页")
-          .fontSize(18)
-          .fontWeight(FontWeight.Bold)
+          .fontSize(20)
+          .fontWeight(FontWeight.Medium)
           .flexGrow(1)
           .textAlign(TextAlign.Center)
+          .fontColor(store.themeMode === AppThemeMode.DARK ? Color.White : Color.Black)
         
         Button() {
           Image($r('app.media.more'))
             .width(24)
             .height(24)
+            .fillColor(store.themeMode === AppThemeMode.DARK ? Color.White : Color.Black)
         }
         .type(ButtonType.Normal)
         .backgroundColor(Color.Transparent)
@@ -52,8 +55,9 @@ export struct Index {
         })
       }
       .width('100%')
-      .height(50)
-      .padding({left: 10, right: 10})
+      .height(56)
+      .padding({left: 16, right: 16})
+      .backgroundColor(store.themeMode === AppThemeMode.DARK ? '#1C1C1E' : '#F5F5F5')
       
       List({ space: 5, initialIndex: 0 }) {
         ForEach(this.albums, (item: AlbumMediasModel) => {
@@ -69,34 +73,25 @@ export struct Index {
       .listDirection(Axis.Vertical)
       .scrollBar(BarState.Off)
       .friction(0.6)
-      .divider({ strokeWidth: 2, color: 0xFFFFFF, startMargin: 2, endMargin: 2 }) // 每行之间的分界线
+      .divider({ strokeWidth: 1, color: store.themeMode === AppThemeMode.DARK ? '#2C2C2E' : '#E5E5EA', startMargin: 16, endMargin: 16 }) // 每行之间的分界线
       .edgeEffect(EdgeEffect.Spring)
       .onScrollIndex((firstIndex: number, lastIndex: number, centerIndex: number) => {
         console.info('first' + firstIndex)
         console.info('last' + lastIndex)
         console.info('center' + centerIndex)
       })
-      .onScrollVisibleContentChange((start: VisibleListContentInfo, end: VisibleListContentInfo) => {
-        console.log(' start index: ' + start.index +
-          ' start item group area: ' + start.itemGroupArea +
-          ' start index in group: ' + start.itemIndexInGroup)
-        console.log(' end index: ' + end.index +
-          ' end item group area: ' + end.itemGroupArea +
-          ' end index in group: ' + end.itemIndexInGroup)
-      })
-      .onDidScroll((scrollOffset: number, scrollState: ScrollState) => {
-        console.info(`onScroll scrollState = ScrollState` + scrollState + `, scrollOffset = ` + scrollOffset)
-      })
       .width('100%')
+      .padding({ top: 8, bottom: 8 })
     }
     .width('100%')
     .height("100%")
-    .padding({ top: 5 })
+    .backgroundColor(store.themeMode === AppThemeMode.DARK ? '#121212' : '#FFFFFF')
 
       if (this.isLoading) {
         LoadingProgress()
           .width(80)
           .height(80)
+          .color(store.themeMode === AppThemeMode.DARK ? '#7EC0EE' : '#0A84FF')
       }
 
     }
@@ -190,8 +185,12 @@ export struct Index {
       {
         title: '更多选项',
         message: '选择要进行的操作',
+        autoCancel: true,
+        alignment: DialogAlignment.Bottom,
+        offset: { dx: 0, dy: -20 },
         primaryButton: {
           value: '站点管理',
+          fontColor: store.themeMode === AppThemeMode.DARK ? '#7EC0EE' : '#0A84FF',
           action: () => {
             // 跳转到站点管理页面
             router.pushPage("pages/SiteManagePage", {})
@@ -199,6 +198,7 @@ export struct Index {
         },
         secondaryButton: {
           value: '设置',
+          fontColor: store.themeMode === AppThemeMode.DARK ? '#7EC0EE' : '#0A84FF',
           action: () => {
             // 跳转到设置页面
             router.pushPage("pages/SettingsPage", {})
