@@ -15,6 +15,41 @@ export struct Index {
 
   build() {
     Column() {
+      // 添加导航栏
+      Row() {
+        Button() {
+          Image($r('app.media.refresh'))
+            .width(24)
+            .height(24)
+        }
+        .type(ButtonType.Normal)
+        .backgroundColor(Color.Transparent)
+        .onClick(() => {
+          this.refreshData()
+        })
+        
+        Text("搜索")
+          .fontSize(18)
+          .fontWeight(FontWeight.Bold)
+          .flexGrow(1)
+          .textAlign(TextAlign.Center)
+        
+        Button() {
+          Image($r('app.media.more'))
+            .width(24)
+            .height(24)
+        }
+        .type(ButtonType.Normal)
+        .backgroundColor(Color.Transparent)
+        .onClick(() => {
+          // 显示更多选项
+          this.showMoreOptions()
+        })
+      }
+      .width('100%')
+      .height(50)
+      .padding({left: 10, right: 10})
+      
       Row() {
         TextInput({ text: this.keyword, placeholder: "" })
           .type(InputType.Normal)
@@ -62,5 +97,41 @@ export struct Index {
       "SortBy": "SortName",
       "GroupProgramsBySeries": "true"
     })
+  }
+  
+  // 刷新数据
+  refreshData() {
+    if (this.keyword) {
+      this.search(this.keyword)
+    } else {
+      // 如果没有关键字，可以清空搜索结果或者显示提示
+      this.medias = []
+    }
+  }
+  
+  // 显示更多选项
+  showMoreOptions() {
+    // 这里可以实现更多选项的菜单，例如搜索设置、历史记录等
+    AlertDialog.show(
+      {
+        title: '更多选项',
+        message: '选择要进行的操作',
+        primaryButton: {
+          value: '搜索设置',
+          action: () => {
+            // 跳转到搜索设置
+          }
+        },
+        secondaryButton: {
+          value: '取消',
+          action: () => {
+            // 关闭弹窗
+          }
+        },
+        cancel: () => {
+          // 用户点击遮罩区域时触发
+        }
+      }
+    )
   }
 }

@@ -19,6 +19,40 @@ export struct Index {
   build() {
     Stack({ alignContent: Alignment.Center }) {
       Column() {
+        // 添加导航栏
+        Row() {
+          Button() {
+            Image($r('app.media.refresh'))
+              .width(24)
+              .height(24)
+          }
+          .type(ButtonType.Normal)
+          .backgroundColor(Color.Transparent)
+          .onClick(() => {
+            this.refreshData()
+          })
+          
+          Text("收藏")
+            .fontSize(18)
+            .fontWeight(FontWeight.Bold)
+            .flexGrow(1)
+            .textAlign(TextAlign.Center)
+          
+          Button() {
+            Image($r('app.media.more'))
+              .width(24)
+              .height(24)
+          }
+          .type(ButtonType.Normal)
+          .backgroundColor(Color.Transparent)
+          .onClick(() => {
+            // 显示更多选项
+            this.showMoreOptions()
+          })
+        }
+        .width('100%')
+        .height(50)
+        .padding({left: 10, right: 10})
         if (this.medias?.length ?? 0 > 0) {
           Row() {
             Text("喜爱的电影")
@@ -131,5 +165,40 @@ export struct Index {
       await this.fetchData()
       this.isLoading = false
     })
+  }
+  
+  // 刷新数据
+  refreshData() {
+    new Promise<void>(async () => {
+      this.isLoading = true;
+      await this.fetchData()
+      this.isLoading = false
+    })
+  }
+  
+  // 显示更多选项
+  showMoreOptions() {
+    // 这里可以实现更多选项的菜单，例如设置、关于等
+    AlertDialog.show(
+      {
+        title: '更多选项',
+        message: '选择要进行的操作',
+        primaryButton: {
+          value: '设置',
+          action: () => {
+            // 跳转到设置页面
+          }
+        },
+        secondaryButton: {
+          value: '取消',
+          action: () => {
+            // 关闭弹窗
+          }
+        },
+        cancel: () => {
+          // 用户点击遮罩区域时触发
+        }
+      }
+    )
   }
 }
