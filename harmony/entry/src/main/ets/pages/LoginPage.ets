@@ -4,8 +4,8 @@ import { context } from '../../../bean/BeanContainer';
 import { SiteAction } from '../../../bean/SiteAction';
 import { logger } from '../../../module/Log';
 import { store } from '../store/Store';
-import router from '@ohos.router';
 import { common, Want } from '@kit.AbilityKit';
+import { BusinessError } from '@kit.BasicServicesKit';
 
 @Entry
 @Component
@@ -19,21 +19,22 @@ struct LoginPage {
   private context = getContext(this) as common.UIAbilityContext;
 
   openUrl(url: string) {
-    let want: Want = {
-      action: 'ohos.want.action.viewData', // 动作：系统打开
-      entities: ['entity.system.browsable'], // 实体：可被浏览
-      uri: url // 要打开的 URL
-    };
-
-    // 3. 使用 context 的 startAbility 方法启动这个意图
-    this.context.startAbility(want)
-      .then(() => {
-        console.info(`Succeeded in starting ability. URL: ${url}`);
-      })
-      .catch((error: Error) => {
-        console.error(`Failed to start ability. Code: ${error}, message: ${error.message}`);
-        // 可以在这里添加失败提示，例如使用弹窗告知用户
-      });
+    try {
+      let want: Want = {
+        action: 'ohos.want.action.viewData',
+        entities: ['entity.system.browsable'],
+        uri: url,
+      };
+      this.context.startAbility(want)
+        .then(() => {
+          console.info('Open browser successfully');
+        })
+        .catch((err: BusinessError) => {
+          console.error('Failed to open browser. Error code: ' + err.code + ', message: ' + err.message);
+        });
+    } catch (error) {
+      console.error('An unexpected error occurred. Error code: ' + error.code + ', message: ' + error.message);
+    }
   }
 
   build() {

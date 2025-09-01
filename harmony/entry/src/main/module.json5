@@ -28,10 +28,22 @@
         "skills": [
           {
             "entities": [
-              "entity.system.home"
+              "entity.system.home",
+              "entity.system.browsable"
             ],
             "actions": [
-              "action.system.home"
+              "action.system.home",
+              "ohos.want.action.viewData"
+            ],
+            "uris": [
+              {
+                "scheme": "https",
+                "host": "github.com",
+                "port": "443",
+                // prefix matching
+                "pathStartWith": "saltpi",
+                "type": "text/*"
+              },
             ]
           }
         ]
