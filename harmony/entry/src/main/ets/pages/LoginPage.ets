@@ -4,6 +4,8 @@ import { context } from '../../../bean/BeanContainer';
 import { SiteAction } from '../../../bean/SiteAction';
 import { logger } from '../../../module/Log';
 import { store } from '../store/Store';
+import router from '@ohos.router';
+import { common, Want } from '@kit.AbilityKit';
 
 @Entry
 @Component
@@ -12,6 +14,27 @@ struct LoginPage {
   @State username: string = '';
   @State password: string = '';
   @State loading: boolean = false;
+  @State agreeTerm: boolean = false;
+
+  private context = getContext(this) as common.UIAbilityContext;
+
+  openUrl(url: string) {
+    let want: Want = {
+      action: 'ohos.want.action.viewData', // 动作：系统打开
+      entities: ['entity.system.browsable'], // 实体：可被浏览
+      uri: url // 要打开的 URL
+    };
+
+    // 3. 使用 context 的 startAbility 方法启动这个意图
+    this.context.startAbility(want)
+      .then(() => {
+        console.info(`Succeeded in starting ability. URL: ${url}`);
+      })
+      .catch((error: Error) => {
+        console.error(`Failed to start ability. Code: ${error}, message: ${error.message}`);
+        // 可以在这里添加失败提示，例如使用弹窗告知用户
+      });
+  }
 
   build() {
     Column() {
@@ -79,6 +102,30 @@ struct LoginPage {
       .margin({ top: 15 })
 
 
+      Row() {
+        Checkbox()
+          .select(this.agreeTerm)
+          .onChange(v => {
+            this.agreeTerm = v
+          })
+        Text("已阅读并同意")
+        Text("服务协议")
+          .foregroundColor(Color.Blue)
+          .onClick(() => {
+            let url = "https://github.com/saltpi/iPlay"
+            this.openUrl(url)
+          })
+        Text("和")
+        Text("隐私政策")
+          .foregroundColor(Color.Blue)
+          .onClick(() => {
+            let url = "https://github.com/saltpi/iPlay/blob/develop/PRIVACY.md"
+            this.openUrl(url)
+          })
+      }
+      .margin({top: 15})
+
+
       Button() {
         if (this.loading) {
           Row() {
@@ -92,6 +139,7 @@ struct LoginPage {
             .foregroundColor(Color.White)
         }
       }
+      .enabled(this.agreeTerm)
       .width('90%')
       .height(40)
       .margin({ top: 30 })
