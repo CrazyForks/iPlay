@@ -3,7 +3,7 @@ import { SiteModel, MediaModel } from "../../../api/iPlayDataSource"
 import { context } from "../../../bean/BeanContainer"
 import { SiteAction } from "../../../bean/SiteAction"
 import { kv } from "../../../module/KVStorage"
-import { router } from "../../../module/Router"
+import { Router, router } from "../../../module/Router"
 import { AppThemeMode, store } from "../store/Store"
 import { AlbumMediaList, AlbumMediasModel } from "../view/AlbumMediaList"
 
@@ -12,100 +12,106 @@ import { AlbumMediaList, AlbumMediasModel } from "../view/AlbumMediaList"
 export struct Index {
   @State albums: AlbumMediasModel[] = []
   @State isLoading: boolean = false
+  @State path: NavPathStack = new NavPathStack()
 
   constructor() {
     super()
   }
 
   build() {
-    Stack ({ alignContent: Alignment.Center }) {
-    Column() {
-      // 添加导航栏
-      Row() {
-        Button() {
-          Image($r('app.media.refresh'))
-            .width(24)
-            .height(24)
-            .fillColor(store.themeMode === AppThemeMode.DARK ? Color.White : Color.Black)
-        }
-        .type(ButtonType.Normal)
-        .backgroundColor(Color.Transparent)
-        .onClick(() => {
-          this.refreshData()
-        })
-        
-        Text("主页")
-          .fontSize(20)
-          .fontWeight(FontWeight.Medium)
-          .flexGrow(1)
-          .textAlign(TextAlign.Center)
-          .fontColor(store.themeMode === AppThemeMode.DARK ? Color.White : Color.Black)
-        
-        Button() {
-          Image($r('app.media.more'))
-            .width(24)
-            .height(24)
-            .fillColor(store.themeMode === AppThemeMode.DARK ? Color.White : Color.Black)
-        }
-        .type(ButtonType.Normal)
-        .backgroundColor(Color.Transparent)
-        .onClick(() => {
-          // 显示更多选项
-          this.showMoreOptions()
-        })
-      }
-      .width('100%')
-      .height(56)
-      .padding({left: 16, right: 16})
-      .backgroundColor(store.themeMode === AppThemeMode.DARK ? '#1C1C1E' : '#F5F5F5')
-      
-      List({ space: 5, initialIndex: 0 }) {
-        ForEach(this.albums, (item: AlbumMediasModel) => {
-          ListItem() {
-            Column() {
-              AlbumMediaList({
-                model: item
-              })
-            }
+    Navigation(this.path) {
+      Stack({ alignContent: Alignment.Center }) {
+        Column() {
+          List({ space: 5, initialIndex: 0 }) {
+            ForEach(this.albums, (item: AlbumMediasModel) => {
+              ListItem() {
+                Column() {
+                  AlbumMediaList({
+                    model: item
+                  })
+                }
+              }
+            }, (item: AlbumMediasModel) => item.id)
           }
-        }, (item: AlbumMediasModel) => item.id)
-      }
-      .listDirection(Axis.Vertical)
-      .scrollBar(BarState.Off)
-      .friction(0.6)
-      .divider({ strokeWidth: 1, color: store.themeMode === AppThemeMode.DARK ? '#2C2C2E' : '#E5E5EA', startMargin: 16, endMargin: 16 }) // 每行之间的分界线
-      .edgeEffect(EdgeEffect.Spring)
-      .onScrollIndex((firstIndex: number, lastIndex: number, centerIndex: number) => {
-        console.info('first' + firstIndex)
-        console.info('last' + lastIndex)
-        console.info('center' + centerIndex)
-      })
-      .width('100%')
-      .padding({ top: 8, bottom: 8 })
-    }
-    .width('100%')
-    .height("100%")
-    .backgroundColor(store.themeMode === AppThemeMode.DARK ? '#121212' : '#FFFFFF')
+          .listDirection(Axis.Vertical)
+          .scrollBar(BarState.Off)
+          .friction(0.6)
+          .divider({
+            strokeWidth: 1,
+            color: store.themeMode === AppThemeMode.DARK ? '#2C2C2E' : '#E5E5EA',
+            startMargin: 16,
+            endMargin: 16
+          }) // 每行之间的分界线
+          .edgeEffect(EdgeEffect.Spring)
+          .onScrollIndex((firstIndex: number, lastIndex: number, centerIndex: number) => {
+            console.info('first' + firstIndex)
+            console.info('last' + lastIndex)
+            console.info('center' + centerIndex)
+          })
+          .width('100%')
+          .padding({ top: 8, bottom: 8 })
+        }
+        .width('100%')
+        .height("100%")
+        .backgroundColor(store.themeMode === AppThemeMode.DARK ? '#121212' : '#FFFFFF')
 
-      if (this.isLoading) {
-        LoadingProgress()
-          .width(80)
-          .height(80)
-          .color(store.themeMode === AppThemeMode.DARK ? '#7EC0EE' : '#0A84FF')
-      }
+        if (this.isLoading) {
+          LoadingProgress()
+            .width(80)
+            .height(80)
+            .color(store.themeMode === AppThemeMode.DARK ? '#7EC0EE' : '#0A84FF')
+        }
 
+      }
     }
+    .title("主页")
+    .titleMode(NavigationTitleMode.Free)
+    .menus([
+      {
+        value: "刷新",
+        icon: $r('app.media.refresh'),
+        action: () => {
+          this.refreshData()
+        }
+      },
+      {
+        value: "更多",
+        icon: $r('app.media.more'),
+        action: () => {
+          this.showMoreOptions()
+        }
+      },
+    ])
     .onAppear(async () => {
       context.watch("SiteAction", this)
       this.isLoading = true;
       this.albums = await this.fetchData()
       this.isLoading = false
+      // router.setTarget(this.router())
     })
     .onDisAppear(() => {
       context.unwatch("SiteAction", this)
     })
   }
 
+  router(): Router {
+    return {
+      params: () => ({}),
+      setTarget: () => {},
+      pushPage: (name, params) => {
+        this.path.pushPath({
+          name: name,
+          param: params
+        })
+      },
+      popPage: () => {
+        this.path.pop(true)
+      },
+      canGoBack: () => true,
+      goBack: () => {},
+      clear: () => {}
+    }
+  }
 
   async fetchData() {
     // local emby server for test
@@ -169,7 +175,7 @@ export struct Index {
       this.isLoading = false
     })
   }
-  
+
   // 刷新数据
   refreshData() {
     new Promise<void>(async () => {
@@ -178,7 +184,7 @@ export struct Index {
       this.isLoading = false
     })
   }
-  
+
   // 显示更多选项
   showMoreOptions() {
     AlertDialog.show(

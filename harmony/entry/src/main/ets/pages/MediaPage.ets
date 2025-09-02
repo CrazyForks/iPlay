@@ -21,190 +21,166 @@ struct MediaPage {
   @State isFavorite: boolean = false
   
   build() {
-    Column() {
-      // 导航栏
-      Row() {
-        Button() {
-          Image($r('app.media.back'))
-            .width(24)
-            .height(24)
-        }
-        .type(ButtonType.Normal)
-        .backgroundColor(Color.Transparent)
-        .onClick(() => {
-          router.popPage()
-        })
-        
-        Text(this.media?.title ?? "媒体详情")
-          .fontSize(18)
-          .fontWeight(FontWeight.Bold)
-          .flexGrow(1)
-          .textAlign(TextAlign.Center)
-          .maxLines(1)
-          .textOverflow({ overflow: TextOverflow.Ellipsis })
-        
-        Button() {
-          Image(this.isFavorite ? $r('app.media.star_filled') : $r('app.media.star_outline'))
-            .width(24)
-            .height(24)
-        }
-        .type(ButtonType.Normal)
-        .backgroundColor(Color.Transparent)
-        .onClick(() => {
-          this.toggleFavorite()
-        })
-      }
-      .width('100%')
-      .height(50)
-      .padding({left: 10, right: 10})
-      
-      Scroll() {
-        Column() {
-        Image(this.imageUrl())
-          .width("100%")
-          .aspectRatio(16 / 9)
-          .onClick(() => {
-            store.api?.getPlayback(this.media?.id ?? "").then(playback => {
-              router.pushPage("pages/PlayerPage", {
-                "playback": playback
-              })
-            })
-          })
-
-        if (this.media?.type?.toLowerCase() != "series") {
-          Button('播 放')
-            .width('90%')
-            .height(40)
-            .margin({ top: 10 })
-            .backgroundColor('#000000')
-            .fontColor(Color.White)
-            .onClick(() => {
-              store.api?.getPlayback(this.media?.id ?? "").then(playback => {
-                router.pushPage("pages/PlayerPage", {
-                  "playback": playback,
-                  "media": this.media
-                })
-              })
-            })
-        }
-
-        Row() {
-          List({ space: 5, initialIndex: 0 }) {
-            ForEach(this.media?.tags, (item: string) => {
-              ListItem() {
-                Text(item)
-                  .fontColor("#ffffff")
-                  .margin(5)
-              }
-              .backgroundColor("#000000")
-              .borderRadius(5)
-            }, (item: string) => item)
-          }
-          .height(32)
-          .listDirection(Axis.Horizontal)
-        }
-        .padding(5)
-        .width("100%")
-        .height("auto")
-        .flexGrow(0)
-        .flexShrink(1)
-        .margin({ top: 10 })
-
-        Row() {
-          Text(this.media?.overview ?? "")
-            .fontSize(14)
-            .width("100%")
-        }
-        .padding(5)
-        .width("100%")
-
-        Text($r("app.string.media_actor_list"))
-          .width("100%")
-          .fontWeight(FontWeight.Bold)
-          .margin({ top: 5, bottom: 5 })
-          .padding({ left: 5, right: 5 })
-        Row() {
-          List({ space: 5, initialIndex: 0 }) {
-            ForEach(this.media?.actors, (actor: ActorModel) => {
-              ListItem() {
-                ActorCellView({
-                  model: actor
-                })
-              }
-            }, (item: ActorModel) => item.id)
-          }
-          .width("100%")
-          .height(150)
-          .listDirection(Axis.Horizontal)
-          .scrollBar(BarState.Off)
-        }
-
-        Row() {
-          List({ space: 5, initialIndex: 0 }) {
-            if (this.seasons?.length ?? 0 > 0) {
-              ListItem() {
-                Text("All")
-                  .fontColor("#ffffff")
-                  .margin(5)
-              }
+    NavDestination() {
+      Column() {
+        Scroll() {
+          Column() {
+            Image(this.imageUrl())
+              .width("100%")
+              .aspectRatio(16 / 9)
               .onClick(() => {
-                this.episodes = this.seasons
+                store.api?.getPlayback(this.media?.id ?? "").then(playback => {
+                  router.pushPage("pages/PlayerPage", {
+                    "playback": playback
+                  })
+                })
               })
-              .backgroundColor("#000000")
-              .borderRadius(5)
+
+            if (this.media?.type?.toLowerCase() != "series") {
+              Button('播 放')
+                .width('90%')
+                .height(40)
+                .margin({ top: 10 })
+                .backgroundColor('#000000')
+                .fontColor(Color.White)
+                .onClick(() => {
+                  store.api?.getPlayback(this.media?.id ?? "").then(playback => {
+                    router.pushPage("pages/PlayerPage", {
+                      "playback": playback,
+                      "media": this.media
+                    })
+                  })
+                })
             }
-            ForEach(this.seasons, (item: MediaModel, idx: number) => {
-              ListItem() {
-                Text(item.title ?? "")
-                  .fontColor("#ffffff")
-                  .margin(5)
-              }
-              .backgroundColor("#000000")
-              .borderRadius(5)
-              .onClick(() => {
-                this.episodes = this.seasonEpisodes?.[idx] ?? []
-              })
-            }, (item: MediaModel) => item.id)
-          }
-          .height(32)
-          .listDirection(Axis.Horizontal)
-        }
-        .padding(5)
-        .width("100%")
-        .height("auto")
-        .flexGrow(0)
-        .flexShrink(1)
-        .margin({ top: 10 })
 
-        Row() {
-          List({ space: 5, initialIndex: 0 }) {
-            ForEach(this.episodes, (item: MediaModel) => {
-              ListItem() {
-                MediaCellView({
-                  model: item,
-                  layout: "auto"
-                })
+            Row() {
+              List({ space: 5, initialIndex: 0 }) {
+                ForEach(this.media?.tags, (item: string) => {
+                  ListItem() {
+                    Text(item)
+                      .fontColor("#ffffff")
+                      .margin(5)
+                  }
+                  .backgroundColor("#000000")
+                  .borderRadius(5)
+                }, (item: string) => item)
               }
-              .borderRadius(5)
-              .onSelect((selected) => {
+              .height(32)
+              .listDirection(Axis.Horizontal)
+            }
+            .padding(5)
+            .width("100%")
+            .height("auto")
+            .flexGrow(0)
+            .flexShrink(1)
+            .margin({ top: 10 })
 
-              })
-            }, (item: MediaModel) => item.id)
+            Row() {
+              Text(this.media?.overview ?? "")
+                .fontSize(14)
+                .width("100%")
+            }
+            .padding(5)
+            .width("100%")
+
+            Text($r("app.string.media_actor_list"))
+              .width("100%")
+              .fontWeight(FontWeight.Bold)
+              .margin({ top: 5, bottom: 5 })
+              .padding({ left: 5, right: 5 })
+            Row() {
+              List({ space: 5, initialIndex: 0 }) {
+                ForEach(this.media?.actors, (actor: ActorModel) => {
+                  ListItem() {
+                    ActorCellView({
+                      model: actor
+                    })
+                  }
+                }, (item: ActorModel) => item.id)
+              }
+              .width("100%")
+              .height(150)
+              .listDirection(Axis.Horizontal)
+              .scrollBar(BarState.Off)
+            }
+
+            Row() {
+              List({ space: 5, initialIndex: 0 }) {
+                if (this.seasons?.length ?? 0 > 0) {
+                  ListItem() {
+                    Text("All")
+                      .fontColor("#ffffff")
+                      .margin(5)
+                  }
+                  .onClick(() => {
+                    this.episodes = this.seasons
+                  })
+                  .backgroundColor("#000000")
+                  .borderRadius(5)
+                }
+                ForEach(this.seasons, (item: MediaModel, idx: number) => {
+                  ListItem() {
+                    Text(item.title ?? "")
+                      .fontColor("#ffffff")
+                      .margin(5)
+                  }
+                  .backgroundColor("#000000")
+                  .borderRadius(5)
+                  .onClick(() => {
+                    this.episodes = this.seasonEpisodes?.[idx] ?? []
+                  })
+                }, (item: MediaModel) => item.id)
+              }
+              .height(32)
+              .listDirection(Axis.Horizontal)
+            }
+            .padding(5)
+            .width("100%")
+            .height("auto")
+            .flexGrow(0)
+            .flexShrink(1)
+            .margin({ top: 10 })
+
+            Row() {
+              List({ space: 5, initialIndex: 0 }) {
+                ForEach(this.episodes, (item: MediaModel) => {
+                  ListItem() {
+                    MediaCellView({
+                      model: item,
+                      layout: "auto"
+                    })
+                  }
+                  .borderRadius(5)
+                  .onSelect((selected) => {
+
+                  })
+                }, (item: MediaModel) => item.id)
+              }
+              .height(180)
+              .listDirection(Axis.Horizontal)
+            }
+            .padding(5)
+            .width("100%")
+            .height("auto")
+            .flexGrow(0)
+            .flexShrink(1)
+            .margin({ top: 10 })
           }
-          .height(180)
-          .listDirection(Axis.Horizontal)
         }
-        .padding(5)
-        .width("100%")
-        .height("auto")
-        .flexGrow(0)
-        .flexShrink(1)
-        .margin({ top: 10 })
-        }
+        .layoutWeight(1)
       }
-      .layoutWeight(1)
+      .height('100%')
     }
-    .height('100%')
+    .title(this.media?.title ?? "媒体详情")
+    .menus([
+      {
+        value: "收藏",
+        icon: this.isFavorite ? $r('app.media.star_filled') : $r('app.media.star_outline'),
+        action: () => {
+          this.toggleFavorite()
+        }
+      },
+    ])
   }
 
   onPageShow(): void {

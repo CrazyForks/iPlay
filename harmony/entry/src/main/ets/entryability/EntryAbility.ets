@@ -5,7 +5,6 @@ import { window } from '@kit.ArkUI';
 import { kv } from '../../../module/KVStorage';
 import { PreferencesStorage } from '../../../module/PreferencesStorage';
 import { MMKVStorage } from '../../../module/MMKVStorage';
-import { router } from '../../../module/Router';
 
 const DOMAIN = 0x0000;
 

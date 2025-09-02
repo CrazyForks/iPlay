@@ -12,11 +12,21 @@ export interface Router {
   goBack();
   params(): Dict;
   clear();
+  setTarget(target: Router)
 }
 
 
 class ArkTsRouter implements Router {
+  target?: Router = null
+  setTarget(target: Router): void {
+    this.target = target
+  }
+
   pushPage(name: string, params: Dict): void {
+    if (this.target) {
+      this.target.pushPage(name, params)
+      return
+    }
     officialRouter.pushUrl({
       url: name,
       params
