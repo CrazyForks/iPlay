@@ -7,6 +7,7 @@ export type Dict = {
 
 export interface Router {
   pushPage(name: string, params: Dict);
+  replacePage(name: string, params: Dict);
   popPage();
   canGoBack(): boolean;
   goBack();
@@ -20,6 +21,13 @@ class ArkTsRouter implements Router {
   target?: Router = null
   setTarget(target: Router): void {
     this.target = target
+  }
+
+  replacePage(name: string, params: Dict): void {
+    officialRouter.replaceUrl({
+      url: name,
+      params
+    })
   }
 
   pushPage(name: string, params: Dict): void {

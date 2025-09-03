@@ -5,6 +5,7 @@ import { window } from '@kit.ArkUI';
 import { kv } from '../../../module/KVStorage';
 import { PreferencesStorage } from '../../../module/PreferencesStorage';
 import { MMKVStorage } from '../../../module/MMKVStorage';
+import { store } from '../store/Store';
 
 const DOMAIN = 0x0000;
 
@@ -16,6 +17,9 @@ export default class EntryAbility extends UIAbility {
     // let storage = new PreferencesStorage();
     storage.init(this.context.getApplicationContext())
     kv.init(storage)
+    
+    // 加载存储的数据
+    store.load()
   }
 
   onDestroy(): void {
@@ -25,8 +29,8 @@ export default class EntryAbility extends UIAbility {
   onWindowStageCreate(windowStage: window.WindowStage): void {
     // Main window is created, set main page for this ability
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
-
-    windowStage.loadContent('pages/RootPage', (err) => {
+    let agreeTerms = kv.get<boolean>("@setting/agree_terms")
+    windowStage.loadContent(agreeTerms ? 'pages/RootPage' : 'pages/WelcomePage', (err) => {
       if (err.code) {
         hilog.error(DOMAIN, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err));
         return;

@@ -102,10 +102,10 @@ export struct Index {
                   .flexGrow(1)
                   .fontColor(store.themeMode === AppThemeMode.DARK ? Color.White : Color.Black)
 
-                Text("查看更多")
-                  .flexShrink(0)
-                  .fontSize(14)
-                  .fontColor(store.themeMode === AppThemeMode.DARK ? '#7EC0EE' : '#0A84FF')
+                // Text("查看更多")
+                //   .flexShrink(0)
+                //   .fontSize(14)
+                //   .fontColor(store.themeMode === AppThemeMode.DARK ? '#7EC0EE' : '#0A84FF')
               }
               .width('100%')
               .padding({
@@ -164,6 +164,7 @@ export struct Index {
           }
           .width('100%')
         }
+        .align(Alignment.TopStart)
         .scrollBar(BarState.Auto)
         .edgeEffect(EdgeEffect.Spring)
         .width('100%')

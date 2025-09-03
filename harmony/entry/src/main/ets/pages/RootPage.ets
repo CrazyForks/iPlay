@@ -68,9 +68,5 @@ struct Index {
 
   aboutToAppear(): void {
     store.load()
-    if (!store.site) {
-      router.pushPage("pages/LoginPage", {})
-      return
-    }
   }
 }

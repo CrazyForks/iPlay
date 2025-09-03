@@ -3,6 +3,7 @@ import { SiteModel } from '../../../api/iPlayDataSource'
 import { context } from '../../../bean/BeanContainer';
 import { SiteAction } from '../../../bean/SiteAction';
 import { logger } from '../../../module/Log';
+import { router } from '../../../module/Router';
 import { store } from '../store/Store';
 import { common, Want } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
@@ -113,15 +114,13 @@ struct LoginPage {
         Text("服务协议")
           .foregroundColor(Color.Blue)
           .onClick(() => {
-            let url = "https://github.com/saltpi/iPlay"
-            this.openUrl(url)
+            router.pushPage("pages/TermsOfServicePage", {})
           })
         Text("和")
         Text("隐私政策")
           .foregroundColor(Color.Blue)
           .onClick(() => {
-            let url = "https://github.com/saltpi/iPlay/blob/develop/PRIVACY.md"
-            this.openUrl(url)
+            router.pushPage("pages/PrivacyPolicyPage", {})
           })
       }
       .margin({top: 15})
@@ -174,7 +173,8 @@ struct LoginPage {
             });
             setTimeout(() => {
               context.action<SiteAction>("SiteAction", bean => bean.onSiteUpdate(site))
-              this.getUIContext().getRouter().back()
+              // 导航到主页而不是返回
+              router.popPage()
             }, 500)
             this.loading = false;
           }).catch((err: object) => {

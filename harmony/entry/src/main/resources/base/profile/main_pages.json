@@ -9,6 +9,9 @@
     "pages/SeasonPage",
     "pages/SiteManagePage",
     "pages/SettingsPage",
-    "pages/AppearanceSettingsPage"
+    "pages/AppearanceSettingsPage",
+    "pages/WelcomePage",
+    "pages/PrivacyPolicyPage",
+    "pages/TermsOfServicePage"
   ]
 }

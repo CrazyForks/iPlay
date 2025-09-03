@@ -76,6 +76,7 @@ struct AlbumPage {
           .padding(16)
           .width('100%')
         }
+        .align(Alignment.TopStart)
         .scrollBar(BarState.Auto)
         .edgeEffect(EdgeEffect.Spring)
         .layoutWeight(1)

@@ -62,6 +62,14 @@ export struct Index {
             .color(store.themeMode === AppThemeMode.DARK ? '#7EC0EE' : '#0A84FF')
         }
 
+        if (this.albums == null || this.albums.length == 0) {
+          if (store.api == null) {
+            Button("添加数据源")
+              .onClick(() => {
+                router.pushPage("pages/LoginPage", {})
+              })
+          }
+        }
       }
     }
     .title("主页")
@@ -101,6 +109,12 @@ export struct Index {
       pushPage: (name, params) => {
         this.path.pushPath({
           name: name,
+          param: params
+        })
+      },
+      replacePage: (name, params) => {
+        this.path.replacePath({
+          name,
           param: params
         })
       },
