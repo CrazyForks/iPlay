@@ -5,6 +5,12 @@ import { router } from '../../../module/Router'
 import { store } from '../store/Store'
 import promptAction from '@ohos.promptAction'
 
+
+@Builder
+export function PageBuilder() {
+  SiteManagePage()
+}
+
 @Entry
 @Component
 export struct SiteManagePage {
@@ -18,73 +24,50 @@ export struct SiteManagePage {
   }
 
   build() {
-    Stack({ alignContent: Alignment.TopEnd }) {
-      Column() {
-        // 添加导航栏
-        Row() {
-          Button() {
-            Image($r('app.media.back'))
-              .width(24)
-              .height(24)
+    NavDestination() {
+      Stack({ alignContent: Alignment.TopEnd }) {
+        Column() {
+          if (this.siteList.length === 0) {
+            Column() {
+              Text("暂无站点，请点击右上角添加")
+                .fontSize(16)
+                .margin({ top: 100 })
+            }
+            .width('100%')
+            .layoutWeight(1)
+            .justifyContent(FlexAlign.Center)
+            .alignItems(HorizontalAlign.Center)
+          } else {
+            List() {
+              ForEach(this.siteList, (site: SiteModel, index: number) => {
+                ListItem() {
+                  this.SiteItem(site, index)
+                }
+                .swipeAction({ end: this.DeleteButton(index) })
+              })
+            }
+            .width('100%')
+            .layoutWeight(1)
           }
-          .type(ButtonType.Normal)
-          .backgroundColor(Color.Transparent)
-          .onClick(() => {
-            router.popPage()
-          })
-          
-          Text("站点管理")
-            .fontSize(18)
-            .fontWeight(FontWeight.Bold)
-            .flexGrow(1)
-            .textAlign(TextAlign.Center)
-          
-          Button() {
-            Image($r('app.media.add'))
-              .width(24)
-              .height(24)
-          }
-          .type(ButtonType.Normal)
-          .backgroundColor(Color.Transparent)
-          .onClick(() => {
-            // 跳转到登录页添加新站点
-            router.pushPage("pages/LoginPage", {})
-          })
         }
         .width('100%')
-        .height(50)
-        .padding({left: 10, right: 10})
-        
-        if (this.siteList.length === 0) {
-          Column() {
-            Text("暂无站点，请点击右上角添加")
-              .fontSize(16)
-              .margin({ top: 100 })
-          }
-          .width('100%')
-          .layoutWeight(1)
-          .justifyContent(FlexAlign.Center)
-          .alignItems(HorizontalAlign.Center)
-        } else {
-          List() {
-            ForEach(this.siteList, (site: SiteModel, index: number) => {
-              ListItem() {
-                this.SiteItem(site, index)
-              }
-              .swipeAction({ end: this.DeleteButton(index) })
-            })
-          }
-          .width('100%')
-          .layoutWeight(1)
-        }
+        .height('100%')
+        .onAppear(() => {
+          this.siteList = store.sites || []
+          this.currentSiteId = store.site?.id || null
+        })
       }
-      .width('100%')
-      .height('100%')
-      .onAppear(() => {
-        this.siteList = store.sites || []
-        this.currentSiteId = store.site?.id || null
-      })
     }
+    .title("站点管理")
+    .menus([
+      {
+        value: "添加",
+        icon: $r('app.media.add'),
+        action: () => {
+          router.pushPage("pages/LoginPage", {})
+        }
+      },
+    ])
   }
   
   @Builder

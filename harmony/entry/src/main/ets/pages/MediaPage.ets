@@ -4,6 +4,12 @@ import { store } from '../store/Store'
 import { ActorCellView } from '../view/ActorCellView'
 import { MediaCellView } from '../view/MediaCellView'
 
+
+@Builder
+export function PageBuilder() {
+  MediaPage()
+}
+
 @Entry
 @Component
 struct MediaPage {
@@ -158,6 +164,7 @@ struct MediaPage {
               }
               .height(180)
               .listDirection(Axis.Horizontal)
+              .scrollBar(BarState.Off)
             }
             .padding(5)
             .width("100%")
@@ -167,6 +174,7 @@ struct MediaPage {
             .margin({ top: 10 })
           }
         }
+        .scrollBar(BarState.Off)
         .layoutWeight(1)
       }
       .height('100%')
@@ -181,6 +189,10 @@ struct MediaPage {
         }
       },
     ])
+  }
+
+  aboutToAppear(): void {
+    this.onPageShow()
   }
 
   onPageShow(): void {

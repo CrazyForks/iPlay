@@ -4,6 +4,11 @@ import { common, Want } from '@kit.AbilityKit'
 import { BusinessError } from '@kit.BasicServicesKit'
 import { kv } from '../../../module/KVStorage'
 
+@Builder
+export function PageBuilder() {
+  WelcomePage()
+}
+
 @Entry
 @Component
 struct WelcomePage {

@@ -3,6 +3,11 @@ import { Dict, router } from '../../../module/Router'
 import { store, AppThemeMode } from '../store/Store'
 import { MediaCellView } from '../view/MediaCellView'
 
+@Builder
+export function PageBuilder() {
+  AlbumPage()
+}
+
 @Entry
 @Component
 struct AlbumPage {
@@ -20,78 +25,54 @@ struct AlbumPage {
   @State albumTitle: string = "专辑"
   
   build() {
-    Stack({ alignContent: Alignment.Center }) {
-      Column() {
-        // 导航栏
-        Row() {
-          Button() {
-            Image($r('app.media.back'))
-              .width(24)
-              .height(24)
-              .fillColor(store.themeMode === AppThemeMode.DARK ? Color.White : Color.Black)
+    NavDestination() {
+      Stack({ alignContent: Alignment.Center }) {
+        Column() {
+           Scroll() {
+            Grid() {
+              ForEach(this.medias, (item: MediaModel) => {
+                GridItem() {
+                  MediaCellView({ model: item, layout: "2/3" })
+                }
+              }, (item: MediaModel) => item.id)
+            }
+            .columnsTemplate('1fr 1fr 1fr')
+            .rowsGap(12)
+            .columnsGap(12)
+            .padding(16)
+            .width('100%')
           }
-          .type(ButtonType.Normal)
-          .backgroundColor(Color.Transparent)
-          .onClick(() => {
-            router.popPage()
-          })
-          
-          Text(this.albumTitle)
-            .fontSize(20)
-            .fontWeight(FontWeight.Medium)
-            .flexGrow(1)
-            .textAlign(TextAlign.Center)
-            .maxLines(1)
-            .textOverflow({ overflow: TextOverflow.Ellipsis })
-            .fontColor(store.themeMode === AppThemeMode.DARK ? Color.White : Color.Black)
-          
-          Button() {
-            Image(this.isFavorite ? $r('app.media.star_filled') : $r('app.media.star_outline'))
-              .width(24)
-              .height(24)
-              .fillColor(this.isFavorite ? '#FFD700' : (store.themeMode === AppThemeMode.DARK ? Color.White : Color.Black))
-          }
-          .type(ButtonType.Normal)
-          .backgroundColor(Color.Transparent)
-          .onClick(() => {
-            this.toggleFavorite()
-          })
+          .align(Alignment.TopStart)
+          .scrollBar(BarState.Auto)
+          .edgeEffect(EdgeEffect.Spring)
+          .layoutWeight(1)
         }
         .width('100%')
-        .height(56)
-        .padding({left: 16, right: 16})
-        .backgroundColor(store.themeMode === AppThemeMode.DARK ? '#1C1C1E' : '#F5F5F5')
-        
-        Scroll() {
-          Grid() {
-            ForEach(this.medias, (item: MediaModel) => {
-              GridItem() {
-                MediaCellView({ model: item, layout: "2/3" })
-              }
-            }, (item: MediaModel) => item.id)
-          }
-          .columnsTemplate('1fr 1fr 1fr')
-          .rowsGap(12)
-          .columnsGap(12)
-          .padding(16)
-          .width('100%')
+        .height('100%')
+
+        if (this.isLoading) {
+          LoadingProgress()
+            .width(80)
+            .height(80)
+            .color(store.themeMode === AppThemeMode.DARK ? '#7EC0EE' : '#0A84FF')
         }
-        .align(Alignment.TopStart)
-        .scrollBar(BarState.Auto)
-        .edgeEffect(EdgeEffect.Spring)
-        .layoutWeight(1)
       }
-      .width('100%')
-      .height('100%')
-      
-      if (this.isLoading) {
-        LoadingProgress()
-          .width(80)
-          .height(80)
-          .color(store.themeMode === AppThemeMode.DARK ? '#7EC0EE' : '#0A84FF')
-      }
+      .backgroundColor(store.themeMode === AppThemeMode.DARK ? '#121212' : '#FFFFFF')
     }
-    .backgroundColor(store.themeMode === AppThemeMode.DARK ? '#121212' : '#FFFFFF')
+    .title(this.albumTitle)
+    .menus([
+      {
+        value: "收藏",
+        icon: this.isFavorite ? $r('app.media.star_filled') : $r('app.media.star_outline'),
+        action: () => {
+          this.toggleFavorite()
+        }
+      },
+    ])
+  }
+
+  aboutToAppear(): void {
+    this.onPageShow()
   }
 
   onPageShow(): void {

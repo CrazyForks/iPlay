@@ -1,9 +1,6 @@
-import { EmbyApi } from "../../../api/emby/EmbyApi"
 import { SiteModel, MediaModel } from "../../../api/iPlayDataSource"
 import { context } from "../../../bean/BeanContainer"
-import { SiteAction } from "../../../bean/SiteAction"
-import { kv } from "../../../module/KVStorage"
-import { Router, router } from "../../../module/Router"
+import { Dict, Router, router } from "../../../module/Router"
 import { AppThemeMode, store } from "../store/Store"
 import { AlbumMediaList, AlbumMediasModel } from "../view/AlbumMediaList"
 
@@ -55,12 +52,6 @@ export struct Index {
         .height("100%")
         .backgroundColor(store.themeMode === AppThemeMode.DARK ? '#121212' : '#FFFFFF')
 
-        if (this.isLoading) {
-          LoadingProgress()
-            .width(80)
-            .height(80)
-            .color(store.themeMode === AppThemeMode.DARK ? '#7EC0EE' : '#0A84FF')
-        }
 
         if (this.albums == null || this.albums.length == 0) {
           if (store.api == null) {
@@ -70,10 +61,17 @@ export struct Index {
               })
           }
         }
+        if (this.isLoading) {
+          LoadingProgress()
+            .width(80)
+            .height(80)
+            .color(store.themeMode === AppThemeMode.DARK ? '#7EC0EE' : '#0A84FF')
+        }
       }
     }
     .title("主页")
-    .titleMode(NavigationTitleMode.Free)
+    .titleMode(NavigationTitleMode.Mini)
+    .hideBackButton(true)
     .menus([
       {
         value: "刷新",
@@ -95,7 +93,9 @@ export struct Index {
       this.isLoading = true;
       this.albums = await this.fetchData()
       this.isLoading = false
-      // router.setTarget(this.router())
+      const myrouter = this.router()
+      router.addTarget?.(myrouter, "home")
+      router.setTarget(myrouter)
     })
     .onDisAppear(() => {
       context.unwatch("SiteAction", this)
@@ -104,7 +104,10 @@ export struct Index {
 
   router(): Router {
     return {
-      params: () => ({}),
+      params: () => {
+        let params: Dict = this.path.getParamByIndex(this.path.size()-1) ?? {}
+        return params ?? {}
+      },
       setTarget: () => {},
       pushPage: (name, params) => {
         this.path.pushPath({

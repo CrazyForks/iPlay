@@ -63,6 +63,8 @@ struct Index {
     .barMode(BarMode.Fixed)
     .onChange((index: number) => {
       this.currentIndex = index;
+      const labels = ["search", "home", "star"]
+      router.setCurrentTarget?.(labels[index])
     })
   }
 

@@ -5,6 +5,12 @@ import { ActorCellView } from '../view/ActorCellView'
 import { MediaCellView } from '../view/MediaCellView'
 import { MediaInlineCellView } from '../view/MediaInlineCellView'
 
+
+@Builder
+export function PageBuilder() {
+  SeasonPage()
+}
+
 @Entry
 @Component
 struct SeasonPage {
@@ -22,92 +28,73 @@ struct SeasonPage {
   @State isFavorite: boolean = false
   
   build() {
-    Stack( {alignContent: Alignment.Center }) {
-      Column() {
-        // 导航栏
-        Row() {
-          Button() {
-            Image($r('app.media.back'))
-              .width(24)
-              .height(24)
-              .fillColor(store.themeMode === AppThemeMode.DARK ? Color.White : Color.Black)
-          }
-          .type(ButtonType.Normal)
-          .backgroundColor(Color.Transparent)
-          .onClick(() => {
-            router.popPage()
-          })
-          
-          Text(this.media?.title ?? "剧集")
-            .fontSize(20)
-            .fontWeight(FontWeight.Medium)
-            .flexGrow(1)
-            .textAlign(TextAlign.Center)
-            .maxLines(1)
-            .textOverflow({ overflow: TextOverflow.Ellipsis })
-            .fontColor(store.themeMode === AppThemeMode.DARK ? Color.White : Color.Black)
-          
-          Button() {
-            Image(this.isFavorite ? $r('app.media.star_filled') : $r('app.media.star_outline'))
-              .width(24)
-              .height(24)
-              .fillColor(this.isFavorite ? '#FFD700' : (store.themeMode === AppThemeMode.DARK ? Color.White : Color.Black))
-          }
-          .type(ButtonType.Normal)
-          .backgroundColor(Color.Transparent)
-          .onClick(() => {
-            this.toggleFavorite()
-          })
-        }
-        .width('100%')
-        .height(56)
-        .padding({left: 16, right: 16})
-        .backgroundColor(store.themeMode === AppThemeMode.DARK ? '#1C1C1E' : '#F5F5F5')
-        
-        Scroll() {
-          Column() {
-            List({ space: 8, initialIndex: 0 }) {
-              ForEach(this.episodes, (item: MediaModel) => {
-                ListItem() {
-                  MediaInlineCellView({
-                    model: item,
-                    layout: "auto"
-                  })
-                }
-                .borderRadius(12)
-                .margin({ bottom: 8 })
-              }, (item: MediaModel) => item.id)
+    NavDestination() {
+      Stack({ alignContent: Alignment.Center }) {
+        Column() {
+           Scroll() {
+            Column() {
+              List({ space: 8, initialIndex: 0 }) {
+                ForEach(this.episodes, (item: MediaModel) => {
+                  ListItem() {
+                    MediaInlineCellView({
+                      model: item,
+                      layout: "auto"
+                    })
+                  }
+                  .borderRadius(12)
+                  .margin({ bottom: 8 })
+                }, (item: MediaModel) => item.id)
+              }
+              .padding({
+                left: 16,
+                right: 16,
+                top: 16,
+                bottom: 16
+              })
+              .width("100%")
+              .listDirection(Axis.Vertical)
+              .divider({
+                strokeWidth: 1,
+                color: store.themeMode === AppThemeMode.DARK ? '#2C2C2E' : '#E5E5EA',
+                startMargin: 16,
+                endMargin: 16
+              })
             }
-            .padding({ left: 16, right: 16, top: 16, bottom: 16 })
-            .width("100%")
-            .listDirection(Axis.Vertical)
-            .divider({
-              strokeWidth: 1,
-              color: store.themeMode === AppThemeMode.DARK ? '#2C2C2E' : '#E5E5EA',
-              startMargin: 16,
-              endMargin: 16
-            })
+            .width('100%')
           }
+          .scrollBar(BarState.Off)
+          .edgeEffect(EdgeEffect.Spring)
           .width('100%')
+          .layoutWeight(1) // Use layoutWeight to take remaining space
         }
-        .scrollBar(BarState.Auto)
-        .edgeEffect(EdgeEffect.Spring)
-        .width('100%')
-        .layoutWeight(1) // Use layoutWeight to take remaining space
-      }
-      .height("100%")
-      .width("100%")
+        .height("100%")
+        .width("100%")
 
-      if (this.isLoading) {
-        LoadingProgress()
-          .width(80)
-          .height(80)
-          .color(store.themeMode === AppThemeMode.DARK ? '#7EC0EE' : '#0A84FF')
+        if (this.isLoading) {
+          LoadingProgress()
+            .width(80)
+            .height(80)
+            .color(store.themeMode === AppThemeMode.DARK ? '#7EC0EE' : '#0A84FF')
+        }
       }
     }
+    .title(this.media?.title ?? "")
+    .menus([
+      {
+        value: "收藏",
+        icon: this.isFavorite ? $r('app.media.star_filled') : $r('app.media.star_outline'),
+        action: () => {
+          this.toggleFavorite()
+        }
+      },
+    ])
     .width("100%")
     .height("100%")
     .backgroundColor(store.themeMode === AppThemeMode.DARK ? '#121212' : '#FFFFFF')
+  }
+
+  aboutToAppear(): void {
+    this.onPageShow()
   }
 
   onPageShow(): void {

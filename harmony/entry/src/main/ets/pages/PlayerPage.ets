@@ -7,6 +7,12 @@ import { FontIcon } from '../view/FontIcon';
 import { IconDef } from '../view/IconDef';
 import { store } from '../store/Store';
 
+
+@Builder
+export function PageBuilder() {
+  FullscreenVideoPlayer()
+}
+
 @Entry
 @Component
 struct FullscreenVideoPlayer {
@@ -77,20 +83,24 @@ struct FullscreenVideoPlayer {
   }
 
   build() {
-    Stack() {
-      if (this.videoSrc !== '') {
-        this.VideoPlayerComponent()
+    NavDestination() {
+      Stack() {
+        if (this.videoSrc !== '') {
+          this.VideoPlayerComponent()
+        }
+        this.ControlPanel()
+        if (this.isLoading) {
+          LoadingProgress()
+            .width(80)
+            .height(80)
+        }
       }
-      this.ControlPanel()
-      if (this.isLoading) {
-        LoadingProgress()
-          .width(80)
-          .height(80)
-      }
+      .onClick(() => {
+        this.toggleControls()
+      })
+      .width("100%")
+      .height("100%")
     }
-    .onClick(() => {
-      this.toggleControls()
-    })
   }
 
   @Builder VideoPlayerComponent() {
