@@ -66,6 +66,12 @@ struct Index {
       const labels = ["search", "home", "star"]
       router.setCurrentTarget?.(labels[index])
     })
+    .onAppear(() => {
+
+    })
+    .onDisAppear(() => {
+
+    })
   }
 
   aboutToAppear(): void {

@@ -93,6 +93,7 @@ struct FullscreenVideoPlayer {
           LoadingProgress()
             .width(80)
             .height(80)
+            .color(Color.White)
         }
       }
       .onClick(() => {
@@ -145,6 +146,13 @@ struct FullscreenVideoPlayer {
           //   icon: IconDef.ic_fluent_closed_caption_24_filled
           // })
           //   .margin(5)
+          FontIcon({
+            icon: IconDef.ic_fluent_dismiss_24_filled
+          })
+            .margin(5)
+            .onClick(() => {
+              router.popPage()
+            })
         }
         .justifyContent(FlexAlign.End)
         .width('90%')
@@ -203,7 +211,7 @@ struct FullscreenVideoPlayer {
             step: 1
           })
             .width('90%')
-            .backgroundColor('#75737373')
+            .backgroundColor('#88000000')
             .borderRadius(10)
             .padding({left: 10, right: 10})
             .margin({bottom: 10})
