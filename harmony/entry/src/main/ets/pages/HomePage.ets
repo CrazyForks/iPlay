@@ -125,7 +125,9 @@ export struct Index {
         this.path.pop(true)
       },
       canGoBack: () => true,
-      goBack: () => {},
+      goBack: () => {
+        this.path.pop(true)
+      },
       clear: () => {}
     }
   }

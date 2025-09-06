@@ -1,6 +1,8 @@
 import { router } from '../../../module/Router'
 import { store, AppThemeMode } from '../store/Store'
 import web_webview from '@ohos.web.webview'
+import { FontIcon } from '../view/FontIcon'
+import { IconDef } from '../view/IconDef'
 
 @Builder
 export function PageBuilder() {
@@ -37,7 +39,7 @@ struct TermsOfServicePage {
     .menus([
       {
         value: "退出",
-        icon: $r('app.media.back'),
+        icon: $r('app.media.close'),
         action: () => {
           router.popPage()
         }

@@ -68,6 +68,12 @@ export struct SiteManagePage {
         }
       },
     ])
+    .onAppear(() => {
+      context.watch("SiteAction", this)
+    })
+    .onDisAppear(() => {
+      context.unwatch("SiteAction", this)
+    })
   }
   
   @Builder
@@ -102,7 +108,7 @@ export struct SiteManagePage {
     }
     .width('98%')
     .padding(15)
-    .borderRadius(8)
+    .borderRadius(15)
     .backgroundColor(Color.White)
     .borderWidth(2)
     .borderColor(site.id === this.currentSiteId ? Color.Green : Color.Gray)
@@ -118,6 +124,7 @@ export struct SiteManagePage {
     }
     .width("64")
     .height(32)
+    .margin({left: 16})
     .backgroundColor(Color.Red)
     .onClick(() => {
       this.deleteSite(index)
@@ -186,5 +193,10 @@ export struct SiteManagePage {
         }
       }
     })
+  }
+
+  onSiteUpdate(site: SiteModel) {
+    this.siteList = store.sites || []
+    this.currentSiteId = store.site?.id || null
   }
 }

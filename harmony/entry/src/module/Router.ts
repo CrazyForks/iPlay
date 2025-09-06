@@ -63,8 +63,12 @@ class ArkTsRouter implements Router {
   popPage(): void {
     if (this.playerPagePushed) {
       this.playerPagePushed = false
+      officialRouter.back()
+    } else if (this.target) {
+      this.target.popPage()
+    } else {
+      officialRouter.back()
     }
-    officialRouter.back()
   }
 
   canGoBack(): boolean {
@@ -72,7 +76,14 @@ class ArkTsRouter implements Router {
   }
 
   goBack(): void {
-    officialRouter.back()
+    if (this.playerPagePushed) {
+      this.playerPagePushed = false
+      officialRouter.back()
+    } else if (this.target) {
+      this.target.goBack()
+    } else {
+      officialRouter.back()
+    }
   }
 
   params(): Dict {

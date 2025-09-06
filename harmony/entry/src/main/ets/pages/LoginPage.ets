@@ -22,27 +22,6 @@ struct LoginPage {
   @State loading: boolean = false;
   @State agreeTerm: boolean = false;
 
-  private context = getContext(this) as common.UIAbilityContext;
-
-  openUrl(url: string) {
-    try {
-      let want: Want = {
-        action: 'ohos.want.action.viewData',
-        entities: ['entity.system.browsable'],
-        uri: url,
-      };
-      this.context.startAbility(want)
-        .then(() => {
-          console.info('Open browser successfully');
-        })
-        .catch((err: BusinessError) => {
-          console.error('Failed to open browser. Error code: ' + err.code + ', message: ' + err.message);
-        });
-    } catch (error) {
-      console.error('An unexpected error occurred. Error code: ' + error.code + ', message: ' + error.message);
-    }
-  }
-
   build() {
     NavDestination() {
       Column() {
@@ -181,7 +160,7 @@ struct LoginPage {
               setTimeout(() => {
                 context.action<SiteAction>("SiteAction", bean => bean.onSiteUpdate(site))
                 // 导航到主页而不是返回
-                router.popPage()
+                router.goBack()
               }, 500)
               this.loading = false;
             }).catch((err: object) => {
@@ -211,4 +190,5 @@ struct LoginPage {
     }
     .title("添加站点")
   }
+
 }
