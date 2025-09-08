@@ -27,7 +27,6 @@ struct FullscreenVideoPlayer {
   @State title: string = ""
   @State isLoading: boolean = false;
   @State videoSrc: string = '';
-  
   // 手势控制相关状态
   @State playbackRate: number = 1.0; // 播放速度
   @State screenBrightness: number = 0.5; // 屏幕亮度 (0-1)
@@ -37,7 +36,6 @@ struct FullscreenVideoPlayer {
   @State showVolumeTip: boolean = false; // 显示音量提示
   @State showProgressTip: boolean = false; // 显示进度提示
   @State tipText: string = ''; // 提示文字
-  
   // 手势控制变量
   private longPressTimer: number | undefined = undefined;
   private isLongPressing: boolean = false;
@@ -46,7 +44,6 @@ struct FullscreenVideoPlayer {
   private panStartY: number = 0;
   private screenWidth: number = 0;
   private screenHeight: number = 0;
-
   // 获取窗口对象
   private windowClass: window.Window | null = null;
 
@@ -56,7 +53,7 @@ struct FullscreenVideoPlayer {
       this.screenWidth = displayInfo.width;
       this.screenHeight = displayInfo.height;
     });
-    
+
     let playback = this.params["playback"] as PlaybackModel
     if (playback != undefined) {
       this.videoSrc = playback.sources?.[0].url ?? ""
@@ -72,7 +69,7 @@ struct FullscreenVideoPlayer {
     }
     let media = this.params["media"] as MediaModel
     if (media != undefined) {
-        this.title = media.title ?? ""
+      this.title = media.title ?? ""
     }
     window.getLastWindow(this.getUIContext().getHostContext()).then((win: window.Window) => {
       this.windowClass = win;
@@ -81,7 +78,7 @@ struct FullscreenVideoPlayer {
         await win.setWindowSystemBarEnable([]); // 隐藏状态栏
         await win.setWindowLayoutFullScreen(true);
         this.isFullScreen = true
-        
+
         // 初始化亮度和音量
         this.initBrightnessAndVolume();
       }
@@ -118,7 +115,7 @@ struct FullscreenVideoPlayer {
       if (this.windowClass) {
         this.screenBrightness = this.windowClass.getWindowProperties().brightness;
       }
-      
+
       // 获取当前音量
       audio.getAudioManager().getVolumeManager();
     } catch (error) {
@@ -212,11 +209,17 @@ struct FullscreenVideoPlayer {
                 this.onPanEnd();
               }),
 
+            // 双击手势 - 切换播放状态（必须放在单击手势之前）
+            TapGesture({ count: 2 })
+              .onAction(() => {
+                this.togglePlayback();
+              }),
+
             // 点击手势 - 显示/隐藏控制面板
             TapGesture({ count: 1 })
               .onAction(() => {
                 this.toggleControls();
-              })
+              }),
           )
         )
 
@@ -225,7 +228,8 @@ struct FullscreenVideoPlayer {
     }
   }
 
-  @Builder VideoPlayerComponent() {
+  @Builder
+  VideoPlayerComponent() {
     Column() {
       Video({
         src: this.videoSrc,
@@ -248,7 +252,8 @@ struct FullscreenVideoPlayer {
     .height(this.isFullScreen ? '100%' : 300)
   }
 
-  @Builder GestureTipLayer() {
+  @Builder
+  GestureTipLayer() {
     Stack() {
       // 倍速提示
       if (this.showSpeedTip) {
@@ -259,13 +264,18 @@ struct FullscreenVideoPlayer {
             .fontWeight(FontWeight.Bold)
             .backgroundColor('rgba(0, 0, 0, 0.7)')
             .borderRadius(8)
-            .padding({ top: 8, bottom: 8, left: 12, right: 12 })
+            .padding({
+              top: 8,
+              bottom: 8,
+              left: 12,
+              right: 12
+            })
         }
         .justifyContent(FlexAlign.Center)
       }
-      
+
       // 亮度提示
-      if (this.showBrightnessTip) {
+      if (this.showBrightnessTip && false) {
         Row() {
           Column() {
             FontIcon({
@@ -286,9 +296,9 @@ struct FullscreenVideoPlayer {
         .alignItems(VerticalAlign.Center)
         .margin({ left: 50 })
       }
-      
+
       // 音量提示
-      if (this.showVolumeTip) {
+      if (this.showVolumeTip && false) {
         Row() {
           Column() {
             FontIcon({
@@ -309,7 +319,7 @@ struct FullscreenVideoPlayer {
         .alignItems(VerticalAlign.Center)
         .margin({ right: 50 })
       }
-      
+
       // 进度提示
       if (this.showProgressTip) {
         Row() {
@@ -319,7 +329,12 @@ struct FullscreenVideoPlayer {
             .fontWeight(FontWeight.Bold)
             .backgroundColor('rgba(0, 0, 0, 0.7)')
             .borderRadius(8)
-            .padding({ top: 8, bottom: 8, left: 12, right: 12 })
+            .padding({
+              top: 8,
+              bottom: 8,
+              left: 12,
+              right: 12
+            })
         }
         .justifyContent(FlexAlign.Center)
         .margin({ bottom: 100 })
@@ -330,108 +345,131 @@ struct FullscreenVideoPlayer {
     .alignContent(Alignment.Center)
   }
 
-  @Builder ControlPanel() {
-      Column() {
-        Row() {
-          Text(this.title)
-            .fontColor("#ffffffff")
-            .margin({top: 10})
-        }
-        .flexGrow(0)
-        Row() {
-          // FontIcon({
-          //   icon: IconDef.ic_fluent_device_eq_24_filled
-          // })
-          //   .margin(5)
-          // FontIcon({
-          //   icon: IconDef.ic_fluent_closed_caption_24_filled
-          // })
-          //   .margin(5)
-          FontIcon({
-            icon: IconDef.ic_fluent_dismiss_24_filled
+  @Builder
+  ControlPanel() {
+    Column() {
+      Row() {
+        Text(this.title)
+          .fontColor("#ffffffff")
+          .margin({ top: 10 })
+      }
+      .flexGrow(0)
+
+      Row() {
+        FontIcon({
+          icon: IconDef.ic_fluent_dismiss_24_filled,
+          iconSize: 18
+        })
+          .margin(5)
+          .onClick(() => {
+            router.popPage()
           })
-            .margin(5)
-            .onClick(() => {
-              router.popPage()
-            })
-        }
-        .justifyContent(FlexAlign.End)
-        .width('90%')
-        Row(){
+      }
+      .justifyContent(FlexAlign.End)
+      .width('90%')
+
+      Row() {
+
+      }
+      .flexGrow(1)
+
+      Row() {
+        // 左侧控制按钮组 - 与进度条左侧对齐
+        Row() {
 
         }
-        .flexGrow(1)
+        .margin({ left: 10 }) // 与进度条左侧的padding对齐
+
+        Column()
+          .flexGrow(1)
+        // FontIcon({
+        //   icon: IconDef.ic_fluent_top_speed_24_filled
+        // })
+        //   .margin(5)
+        //   .enabled(false)
+        // FontIcon({
+        //   icon: IconDef.ic_fluent_orientation_24_filled
+        // })
+        //   .margin(5)
+        //   .enabled(false)
+        // FontIcon({
+        //   icon: IconDef.ic_fluent_news_24_filled
+        // })
+        //   .margin(5)
+        //   .enabled(false)
+      }
+      .width('90%')
+      .flexGrow(0)
+      .margin({ bottom: 5 })
+
+      Row() {
         Row() {
           FontIcon({
-            icon: IconDef.ic_fluent_skip_back_10_24_filled
+            icon: IconDef.ic_fluent_skip_back_10_24_filled,
+            iconSize: 18
           })
             .margin(5)
             .onClick(() => {
               this.controller.setCurrentTime(this.currentTime - 10)
             })
           FontIcon({
-            icon: this.isPlaying ? IconDef.ic_fluent_pause_32_filled : IconDef.ic_fluent_play_24_filled
+            icon: this.isPlaying ? IconDef.ic_fluent_pause_32_filled : IconDef.ic_fluent_play_24_filled,
+            iconSize: 18
           })
             .margin(5)
             .onClick(() => {
               this.togglePlayback()
             })
           FontIcon({
-            icon: IconDef.ic_fluent_skip_forward_10_24_filled
+            icon: IconDef.ic_fluent_skip_forward_10_24_filled,
+            iconSize: 18
           })
             .margin(5)
             .onClick(() => {
               this.controller.setCurrentTime(this.currentTime + 10)
             })
-          Column()
-            .flexGrow(1)
-          // FontIcon({
-          //   icon: IconDef.ic_fluent_top_speed_24_filled
-          // })
-          //   .margin(5)
-          //   .enabled(false)
-          // FontIcon({
-          //   icon: IconDef.ic_fluent_orientation_24_filled
-          // })
-          //   .margin(5)
-          //   .enabled(false)
-          // FontIcon({
-          //   icon: IconDef.ic_fluent_news_24_filled
-          // })
-          //   .margin(5)
-          //   .enabled(false)
         }
-        .width('90%')
-        .flexGrow(0)
-        .margin({bottom: 5})
-        Row() {
-          Slider({
-            value: this.currentTime,
-            min: 0,
-            max: this.duration,
-            step: 1
+        .margin({bottom: 8})
+        Slider({
+          value: this.currentTime,
+          min: 0,
+          max: this.duration,
+          step: 1
+        })
+          .layoutWeight(1)
+          .backgroundColor('#88000000')
+          .borderRadius(10)
+          .padding({ left: 10, right: 10 })
+          .margin({ bottom: 10, left: 10, right: 20 })
+          .height(36)
+          .onChange((value: number) => {
+            // seek
+            this.controller.setCurrentTime(value)
           })
-            .width('90%')
-            .backgroundColor('#88000000')
-            .borderRadius(10)
-            .padding({left: 10, right: 10})
-            .margin({bottom: 10})
-            .onChange((value: number) => {
-              // seek
-              this.controller.setCurrentTime(value)
-            })
-        }
-        .flexShrink(0)
+
+        // 时间信息显示
+        Text(`${this.formatTime(this.currentTime)} / ${this.formatTime(this.duration)}`)
+          .fontColor('#FFFFFF')
+          .fontSize(14)
+          .margin({ left: 0, bottom: 10, right: 10 })
+          .textAlign(TextAlign.End)
       }
-      .backgroundColor("#00000000")
-      .height('100%')
-      .width('100%')
-      .hitTestBehavior(HitTestMode.Transparent)
-      .visibility(this.showControls ? Visibility.Visible : Visibility.Hidden)
+      .width('90%')
+      .align(Alignment.Center)
+      .flexShrink(0)
+
+    }
+    .backgroundColor("#00000000")
+    .height('100%')
+    .width('100%')
+    .hitTestBehavior(HitTestMode.Transparent)
+    .visibility(this.showControls ? Visibility.Visible : Visibility.Hidden)
   }
 
   private async toggleFullscreen() {
-    if (!this.windowClass) return;
+    if (!this.windowClass) {
+      return;
+    }
 
     try {
       if (!this.isFullScreen) {
@@ -453,6 +491,7 @@ struct FullscreenVideoPlayer {
   }
 
   @State showControls: boolean = true;
+
   private toggleControls() {
     this.showControls = !this.showControls;
   }
@@ -492,7 +531,7 @@ struct FullscreenVideoPlayer {
     const currentY = event.fingerList[0].localY;
     const deltaX = currentX - this.panStartX;
     const deltaY = currentY - this.panStartY;
-    
+
     // 判断是横向滑动还是纵向滑动
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
       // 横向滑动 - 调整进度
@@ -514,19 +553,21 @@ struct FullscreenVideoPlayer {
   }
 
   private handleProgressGesture(deltaX: number) {
-    if (this.duration <= 0) return;
-    
+    if (this.duration <= 0) {
+      return;
+    }
+
     // 计算进度变化（屏幕宽度对应总时长）
     const progressChange = (deltaX / this.screenWidth) * this.duration;
     let newTime = this.currentTime + progressChange;
-    
+
     // 确保时间在有效范围内
     newTime = Math.max(0, Math.min(newTime, this.duration));
-    
+
     this.showProgressTip = true;
     this.tipText = `${this.formatTime(newTime)} / ${this.formatTime(this.duration)}`;
     this.hideTipAfterDelay();
-    
+
     // 实际调整播放进度
     this.controller.setCurrentTime(newTime);
   }
@@ -535,7 +576,7 @@ struct FullscreenVideoPlayer {
     // 纵向滑动调整亮度（向上增加亮度，向下降低亮度）
     const brightnessChange = -(deltaY / this.screenHeight);
     let newBrightness = this.screenBrightness + brightnessChange;
-    
+
     // 确保亮度在0-1范围内
     newBrightness = Math.max(0, Math.min(1, newBrightness));
     this.setBrightness(newBrightness);
@@ -545,7 +586,7 @@ struct FullscreenVideoPlayer {
     // 纵向滑动调整音量（向上增加音量，向下降低音量）
     const volumeChange = -(deltaY / this.screenHeight);
     let newVolume = this.volume + volumeChange;
-    
+
     // 确保音量在0-1范围内
     newVolume = Math.max(0, Math.min(1, newVolume));
     this.setVolume(newVolume);
