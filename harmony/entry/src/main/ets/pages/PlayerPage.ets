@@ -134,6 +134,7 @@ struct FullscreenVideoPlayer {
       this.showBrightnessTip = true;
       this.tipText = `亮度: ${Math.round(brightness * 100)}%`;
       this.hideTipAfterDelay();
+      this.windowClass?.setWindowBrightness(this.screenBrightness)
     }
   }
 
@@ -171,54 +172,56 @@ struct FullscreenVideoPlayer {
   build() {
     NavDestination() {
       Stack() {
-        if (this.videoSrc !== '') {
-          this.VideoPlayerComponent()
+        Stack() {
+          if (this.videoSrc !== '') {
+            this.VideoPlayerComponent()
+          }
+          // 手势提示层
+          this.GestureTipLayer()
+
+          if (this.isLoading) {
+            LoadingProgress()
+              .width(80)
+              .height(80)
+              .color(Color.White)
+          }
         }
-        this.ControlPanel()
-        
-        // 手势提示层
-        this.GestureTipLayer()
-        
-        if (this.isLoading) {
-          LoadingProgress()
-            .width(80)
-            .height(80)
-            .color(Color.White)
-        }
-      }
-      .width("100%")
-      .height("100%")
-      // 添加手势识别
-      .gesture(
-        GestureGroup(GestureMode.Exclusive,
-          // 长按手势 - 倍速播放
-          LongPressGesture({ repeat: false, duration: 500 })
-            .onAction(() => {
-              this.onLongPress();
-            })
-            .onActionEnd(() => {
-              this.onLongPressEnd();
-            }),
-          
-          // 拖拽手势 - 进度、亮度、音量控制
-          PanGesture({ fingers: 1, direction: PanDirection.All, distance: 10 })
-            .onActionStart((event: GestureEvent) => {
-              this.onPanStart(event);
-            })
-            .onActionUpdate((event: GestureEvent) => {
-              this.onPanUpdate(event);
-            })
-            .onActionEnd(() => {
-              this.onPanEnd();
-            }),
-          
-          // 点击手势 - 显示/隐藏控制面板
-          TapGesture({ count: 1 })
-            .onAction(() => {
-              this.toggleControls();
-            })
+        .width("100%")
+        .height("100%")
+        // 添加手势识别
+        .gesture(
+          GestureGroup(GestureMode.Exclusive,
+            // 长按手势 - 倍速播放
+            LongPressGesture({ repeat: false, duration: 500 })
+              .onAction(() => {
+                this.onLongPress();
+              })
+              .onActionEnd(() => {
+                this.onLongPressEnd();
+              }),
+
+            // 拖拽手势 - 进度、亮度、音量控制
+            PanGesture({ fingers: 1, direction: PanDirection.All, distance: 10 })
+              .onActionStart((event: GestureEvent) => {
+                this.onPanStart(event);
+              })
+              .onActionUpdate((event: GestureEvent) => {
+                this.onPanUpdate(event);
+              })
+              .onActionEnd(() => {
+                this.onPanEnd();
+              }),
+
+            // 点击手势 - 显示/隐藏控制面板
+            TapGesture({ count: 1 })
+              .onAction(() => {
+                this.toggleControls();
+              })
+          )
         )
-      )
+
+        this.ControlPanel()
+      }
     }
   }
 
@@ -226,6 +229,7 @@ struct FullscreenVideoPlayer {
     Column() {
       Video({
         src: this.videoSrc,
+        currentProgressRate: this.playbackRate,
         controller: this.controller
       })
         .width(this.isFullScreen ? '100%' : '100%')
@@ -422,6 +426,7 @@ struct FullscreenVideoPlayer {
       .backgroundColor("#00000000")
       .height('100%')
       .width('100%')
+      .hitTestBehavior(HitTestMode.Transparent)
       .visibility(this.showControls ? Visibility.Visible : Visibility.Hidden)
   }
 
