@@ -54,6 +54,11 @@
       "name": "pages/AppearanceSettingsPage",
       "pageSourceFile": "src/main/ets/pages/AppearanceSettingsPage.ets",
       "buildFunction": "PageBuilder"
+    },
+    {
+      "name": "pages/OtherSettingsPage",
+      "pageSourceFile": "src/main/ets/pages/OtherSettingsPage.ets",
+      "buildFunction": "PageBuilder"
     }
   ]
 }

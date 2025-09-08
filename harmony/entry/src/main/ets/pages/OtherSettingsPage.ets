@@ -1,28 +1,32 @@
-import { router } from '../../../module/Router'
-import { store } from '../store/Store'
+import { router } from '../../../module/Router';
+import { AppThemeMode, store } from '../store/Store'
+
 
 @Builder
 export function PageBuilder() {
-  SettingsPage()
+  OtherSettingsPage()
 }
 
 @Entry
 @Component
-export struct SettingsPage {
+export struct OtherSettingsPage {
+  aboutToAppear() {
+  }
+
   build() {
     NavDestination() {
       Stack({ alignContent: Alignment.TopEnd }) {
         Column() {
           List() {
-            // ListItem() {
-            //   this.SettingsItem("外观", "设置应用主题和显示模式", () => {
-            //     router.pushPage("pages/AppearanceSettingsPage", {})
-            //   })
-            // }
+            ListItem() {
+              this.SettingsItem("服务协议", "查阅服务协议具体内容", () => {
+                router.pushPage("pages/PrivacyPolicyPage", {})
+              })
+            }
 
             ListItem() {
-              this.SettingsItem("其他", "服务协议和隐私政策", () => {
-                router.pushPage("pages/OtherSettingsPage", {})
+              this.SettingsItem("隐私政策", "查阅隐私政策具体内容", () => {
+                router.pushPage("pages/TermsOfServicePage", {})
               })
             }
           }
@@ -33,9 +37,9 @@ export struct SettingsPage {
         .height('100%')
       }
     }
-    .title("设置")
+    .title("其他")
   }
-  
+
   @Builder
   SettingsItem(title: string, description: string, onClick: () => void) {
     Row() {
@@ -43,26 +47,26 @@ export struct SettingsPage {
         Text(title)
           .fontSize(16)
           .fontWeight(FontWeight.Medium)
-        
+
         if (description) {
           Text(description)
             .fontSize(14)
             .fontColor(Color.Gray)
-            .margin({top: 4})
+            .margin({ top: 4 })
         }
       }
       .alignItems(HorizontalAlign.Start)
       .flexGrow(1)
-      
+
       Image($r('app.media.right'))
         .width(20)
         .height(20)
     }
     .width('100%')
-    .padding(12)
+    .padding(16)
     .backgroundColor(Color.White)
     .borderRadius(8)
-    .margin({top: 8, bottom: 4})
+    .margin({top: 8, bottom: 8})
     .onClick(onClick)
   }
 }

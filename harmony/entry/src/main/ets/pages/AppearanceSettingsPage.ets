@@ -23,130 +23,12 @@ export struct AppearanceSettingsPage {
     NavDestination() {
       Stack({ alignContent: Alignment.TopEnd }) {
         Column() {
-          // 导航栏
-          Row() {
-            Button() {
-              Image($r('app.media.back'))
-                .width(24)
-                .height(24)
-            }
-            .type(ButtonType.Normal)
-            .backgroundColor(Color.Transparent)
-            .onClick(() => {
-              router.popPage()
-            })
-
-            Text("外观设置")
-              .fontSize(18)
-              .fontWeight(FontWeight.Bold)
-              .flexGrow(1)
-              .textAlign(TextAlign.Center)
-
-            // 右侧空按钮，保持对称
-            Button() {
-              Image($r('app.media.back'))
-                .width(24)
-                .height(24)
-                .opacity(0)
-            }
-            .type(ButtonType.Normal)
-            .backgroundColor(Color.Transparent)
-          }
-          .width('100%')
-          .height(50)
-          .padding({ left: 10, right: 10 })
-
-          // 主题模式选择
           Column() {
             Text("主题模式")
               .fontSize(16)
               .fontWeight(FontWeight.Medium)
               .margin({ top: 20, bottom: 16 })
               .alignSelf(ItemAlign.Start)
-
-            // 浅色模式
-            Row() {
-              Row() {
-                Image($r('app.media.light_mode'))
-                  .width(24)
-                  .height(24)
-                  .margin({ right: 16 })
-
-                Text("浅色模式")
-                  .fontSize(16)
-              }
-              .flexGrow(1)
-
-              Radio({ value: 'light', group: 'themeMode' })
-                .checked(this.selectedMode === AppThemeMode.LIGHT)
-                .onChange((isChecked: boolean) => {
-                  if (isChecked) {
-                    this.selectedMode = AppThemeMode.LIGHT;
-                    this.applyThemeMode();
-                  }
-                })
-            }
-            .width('100%')
-            .padding(16)
-            .backgroundColor(Color.White)
-            .borderRadius(8)
-            .margin({ bottom: 8 })
-
-            // 深色模式
-            Row() {
-              Row() {
-                Image($r('app.media.dark_mode'))
-                  .width(24)
-                  .height(24)
-                  .margin({ right: 16 })
-
-                Text("深色模式")
-                  .fontSize(16)
-              }
-              .flexGrow(1)
-
-              Radio({ value: 'dark', group: 'themeMode' })
-                .enabled(false)
-                .checked(this.selectedMode === AppThemeMode.DARK)
-                .onChange((isChecked: boolean) => {
-                  if (isChecked) {
-                    this.selectedMode = AppThemeMode.DARK;
-                    this.applyThemeMode();
-                  }
-                })
-            }
-            .width('100%')
-            .padding(16)
-            .backgroundColor(Color.White)
-            .borderRadius(8)
-            .margin({ bottom: 8 })
-
-            // 跟随系统
-            Row() {
-              Row() {
-                Image($r('app.media.auto_mode'))
-                  .width(24)
-                  .height(24)
-                  .margin({ right: 16 })
-
-                Text("跟随系统")
-                  .fontSize(16)
-              }
-              .flexGrow(1)
-
-              Radio({ value: 'auto', group: 'themeMode' })
-                .checked(this.selectedMode === AppThemeMode.AUTO)
-                .onChange((isChecked: boolean) => {
-                  if (isChecked) {
-                    this.selectedMode = AppThemeMode.AUTO;
-                    this.applyThemeMode();
-                  }
-                })
-            }
-            .width('100%')
-            .padding(16)
-            .backgroundColor(Color.White)
-            .borderRadius(8)
           }
           .width('100%')
           .padding({ left: 16, right: 16 })
@@ -155,6 +37,7 @@ export struct AppearanceSettingsPage {
         .height('100%')
       }
     }
+    .title("外观设置")
   }
   
   // 应用主题模式
