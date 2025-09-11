@@ -1,5 +1,6 @@
 package top.ourfor.app.iplay.view.video;
 
+import static android.os.Build.VERSION_CODES.R;
 import static top.ourfor.app.iplay.module.Bean.XGET;
 import static top.ourfor.app.iplay.module.Bean.XSET;
 import static top.ourfor.lib.mpv.TrackItem.AudioTrackName;
@@ -324,10 +325,10 @@ public class PlayerView extends ConstraintLayout
                 if (isLeftLongPress) {
                     // TODO: handle left side long press
                     contentView.viewModel.speed(2.25f);
-                    eventView.speedupTipView.setText(R.string.speed_up_tip);
+                    eventView.speedupTipView.setText(getContext().getString(R.string.speed_up_tip));
                     eventView.speedupTipView.show();
                 } else {
-                    eventView.speedupTipView.setText(R.string.speed_up_tip);
+                    eventView.speedupTipView.setText(getContext().getString(R.string.speed_up_tip));
                     eventView.speedupTipView.show();
                     contentView.viewModel.speed(2.25f);
                 }
