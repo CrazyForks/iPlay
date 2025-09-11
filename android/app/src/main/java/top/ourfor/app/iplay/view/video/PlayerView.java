@@ -1,6 +1,5 @@
 package top.ourfor.app.iplay.view.video;
 
-import static android.os.Build.VERSION_CODES.R;
 import static top.ourfor.app.iplay.module.Bean.XGET;
 import static top.ourfor.app.iplay.module.Bean.XSET;
 import static top.ourfor.lib.mpv.TrackItem.AudioTrackName;
