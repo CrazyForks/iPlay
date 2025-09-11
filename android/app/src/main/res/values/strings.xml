@@ -156,4 +156,5 @@
     <string name="iplay">iPlay</string>
     <string name="home_allow_tabs">主页菜单项目，长按菜单打开设置</string>
     <string name="home_allow_tabs_modify">修改配置</string>
+    <string name="speed_up_tip">快进中</string>
 </resources>

@@ -1,0 +1,64 @@
+{
+  "routerMap": [
+    {
+      "name": "pages/MediaPage",
+      "pageSourceFile": "src/main/ets/pages/MediaPage.ets",
+      "buildFunction": "PageBuilder"
+    },
+    {
+      "name": "pages/SeasonPage",
+      "pageSourceFile": "src/main/ets/pages/SeasonPage.ets",
+      "buildFunction": "PageBuilder"
+    },
+    {
+      "name": "pages/AlbumPage",
+      "pageSourceFile": "src/main/ets/pages/AlbumPage.ets",
+      "buildFunction": "PageBuilder"
+    },
+    {
+      "name": "pages/WelcomePage",
+      "pageSourceFile": "src/main/ets/pages/WelcomePage.ets",
+      "buildFunction": "PageBuilder"
+    },
+    {
+      "name": "pages/PlayerPage",
+      "pageSourceFile": "src/main/ets/pages/PlayerPage.ets",
+      "buildFunction": "PageBuilder"
+    },
+    {
+      "name": "pages/LoginPage",
+      "pageSourceFile": "src/main/ets/pages/LoginPage.ets",
+      "buildFunction": "PageBuilder"
+    },
+    {
+      "name": "pages/TermsOfServicePage",
+      "pageSourceFile": "src/main/ets/pages/TermsOfServicePage.ets",
+      "buildFunction": "PageBuilder"
+    },
+    {
+      "name": "pages/PrivacyPolicyPage",
+      "pageSourceFile": "src/main/ets/pages/PrivacyPolicyPage.ets",
+      "buildFunction": "PageBuilder"
+    },
+    {
+      "name": "pages/SiteManagePage",
+      "pageSourceFile": "src/main/ets/pages/SiteManagePage.ets",
+      "buildFunction": "PageBuilder"
+    },
+    {
+      "name": "pages/SettingsPage",
+      "pageSourceFile": "src/main/ets/pages/SettingsPage.ets",
+      "buildFunction": "PageBuilder"
+    },
+    {
+      "name": "pages/AppearanceSettingsPage",
+      "pageSourceFile": "src/main/ets/pages/AppearanceSettingsPage.ets",
+      "buildFunction": "PageBuilder"
+    },
+    {
+      "name": "pages/OtherSettingsPage",
+      "pageSourceFile": "src/main/ets/pages/OtherSettingsPage.ets",
+      "buildFunction": "PageBuilder"
+    }
+  ]
+}

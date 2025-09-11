@@ -1,8 +1,5 @@
-import { MediaModel } from "../../../api/iPlayDataSource"
-import { kv } from "../../../module/KVStorage"
 import { router } from "../../../module/Router"
 import { store } from "../store/Store"
-import { AlbumMediaList, AlbumMediasModel } from "../view/AlbumMediaList"
 import { Index as HomePage } from './HomePage'
 import { Index as StarPage } from './StarPage'
 import { Index as SearchPage } from './SearchPage'
@@ -66,14 +63,18 @@ struct Index {
     .barMode(BarMode.Fixed)
     .onChange((index: number) => {
       this.currentIndex = index;
+      const labels = ["search", "home", "star"]
+      router.setCurrentTarget?.(labels[index])
+    })
+    .onAppear(() => {
+
+    })
+    .onDisAppear(() => {
+
     })
   }
 
   aboutToAppear(): void {
     store.load()
-    if (!store.site) {
-      router.pushPage("pages/LoginPage", {})
-      return
-    }
   }
 }

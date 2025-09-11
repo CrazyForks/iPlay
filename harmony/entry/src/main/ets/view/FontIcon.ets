@@ -20,7 +20,7 @@ export struct FontIcon {
       .fontSize(this.iconSize)
       .fontFamily("iconfont")
       .fontColor(this.iconColor)
-      .backgroundColor("#55e5e5e5")
+      .backgroundColor("#88000000")
       .padding(this.iconSize/2)
       .borderRadius(this.iconSize)
   }

@@ -276,6 +276,8 @@ public class PlayerView extends ConstraintLayout
                     eventView.volumeValueView.setMaxValue(getVolumeMaxValue());
                     eventView.brightnessValueView.hide();
                     eventView.volumeValueView.show();
+                } else if (targetType == PlayerGestureType.Seek) {
+                    eventView.progressValueView.show();
                 }
                 break;
             case HideControl:
@@ -294,6 +296,10 @@ public class PlayerView extends ConstraintLayout
                 } else {
                     contentView.viewModel.jumpBackward(delta);
                 }
+                var duration = contentView.viewModel.duration().intValue();
+                eventView.progressValueView.setMaxValue(duration);
+                val progress = contentView.viewModel.progress().intValue();
+                eventView.progressValueView.setProgress(progress);
                 break;
             case Volume:
                 delta = ((Float) value).intValue();
@@ -317,11 +323,11 @@ public class PlayerView extends ConstraintLayout
                 }
                 if (isLeftLongPress) {
                     // TODO: handle left side long press
-                    contentView.viewModel.speed(1.75f);
-                    eventView.speedupTipView.setText("1.75x");
+                    contentView.viewModel.speed(2.25f);
+                    eventView.speedupTipView.setText(getContext().getString(R.string.speed_up_tip));
                     eventView.speedupTipView.show();
                 } else {
-                    eventView.speedupTipView.setText("2.25x");
+                    eventView.speedupTipView.setText(getContext().getString(R.string.speed_up_tip));
                     eventView.speedupTipView.show();
                     contentView.viewModel.speed(2.25f);
                 }

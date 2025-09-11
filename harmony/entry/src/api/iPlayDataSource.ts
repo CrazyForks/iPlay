@@ -66,4 +66,5 @@ export interface iPlayDataSourceApi {
   getSeasons(id: string): Promise<MediaModel[]>
   getEpisodes(seriesId: string, seasonId: string): Promise<MediaModel[]>
   getMedias(query: {[k: string]: string}): Promise<MediaModel[]>
+  toggleFavorite(itemId: string, isFavorite: boolean): Promise<boolean>
 }

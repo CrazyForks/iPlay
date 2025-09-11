@@ -44,6 +44,7 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
     public PlayerSelectDelegate trackSelectDelegate;
     public PlayerSliderValueView brightnessValueView;
     public PlayerSliderValueView volumeValueView;
+    public PlayerSliderValueView progressValueView;
     public PlayerSpeedupTipView speedupTipView;
     private PlayerSelectView selectView;
     public LottieAnimationView activityIndicator;
@@ -88,6 +89,17 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
         volumeViewLayout.topMargin = 100;
 
         addView(volumeValueView, volumeViewLayout);
+
+        progressValueView = new PlayerSliderValueView(context);
+        progressValueView.updateIcon(com.microsoft.fluent.mobile.icons.R.drawable.ic_fluent_video_24_filled);
+        progressValueView.setAlpha(0);
+        LayoutParams progressViewLayout = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        progressViewLayout.leftToLeft = LayoutParams.PARENT_ID;
+        progressViewLayout.topToTop = LayoutParams.PARENT_ID;
+        progressViewLayout.rightToRight = LayoutParams.PARENT_ID;
+        progressViewLayout.topMargin = 100;
+
+        addView(progressValueView, progressViewLayout);
 
         speedupTipView = new PlayerSpeedupTipView(context);
         speedupTipView.setAlpha(0);
@@ -195,6 +207,7 @@ public class PlayerEventView extends ConstraintLayout implements GestureDetector
             isEventInIgnoreArea = false;
             brightnessValueView.hide();
             volumeValueView.hide();
+            progressValueView.hide();
             if (isLongPressTriggered) {
                 isLongPressTriggered = false;
                 if (delegate != null) {

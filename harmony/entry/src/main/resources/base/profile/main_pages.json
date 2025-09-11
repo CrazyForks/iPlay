@@ -6,6 +6,12 @@
     "pages/AlbumPage",
     "pages/LoginPage",
     "pages/PlayerPage",
-    "pages/SeasonPage"
+    "pages/SeasonPage",
+    "pages/SiteManagePage",
+    "pages/SettingsPage",
+    "pages/AppearanceSettingsPage",
+    "pages/WelcomePage",
+    "pages/PrivacyPolicyPage",
+    "pages/TermsOfServicePage"
   ]
 }
