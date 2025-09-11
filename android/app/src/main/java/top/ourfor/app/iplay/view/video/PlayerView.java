@@ -323,11 +323,11 @@ public class PlayerView extends ConstraintLayout
                 }
                 if (isLeftLongPress) {
                     // TODO: handle left side long press
-                    contentView.viewModel.speed(1.75f);
-                    eventView.speedupTipView.setText("1.75x");
+                    contentView.viewModel.speed(2.25f);
+                    eventView.speedupTipView.setText(R.string.speed_up_tip);
                     eventView.speedupTipView.show();
                 } else {
-                    eventView.speedupTipView.setText("2.25x");
+                    eventView.speedupTipView.setText(R.string.speed_up_tip);
                     eventView.speedupTipView.show();
                     contentView.viewModel.speed(2.25f);
                 }
