@@ -9,6 +9,7 @@ import { AlbumMediaList, AlbumMediasModel } from "../view/AlbumMediaList"
 export struct Index {
   @State albums: AlbumMediasModel[] = []
   @State isLoading: boolean = false
+  @State recommendataions: MediaModel[] = []
   @State path: NavPathStack = new NavPathStack()
 
   constructor() {
@@ -56,6 +57,7 @@ export struct Index {
     .title("主页")
     .titleMode(NavigationTitleMode.Mini)
     .hideBackButton(true)
+    .padding(0)
     .menus([
       {
         value: "刷新",
@@ -127,21 +129,30 @@ export struct Index {
     let albums = await api.getAllAlbums()
     albums = albums.filter(item => item.type != "music")
     albums.forEach(album => console.info("album: " + album.title + album.image?.primary))
-    let album = new AlbumMediasModel();
-    album.type = "albums"
-    album.medias = albums.map(item => {
-      let media: MediaModel = {
-        id: item.id,
-        seriesId: "",
-        title: item.title,
-        image: item.image,
-        type: "album",
-        tags: null,
-        overview: null,
-        actors: null
-      }
-      return media
+    // let album = new AlbumMediasModel();
+    // album.type = "albums"
+    // album.medias = albums.map(item => {
+    //   let media: MediaModel = {
+    //     id: item.id,
+    //     seriesId: "",
+    //     title: item.title,
+    //     image: item.image,
+    //     type: "album",
+    //     tags: null,
+    //     overview: null,
+    //     actors: null
+    //   }
+    //   return media
+    // })
+
+    let recommendations = await api!.getMedias({
+      "SortBy": "IsFavoriteOrLiked,Random",
+      "IncludeItemTypes": "Movie,Series",
+      "Limit": "20",
+      "Recursive": "true",
+      "ImageTypeLimit": "0",
     })
+    this.recommendataions = recommendations
 
     let resumes = await api!.getResume()
     let resumeAlbum = new AlbumMediasModel()
@@ -160,7 +171,7 @@ export struct Index {
       return model
     }))
     albumMedias = [resumeAlbum, ...albumMedias].filter(item => item.medias.length > 0)
-    return [album, ...albumMedias]
+    return [...albumMedias]
   }
 
   onPageShow(): void {
@@ -191,13 +202,13 @@ export struct Index {
   // 轮播组件
   @Builder
   buildCarousel() {
-    if (this.albums.length > 0 && this.albums[0].medias.length > 0) {
+    if (this.recommendataions.length) {
       Swiper() {
-        ForEach(this.albums[0].medias.slice(0, 5), (media: MediaModel) => {
+        ForEach(this.recommendataions, (media: MediaModel) => {
           Stack({ alignContent: Alignment.BottomStart }) {
             Image(media.image?.primary || '')
               .width('100%')
-              .height(200)
+              .aspectRatio(16/9)
               .borderRadius(12)
               .objectFit(ImageFit.Cover)
               .alt($r('app.media.background'))
@@ -236,10 +247,11 @@ export struct Index {
             // 点击跳转到详情页
             router.pushPage("pages/MediaDetailPage", { mediaId: media.id })
           })
+          .margin({bottom: 25})
         }, (media: MediaModel) => media.id)
       }
       .width('100%')
-      .height(200)
+      // .aspectRatio(16/11)
       .borderRadius(12)
       .autoPlay(true)
       .interval(4000)
@@ -249,8 +261,8 @@ export struct Index {
           .itemHeight(8)
           .selectedItemWidth(16)
           .selectedItemHeight(8)
-          .color('#80FFFFFF')
-          .selectedColor('#FFFFFF')
+          .color(Color.Gray)
+          .selectedColor(Color.Black)
       )
     }
   }
@@ -270,12 +282,12 @@ export struct Index {
         .width('100%')
         
         Row({ space: 12 }) {
-          ForEach(this.albums.slice(1, 3), (album: AlbumMediasModel) => {
-            if (album.medias.length > 0) {
+          ForEach(this.recommendataions.length > 2 ? this.recommendataions.slice(0, 2) : this.recommendataions, (media: MediaModel) => {
+            if (this.recommendataions.length > 0) {
               Stack({ alignContent: Alignment.BottomStart }) {
-                Image(album.medias[0].image?.primary || '')
+                Image(media.image?.primary || '')
                   .width('100%')
-                  .height(160)
+                  .aspectRatio(16/9)
                   .borderRadius(8)
                   .objectFit(ImageFit.Cover)
                   .alt($r('app.media.background'))
@@ -291,16 +303,16 @@ export struct Index {
                   .borderRadius({ bottomLeft: 8, bottomRight: 8 })
                 
                 Column({ space: 2 }) {
-                  Text(album.title || '')
+                  Text(media.title || '')
                     .fontSize(14)
                     .fontWeight(FontWeight.Medium)
                     .fontColor(Color.White)
                     .maxLines(1)
                     .textOverflow({ overflow: TextOverflow.Ellipsis })
                   
-                  Text(`${album.medias.length} 项`)
-                    .fontSize(12)
-                    .fontColor('#C0C0C0')
+                  // Text(`${this.recommendataions.length} 项`)
+                  //   .fontSize(12)
+                  //   .fontColor('#C0C0C0')
                 }
                 .alignItems(HorizontalAlign.Start)
                 .padding({ left: 12, right: 12, bottom: 12 })
@@ -308,7 +320,7 @@ export struct Index {
               .layoutWeight(1)
               .onClick(() => {
                 // 点击跳转到专辑页面
-                router.pushPage("pages/AlbumDetailPage", { albumId: album.id })
+                router.pushPage("pages/AlbumDetailPage", { albumId: media.id })
               })
             }
           }, (album: AlbumMediasModel) => album.id)
@@ -323,54 +335,17 @@ export struct Index {
   buildContentList() {
     if (this.albums.length > 0) {
       Column({ space: 16 }) {
-        ForEach(this.albums.slice(3), (item: AlbumMediasModel) => {
-          Column({ space: 8 }) {
-            Row() {
-              Text(item.title || '')
-                .fontSize(18)
-                .fontWeight(FontWeight.Medium)
-                .fontColor(store.themeMode === AppThemeMode.DARK ? '#FFFFFF' : '#000000')
-              Blank()
-              Text('查看全部')
-                .fontSize(14)
-                .fontColor(store.themeMode === AppThemeMode.DARK ? '#7EC0EE' : '#0A84FF')
-                .onClick(() => {
-                  router.pushPage("pages/AlbumDetailPage", { albumId: item.id })
+        List({ space: 5, initialIndex: 0 }) {
+          ForEach(this.albums, (item: AlbumMediasModel) => {
+            ListItem() {
+              Column() {
+                AlbumMediaList({
+                  model: item
                 })
-            }
-            .width('100%')
-            
-            Scroll(Scroller()) {
-              Row({ space: 12 }) {
-                ForEach(item.medias.slice(0, 10), (media: MediaModel) => {
-                  Column({ space: 6 }) {
-                    Image(media.image?.primary || '')
-                      .width(120)
-                      .height(160)
-                      .borderRadius(8)
-                      .objectFit(ImageFit.Cover)
-                      .alt($r('app.media.background'))
-                    
-                    Text(media.title || '')
-                      .fontSize(12)
-                      .fontColor(store.themeMode === AppThemeMode.DARK ? '#FFFFFF' : '#000000')
-                      .maxLines(2)
-                      .textOverflow({ overflow: TextOverflow.Ellipsis })
-                      .width(120)
-                      .textAlign(TextAlign.Start)
-                  }
-                  .onClick(() => {
-                    router.pushPage("pages/MediaDetailPage", { mediaId: media.id })
-                  })
-                }, (media: MediaModel) => media.id)
               }
-              .padding({ left: 0, right: 16 })
             }
-            .scrollable(ScrollDirection.Horizontal)
-            .scrollBar(BarState.Off)
-            .width('100%')
-          }
-        }, (item: AlbumMediasModel) => item.id)
+          }, (item: AlbumMediasModel) => item.id)
+        }
       }
     }
   }

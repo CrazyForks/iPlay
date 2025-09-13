@@ -3,6 +3,7 @@ import { Dict, router } from '../../../module/Router'
 import { store } from '../store/Store'
 import { ActorCellView } from '../view/ActorCellView'
 import { MediaCellView } from '../view/MediaCellView'
+import { LengthMetrics } from '@kit.ArkUI'
 
 
 @Builder
@@ -130,7 +131,7 @@ struct MediaPage {
     Stack({ alignContent: Alignment.BottomStart }) {
       Image(this.displayImages[this.selectedImageIndex] || this.imageUrl())
         .width('100%')
-        .height(240)
+        .aspectRatio(16/9)
         .borderRadius(12)
         .objectFit(ImageFit.Cover)
         .onClick(() => {
@@ -178,30 +179,21 @@ struct MediaPage {
   buildImageGallery() {
     if (this.displayImages.length > 1) {
       Column({ space: 8 }) {
-        Row() {
-          Text('图片')
-            .fontSize(16)
-            .fontWeight(FontWeight.Medium)
-            .fontColor('#333333')
-          Blank()
-        }
-        .width('100%')
-        
         Scroll() {
           Row({ space: 8 }) {
             ForEach(this.displayImages, (imageUrl: string, index: number) => {
               Stack() {
                 Image(imageUrl)
                   .width(80)
-                  .height(60)
+                  .aspectRatio(16/9)
                   .borderRadius(6)
                   .objectFit(ImageFit.Cover)
                 
                 // 选中状态指示器
                 if (this.selectedImageIndex === index) {
                   Column()
-                    .width('100%')
-                    .height('100%')
+                    .width(80 + 8)
+                    .aspectRatio(16/9)
                     .borderRadius(6)
                     .border({
                       width: 2,
@@ -260,7 +252,7 @@ struct MediaPage {
         }
         .width('100%')
         
-        Flex({ wrap: FlexWrap.Wrap, space: { main: 8, cross: 8 } }) {
+        Flex({ wrap: FlexWrap.Wrap, space: { main: new LengthMetrics(8), cross: new LengthMetrics(8) } }) {
           ForEach(this.media?.tags, (tag: string) => {
             Text(tag)
               .fontSize(12)
