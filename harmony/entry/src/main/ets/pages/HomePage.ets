@@ -18,40 +18,24 @@ export struct Index {
   build() {
     Navigation(this.path) {
       Stack({ alignContent: Alignment.Center }) {
-        Column() {
-          List({ space: 5, initialIndex: 0 }) {
-            ForEach(this.albums, (item: AlbumMediasModel) => {
-              ListItem() {
-                Column() {
-                  AlbumMediaList({
-                    model: item
-                  })
-                }
-              }
-            }, (item: AlbumMediasModel) => item.id)
+        Scroll() {
+          Column({ space: 16 }) {
+            // 轮播组件
+            this.buildCarousel()
+            
+            // 推荐项目
+            this.buildRecommendations()
+            
+            // 其他内容列表
+            this.buildContentList()
           }
-          .listDirection(Axis.Vertical)
-          .scrollBar(BarState.Off)
-          .friction(0.6)
-          .divider({
-            strokeWidth: 1,
-            color: store.themeMode === AppThemeMode.DARK ? '#2C2C2E' : '#E5E5EA',
-            startMargin: 16,
-            endMargin: 16
-          }) // 每行之间的分界线
-          .edgeEffect(EdgeEffect.Spring)
-          .onScrollIndex((firstIndex: number, lastIndex: number, centerIndex: number) => {
-            console.info('first' + firstIndex)
-            console.info('last' + lastIndex)
-            console.info('center' + centerIndex)
-          })
           .width('100%')
-          .padding({ top: 8, bottom: 8 })
+          .padding({ left: 16, right: 16, top: 8, bottom: 8 })
         }
         .width('100%')
-        .height("100%")
+        .height('100%')
         .backgroundColor(store.themeMode === AppThemeMode.DARK ? '#121212' : '#FFFFFF')
-
+        .scrollBar(BarState.Off)
 
         if (this.albums == null || this.albums.length == 0) {
           if (store.api == null) {
@@ -202,6 +186,193 @@ export struct Index {
       this.albums = await this.fetchData()
       this.isLoading = false
     })
+  }
+
+  // 轮播组件
+  @Builder
+  buildCarousel() {
+    if (this.albums.length > 0 && this.albums[0].medias.length > 0) {
+      Swiper() {
+        ForEach(this.albums[0].medias.slice(0, 5), (media: MediaModel) => {
+          Stack({ alignContent: Alignment.BottomStart }) {
+            Image(media.image?.primary || '')
+              .width('100%')
+              .height(200)
+              .borderRadius(12)
+              .objectFit(ImageFit.Cover)
+              .alt($r('app.media.background'))
+            
+            // 渐变遮罩
+            Column()
+              .width('100%')
+              .height(80)
+              .linearGradient({
+                direction: GradientDirection.Bottom,
+                colors: [['rgba(0,0,0,0)', 0], ['rgba(0,0,0,0.7)', 1]]
+              })
+              .borderRadius({ bottomLeft: 12, bottomRight: 12 })
+            
+            // 标题和描述
+            Column({ space: 4 }) {
+              Text(media.title || '')
+                .fontSize(18)
+                .fontWeight(FontWeight.Bold)
+                .fontColor(Color.White)
+                .maxLines(1)
+                .textOverflow({ overflow: TextOverflow.Ellipsis })
+              
+              if (media.overview) {
+                Text(media.overview)
+                  .fontSize(14)
+                  .fontColor('#E0E0E0')
+                  .maxLines(2)
+                  .textOverflow({ overflow: TextOverflow.Ellipsis })
+              }
+            }
+            .alignItems(HorizontalAlign.Start)
+            .padding({ left: 16, right: 16, bottom: 16 })
+          }
+          .onClick(() => {
+            // 点击跳转到详情页
+            router.pushPage("pages/MediaDetailPage", { mediaId: media.id })
+          })
+        }, (media: MediaModel) => media.id)
+      }
+      .width('100%')
+      .height(200)
+      .borderRadius(12)
+      .autoPlay(true)
+      .interval(4000)
+      .indicator(
+        new DotIndicator()
+          .itemWidth(8)
+          .itemHeight(8)
+          .selectedItemWidth(16)
+          .selectedItemHeight(8)
+          .color('#80FFFFFF')
+          .selectedColor('#FFFFFF')
+      )
+    }
+  }
+
+  // 推荐项目
+  @Builder
+  buildRecommendations() {
+    if (this.albums.length > 1) {
+      Column({ space: 12 }) {
+        Row() {
+          Text('推荐')
+            .fontSize(20)
+            .fontWeight(FontWeight.Bold)
+            .fontColor(store.themeMode === AppThemeMode.DARK ? '#FFFFFF' : '#000000')
+          Blank()
+        }
+        .width('100%')
+        
+        Row({ space: 12 }) {
+          ForEach(this.albums.slice(1, 3), (album: AlbumMediasModel) => {
+            if (album.medias.length > 0) {
+              Stack({ alignContent: Alignment.BottomStart }) {
+                Image(album.medias[0].image?.primary || '')
+                  .width('100%')
+                  .height(160)
+                  .borderRadius(8)
+                  .objectFit(ImageFit.Cover)
+                  .alt($r('app.media.background'))
+                
+                // 渐变遮罩
+                Column()
+                  .width('100%')
+                  .height(60)
+                  .linearGradient({
+                    direction: GradientDirection.Bottom,
+                    colors: [['rgba(0,0,0,0)', 0], ['rgba(0,0,0,0.8)', 1]]
+                  })
+                  .borderRadius({ bottomLeft: 8, bottomRight: 8 })
+                
+                Column({ space: 2 }) {
+                  Text(album.title || '')
+                    .fontSize(14)
+                    .fontWeight(FontWeight.Medium)
+                    .fontColor(Color.White)
+                    .maxLines(1)
+                    .textOverflow({ overflow: TextOverflow.Ellipsis })
+                  
+                  Text(`${album.medias.length} 项`)
+                    .fontSize(12)
+                    .fontColor('#C0C0C0')
+                }
+                .alignItems(HorizontalAlign.Start)
+                .padding({ left: 12, right: 12, bottom: 12 })
+              }
+              .layoutWeight(1)
+              .onClick(() => {
+                // 点击跳转到专辑页面
+                router.pushPage("pages/AlbumDetailPage", { albumId: album.id })
+              })
+            }
+          }, (album: AlbumMediasModel) => album.id)
+        }
+        .width('100%')
+      }
+    }
+  }
+
+  // 内容列表
+  @Builder
+  buildContentList() {
+    if (this.albums.length > 0) {
+      Column({ space: 16 }) {
+        ForEach(this.albums.slice(3), (item: AlbumMediasModel) => {
+          Column({ space: 8 }) {
+            Row() {
+              Text(item.title || '')
+                .fontSize(18)
+                .fontWeight(FontWeight.Medium)
+                .fontColor(store.themeMode === AppThemeMode.DARK ? '#FFFFFF' : '#000000')
+              Blank()
+              Text('查看全部')
+                .fontSize(14)
+                .fontColor(store.themeMode === AppThemeMode.DARK ? '#7EC0EE' : '#0A84FF')
+                .onClick(() => {
+                  router.pushPage("pages/AlbumDetailPage", { albumId: item.id })
+                })
+            }
+            .width('100%')
+            
+            Scroll(Scroller()) {
+              Row({ space: 12 }) {
+                ForEach(item.medias.slice(0, 10), (media: MediaModel) => {
+                  Column({ space: 6 }) {
+                    Image(media.image?.primary || '')
+                      .width(120)
+                      .height(160)
+                      .borderRadius(8)
+                      .objectFit(ImageFit.Cover)
+                      .alt($r('app.media.background'))
+                    
+                    Text(media.title || '')
+                      .fontSize(12)
+                      .fontColor(store.themeMode === AppThemeMode.DARK ? '#FFFFFF' : '#000000')
+                      .maxLines(2)
+                      .textOverflow({ overflow: TextOverflow.Ellipsis })
+                      .width(120)
+                      .textAlign(TextAlign.Start)
+                  }
+                  .onClick(() => {
+                    router.pushPage("pages/MediaDetailPage", { mediaId: media.id })
+                  })
+                }, (media: MediaModel) => media.id)
+              }
+              .padding({ left: 0, right: 16 })
+            }
+            .scrollable(ScrollDirection.Horizontal)
+            .scrollBar(BarState.Off)
+            .width('100%')
+          }
+        }, (item: AlbumMediasModel) => item.id)
+      }
+    }
   }
 
   // 显示更多选项
