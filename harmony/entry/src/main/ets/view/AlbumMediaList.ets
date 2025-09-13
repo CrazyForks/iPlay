@@ -24,7 +24,7 @@ export struct AlbumMediaList {
           .textAlign(TextAlign.Start)
           .fontWeight(FontWeight.Bold)
           .flexGrow(1)
-          .margin({top: 5, left: 15, bottom: 10})
+          .margin({top: 5, left: 0, bottom: 10})
         Text($r("app.string.album_view_more"))
           .fontWeight(16)
           .textAlign(TextAlign.End)

@@ -55,7 +55,7 @@ struct MediaPage {
             // 季度选择和剧集列表
             this.buildSeasonsAndEpisodes()
           }
-          .padding({ left: 16, right: 16, top: 8, bottom: 8 })
+          .padding({ left: 2, right: 2, top: 8, bottom: 8 })
         }
         .scrollBar(BarState.Off)
         .layoutWeight(1)
@@ -189,28 +189,26 @@ struct MediaPage {
                   .borderRadius(6)
                   .objectFit(ImageFit.Cover)
                 
-                // 选中状态指示器
-                if (this.selectedImageIndex === index) {
-                  Column()
-                    .width(80 + 8)
-                    .aspectRatio(16/9)
-                    .borderRadius(6)
-                    .border({
-                      width: 2,
-                      color: '#007AFF'
-                    })
-                }
+                Column()
+                  .width(80 + 8)
+                  .height(45 + 8)
+                  .borderRadius(6)
+                  .border({
+                    width: 2,
+                    color: this.selectedImageIndex === index ? '#007AFF' : '#00000000'
+                  })
               }
               .onClick(() => {
                 this.selectedImageIndex = index
               })
             }, (imageUrl: string, index: number) => `${imageUrl}_${index}`)
           }
-          .padding({ left: 0, right: 16 })
+          .padding({ left: 2, right: 2 })
         }
         .scrollable(ScrollDirection.Horizontal)
         .scrollBar(BarState.Off)
         .width('100%')
+        .align(Alignment.Start)
       }
     }
   }
@@ -316,6 +314,7 @@ struct MediaPage {
         }
         .scrollable(ScrollDirection.Horizontal)
         .scrollBar(BarState.Off)
+        .align(Alignment.Start)
         .width('100%')
         .height(150)
       }
@@ -369,6 +368,7 @@ struct MediaPage {
           }
           .scrollable(ScrollDirection.Horizontal)
           .scrollBar(BarState.Off)
+          .align(Alignment.Start)
           .width('100%')
         }
         
@@ -397,6 +397,7 @@ struct MediaPage {
             }
             .scrollable(ScrollDirection.Horizontal)
             .scrollBar(BarState.Off)
+            .align(Alignment.Start)
             .width('100%')
             .height(180)
           }

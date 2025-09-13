@@ -39,11 +39,11 @@ struct AlbumPage {
             .columnsTemplate('1fr 1fr 1fr')
             .rowsGap(12)
             .columnsGap(12)
-            .padding(16)
+            .padding(2)
             .width('100%')
           }
           .align(Alignment.TopStart)
-          .scrollBar(BarState.Auto)
+          .scrollBar(BarState.Off)
           .edgeEffect(EdgeEffect.Spring)
           .layoutWeight(1)
         }

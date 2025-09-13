@@ -31,12 +31,14 @@ export struct Index {
             this.buildContentList()
           }
           .width('100%')
-          .padding({ left: 16, right: 16, top: 8, bottom: 8 })
+          .padding({ left: 2, right: 2, top: 8, bottom: 8 })
         }
         .width('100%')
         .height('100%')
+        .align(Alignment.TopStart)
         .backgroundColor(store.themeMode === AppThemeMode.DARK ? '#121212' : '#FFFFFF')
         .scrollBar(BarState.Off)
+        .layoutWeight(1)
 
         if (this.albums == null || this.albums.length == 0) {
           if (store.api == null) {
@@ -151,6 +153,7 @@ export struct Index {
       "Limit": "20",
       "Recursive": "true",
       "ImageTypeLimit": "0",
+      "Fields": "BasicSyncInfo,People,Genres,SortName,Overview,CanDelete,Container,PrimaryImageAspectRatio,Prefix,DateCreated,ProductionYear,Status,EndDate"
     })
     this.recommendataions = recommendations
 
@@ -241,13 +244,13 @@ export struct Index {
               }
             }
             .alignItems(HorizontalAlign.Start)
-            .padding({ left: 16, right: 16, bottom: 16 })
+            .padding({ left: 2, right: 2, bottom: 16 })
           }
           .onClick(() => {
             // 点击跳转到详情页
-            router.pushPage("pages/MediaDetailPage", { mediaId: media.id })
+            router.pushPage("pages/MediaPage", { media: media })
           })
-          .margin({bottom: 25})
+          .margin({bottom: 28})
         }, (media: MediaModel) => media.id)
       }
       .width('100%')
@@ -320,7 +323,7 @@ export struct Index {
               .layoutWeight(1)
               .onClick(() => {
                 // 点击跳转到专辑页面
-                router.pushPage("pages/AlbumDetailPage", { albumId: media.id })
+                router.pushPage("pages/MediaPage", { media: media })
               })
             }
           }, (album: AlbumMediasModel) => album.id)

@@ -38,8 +38,8 @@ export struct Index {
                 }
                 .width('100%')
                 .padding({
-                  left: 16,
-                  right: 16,
+                  left: 2,
+                  right: 2,
                   top: 16,
                   bottom: 8
                 })
@@ -54,7 +54,7 @@ export struct Index {
                 .columnsTemplate('1fr 1fr 1fr')
                 .rowsGap(12)
                 .columnsGap(12)
-                .padding({ left: 16, right: 16, bottom: 16 })
+                .padding({ left: 2, right: 2, bottom: 16 })
               }
 
               if (this.series?.length ?? 0 > 0) {
@@ -72,8 +72,8 @@ export struct Index {
                 }
                 .width('100%')
                 .padding({
-                  left: 16,
-                  right: 16,
+                  left: 2,
+                  right: 2,
                   top: 8,
                   bottom: 8
                 })
@@ -88,7 +88,7 @@ export struct Index {
                 .columnsTemplate('1fr 1fr 1fr')
                 .rowsGap(12)
                 .columnsGap(12)
-                .padding({ left: 16, right: 16, bottom: 16 })
+                .padding({ left: 2, right: 2, bottom: 16 })
               }
 
               if (this.episodes?.length ?? 0 > 0) {
@@ -106,8 +106,8 @@ export struct Index {
                 }
                 .width('100%')
                 .padding({
-                  left: 16,
-                  right: 16,
+                  left: 2,
+                  right: 2,
                   top: 8,
                   bottom: 8
                 })
@@ -122,7 +122,7 @@ export struct Index {
                 .columnsTemplate('1fr 1fr 1fr')
                 .rowsGap(12)
                 .columnsGap(12)
-                .padding({ left: 16, right: 16, bottom: 16 })
+                .padding({ left: 2, right: 2, bottom: 16 })
               }
             }
             .width('100%')
