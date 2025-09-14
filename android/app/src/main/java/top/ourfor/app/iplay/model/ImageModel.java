@@ -34,11 +34,10 @@ public class ImageModel {
     // 获取所有背景图片，包括主背景图和额外背景图
     public List<String> getAllBackdrops() {
         List<String> allBackdrops = new java.util.ArrayList<>();
-        if (backdrop != null && !backdrop.isEmpty()) {
-            allBackdrops.add(backdrop);
-        }
         if (backdrops != null && !backdrops.isEmpty()) {
             allBackdrops.addAll(backdrops);
+        } else if (backdrop != null && !backdrop.isEmpty()) {
+            allBackdrops.add(backdrop);
         }
         return allBackdrops;
     }
