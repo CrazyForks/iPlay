@@ -20,6 +20,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
@@ -33,9 +34,11 @@ import top.ourfor.app.iplay.bean.INavigator;
 import top.ourfor.app.iplay.databinding.CarouselItemBinding;
 import top.ourfor.app.iplay.databinding.CarouselViewBinding;
 import top.ourfor.app.iplay.model.MediaModel;
+import top.ourfor.app.iplay.module.GlideApp;
 import top.ourfor.app.iplay.util.DeviceUtil;
 
 public class CarouselView extends ConstraintLayout {
+    private static final RequestOptions options = new RequestOptions().transform(new RoundedCorners(DeviceUtil.dpToPx(16)));
     private CarouselViewBinding binding;
     private CarouselAdapter adapter;
     private Handler autoScrollHandler;
@@ -219,15 +222,11 @@ public class CarouselView extends ConstraintLayout {
             // 加载背景图片
             String backdropUrl = media.getImage() != null ? media.getImage().getBackdrop() : null;
             if (backdropUrl != null && !backdropUrl.isEmpty()) {
-                Glide.with(binding.backgroundImage.getContext())
+                GlideApp.with(binding.backgroundImage.getContext())
                     .load(backdropUrl)
-                    .apply(new RequestOptions()
-                        .transform(new RoundedCorners(DeviceUtil.dpToPx(16))))
+                    .apply(options)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(binding.backgroundImage);
-            } else {
-                // 设置默认背景
-                binding.backgroundImage.setBackgroundColor(
-                    ContextCompat.getColor(binding.backgroundImage.getContext(), R.color.purple_400));
             }
 
             // 设置点击事件
