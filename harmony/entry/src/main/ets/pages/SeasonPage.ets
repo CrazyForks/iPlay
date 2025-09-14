@@ -46,9 +46,9 @@ struct SeasonPage {
                 }, (item: MediaModel) => item.id)
               }
               .padding({
-                left: 16,
-                right: 16,
-                top: 16,
+                left: 2,
+                right: 2,
+                top: 8,
                 bottom: 16
               })
               .width("100%")

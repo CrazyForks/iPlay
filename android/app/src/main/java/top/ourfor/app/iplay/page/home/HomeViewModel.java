@@ -30,6 +30,7 @@ import top.ourfor.app.iplay.store.IAppStore;
 public class HomeViewModel extends ViewModel {
     private final MutableLiveData<List<AlbumModel>> albums = new MutableLiveData<>(null);
     private final MutableLiveData<List<Object>> albumCollection = new MutableLiveData<>(new CopyOnWriteArrayList<>());
+    private final MutableLiveData<List<top.ourfor.app.iplay.model.MediaModel>> recommendationMedias = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> hasValidSite = new MutableLiveData<>(false);
     private boolean isFirstLoad = true;
@@ -47,10 +48,26 @@ public class HomeViewModel extends ViewModel {
         val context = XGET(Activity.class);
         if (albums == null || albumMedias == null) return;
         List<Object> newItems = Collections.synchronizedList(new ArrayList<>());
-        newItems.add(EmbyModel.EmbyAlbumMediaModel.builder()
-                .album(null)
-                .medias(new CopyOnWriteArrayList(albums))
-                .build());
+        
+        // 获取推荐媒体数据（从第一个专辑的媒体中选择前5个作为推荐）
+        List<top.ourfor.app.iplay.model.MediaModel> recommendations = new ArrayList<>();
+        if (!albums.isEmpty()) {
+            val firstAlbumId = albums.get(0).getId();
+            if (firstAlbumId != null) {
+                val firstAlbumMedias = albumMedias.get(firstAlbumId);
+                if (firstAlbumMedias != null && !firstAlbumMedias.isEmpty()) {
+                    recommendations = firstAlbumMedias.stream()
+                        .limit(5)
+                        .collect(java.util.stream.Collectors.toList());
+                }
+            }
+        }
+        this.recommendationMedias.postValue(recommendations);
+        
+//        newItems.add(EmbyModel.EmbyAlbumMediaModel.builder()
+//                .album(null)
+//                .medias(new CopyOnWriteArrayList(albums))
+//                .build());
 
         val resume = store.getDataSource().getResume();
         resume.forEach(item -> item.setLayoutType(MediaLayoutType.Backdrop));

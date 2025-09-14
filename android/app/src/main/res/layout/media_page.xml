@@ -38,6 +38,15 @@
                 app:layout_constraintRight_toRightOf="@id/poster_image"
                 app:layout_constraintTop_toTopOf="@id/poster_image" />
 
+            <!-- 背景图片列表 -->
+            <top.ourfor.app.iplay.page.media.MediaBackdropListView
+                android:id="@+id/backdrop_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/poster_image"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="8dp" />
+
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/play_action"
                 android:layout_width="match_parent"
@@ -50,7 +59,7 @@
                 app:justifyContent="center"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/poster_image">
+                app:layout_constraintTop_toBottomOf="@id/backdrop_list">
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/tag_list"

@@ -18,7 +18,7 @@ struct TermsOfServicePage {
   build() {
     NavDestination() {
       Column() {
-        Web({ src: 'https://ourfor.top/raw/harmony/index.html', controller: this.webController })
+        Web({ src: 'https://app-doc.ourfor.top/statement/basic/index.html', controller: this.webController })
           .width('100%')
           .layoutWeight(1)
           .onPageBegin(() => {

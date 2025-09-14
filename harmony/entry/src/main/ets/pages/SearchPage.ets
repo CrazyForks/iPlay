@@ -2,6 +2,7 @@ import { MediaModel, nil } from '../../../api/iPlayDataSource'
 import { Dict, Router, router } from '../../../module/Router'
 import { AppThemeMode, store } from '../store/Store'
 import { MediaCellView } from '../view/MediaCellView'
+import { LengthMetrics } from '@kit.ArkUI'
 
 @Entry
 @Component
@@ -10,6 +11,7 @@ export struct Index {
   @State keyword: string | nil = null
   @State isLoading: boolean = false
   @State path: NavPathStack = new NavPathStack()
+  @State recommendations: MediaModel[] | nil = null
 
   constructor() {
     super()
@@ -39,6 +41,23 @@ export struct Index {
           .width('100%')
           .margin({ top: 15, bottom: 10 })
 
+          if (!this.medias && !this.keyword) {
+            Flex({ wrap: FlexWrap.Wrap, space: { main: new LengthMetrics(8), cross: new LengthMetrics(8) } }) {
+              ForEach(this.recommendations, (media: MediaModel) => {
+                  Text(media.title)
+                    .fontSize(12)
+                    .fontColor('#007AFF')
+                    .padding({ left: 12, right: 12, top: 6, bottom: 6 })
+                    .backgroundColor('#F0F8FF')
+                    .borderRadius(16)
+                    .onClick(() => {
+                      this.keyword = media.title
+                      this.search(this.keyword ?? "")
+                    })
+              }, (item: MediaModel) => item.id)
+            }
+          }
+
           Grid() {
             ForEach(this.medias, (item: MediaModel) => {
               GridItem() {
@@ -46,6 +65,7 @@ export struct Index {
               }
             }, (item: MediaModel) => item.id)
           }
+          .scrollBar(BarState.Off)
           .columnsTemplate('1fr 1fr')
           .width('100%')
           .height('100%')
@@ -73,7 +93,24 @@ export struct Index {
     ])
     .onAppear(() => {
       router.addTarget?.(this.router(), "search")
+      this.onPageShow()
     })
+  }
+
+  onPageShow(): void {
+    this.fetchRecommendation()
+  }
+
+  async fetchRecommendation() {
+    let recommendations = await store.api?.getMedias({
+      "SortBy": "IsFavoriteOrLiked,Random",
+      "IncludeItemTypes": "Movie,Series",
+      "Limit": "20",
+      "Recursive": "true",
+      "ImageTypeLimit": "0",
+      "Fields": "BasicSyncInfo,People,Genres,SortName,Overview,CanDelete,Container,PrimaryImageAspectRatio,Prefix,DateCreated,ProductionYear,Status,EndDate"
+    })
+    this.recommendations = recommendations
   }
 
   async search(keyword: string) {
