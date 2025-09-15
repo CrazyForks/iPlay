@@ -53,6 +53,7 @@ import top.ourfor.app.iplay.util.DeviceUtil;
 import top.ourfor.app.iplay.util.IntervalCaller;
 import top.ourfor.app.iplay.util.WindowUtil;
 import top.ourfor.app.iplay.store.IAppStore;
+import top.ourfor.app.iplay.view.EpisodeCellView;
 import top.ourfor.app.iplay.view.ListView;
 import top.ourfor.app.iplay.view.player.PlayerEventType;
 import top.ourfor.app.iplay.view.video.PlayerSourceModel;
@@ -237,9 +238,9 @@ public class MoviePlayerPage implements Page {
         playerView.setOnPlaylistTap(playerView -> {
             val context = getContext();
             val listView = new ListView<MediaModel>(context);
-            listView.viewModel.viewCell = MediaViewCell.class;
+            listView.viewModel.viewCell = EpisodeCellView.class;
             listView.viewModel.isSelected = (model) -> model.getId().equals(this.id);
-            listView.listView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+            listView.listView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
             listView.listView.setPadding(DeviceUtil.dpToPx(3), DeviceUtil.dpToPx(3), DeviceUtil.dpToPx(3), DeviceUtil.dpToPx(3));
             List<MediaModel> items = null;
             if (media.isEpisode()) {
@@ -299,18 +300,18 @@ public class MoviePlayerPage implements Page {
             };
             Window window = dialog.getWindow();
             if (window != null) {
-                listView.setPadding(0, 0, 0, DeviceUtil.dpToPx(20));
+                listView.setPadding(0, 0, 0, 0);
                 window.setBackgroundDrawableResource(R.drawable.dialog_bg);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     window.setBackgroundBlurRadius(8);
                 }
                 WindowUtil.setFullscreen(window);
                 WindowManager.LayoutParams params = window.getAttributes();
-                params.gravity = Gravity.BOTTOM;
-                params.width = WindowManager.LayoutParams.MATCH_PARENT;
-                params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                params.gravity = Gravity.START;
+                params.width = DeviceUtil.dpToPx(448);
+                params.height = WindowManager.LayoutParams.MATCH_PARENT;
                 window.setAttributes(params);
-                window.setWindowAnimations(R.style.DialogAnimation);
+                window.setWindowAnimations(R.style.LeftSlideAnimation);
             }
         });
 
