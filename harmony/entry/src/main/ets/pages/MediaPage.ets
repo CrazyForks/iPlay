@@ -4,6 +4,8 @@ import { store } from '../store/Store'
 import { ActorCellView } from '../view/ActorCellView'
 import { MediaCellView } from '../view/MediaCellView'
 import { LengthMetrics } from '@kit.ArkUI'
+import { context } from '../../../bean/BeanContainer'
+import { StarAction } from '../../../bean/StarAction'
 
 
 @Builder
@@ -58,6 +60,7 @@ struct MediaPage {
           .padding({ left: 2, right: 2, top: 8, bottom: 8 })
         }
         .scrollBar(BarState.Off)
+        .align(Alignment.TopStart)
         .layoutWeight(1)
       }
       .height('100%')
@@ -465,5 +468,7 @@ struct MediaPage {
         duration: 2000
       });
     }
+
+    context.action<StarAction>("StarAction", bean => bean.onStarUpdate(this.media))
   }
 }

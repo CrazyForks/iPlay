@@ -128,7 +128,7 @@ export struct Index {
             .width('100%')
           }
           .align(Alignment.TopStart)
-          .scrollBar(BarState.Auto)
+          .scrollBar(BarState.Off)
           .edgeEffect(EdgeEffect.Spring)
           .width('100%')
           .layoutWeight(1) // This ensures the scroll area takes all remaining space
@@ -157,6 +157,7 @@ export struct Index {
     .backgroundColor(store.themeMode === AppThemeMode.DARK ? '#121212' : '#FFFFFF')
     .onAppear(async () => {
       context.watch("SiteAction", this)
+      context.watch("StarAction", this)
       this.isLoading = true
       await this.fetchData()
       this.isLoading = false
@@ -199,6 +200,14 @@ export struct Index {
   onSiteUpdate(site: SiteModel) {
     new Promise<void>(async () => {
       this.isLoading = true;
+      await this.fetchData()
+      this.isLoading = false
+    })
+  }
+
+  onStarUpdate(media: MediaModel) {
+    new Promise<void>(async () => {
+      this.isLoading = true
       await this.fetchData()
       this.isLoading = false
     })

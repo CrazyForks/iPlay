@@ -250,8 +250,7 @@ export class EmbyApi implements iPlayDataSourceApi {
       url = `${this.site.server}/emby/Users/${this.user.id}/FavoriteItems/${itemId}`;
     } else {
       // 取消收藏，用query参数模拟delete操作
-      url = `${this.site.server}/emby/Users/${this.user.id}/FavoriteItems/${itemId}`;
-      url += `?X-HTTP-Method-Override=DELETE`;
+      url = `${this.site.server}/emby/Users/${this.user.id}/FavoriteItems/${itemId}/Delete`;
     }
     
     try {

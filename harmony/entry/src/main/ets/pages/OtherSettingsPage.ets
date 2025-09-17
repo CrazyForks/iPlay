@@ -20,13 +20,13 @@ export struct OtherSettingsPage {
           List() {
             ListItem() {
               this.SettingsItem("服务协议", "查阅服务协议具体内容", () => {
-                router.pushPage("pages/PrivacyPolicyPage", {})
+                router.pushPage("pages/TermsOfServicePage", {})
               })
             }
 
             ListItem() {
               this.SettingsItem("隐私政策", "查阅隐私政策具体内容", () => {
-                router.pushPage("pages/TermsOfServicePage", {})
+                router.pushPage("pages/PrivacyPolicyPage", {})
               })
             }
           }
@@ -63,10 +63,10 @@ export struct OtherSettingsPage {
         .height(20)
     }
     .width('100%')
-    .padding(16)
+    .padding(12)
     .backgroundColor(Color.White)
     .borderRadius(8)
-    .margin({top: 8, bottom: 8})
+    .margin({top: 8, bottom: 2})
     .onClick(onClick)
   }
 }
