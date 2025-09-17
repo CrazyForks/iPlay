@@ -102,12 +102,12 @@ struct LoginPage {
             .onClick(() => {
               router.pushPage("pages/TermsOfServicePage", {})
             })
-          Text("和")
-          Text("隐私政策")
-            .foregroundColor(Color.Blue)
-            .onClick(() => {
-              router.pushPage("pages/PrivacyPolicyPage", {})
-            })
+          Text("，并承诺遵守相关法律  ")
+          // Text("隐私政策")
+          //   .foregroundColor(Color.Blue)
+          //   .onClick(() => {
+          //     router.pushPage("pages/PrivacyPolicyPage", {})
+          //   })
         }
         .margin({ top: 15 })
 

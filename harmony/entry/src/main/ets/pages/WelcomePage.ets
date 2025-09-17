@@ -84,16 +84,16 @@ struct WelcomePage {
                 router.pushPage("pages/TermsOfServicePage", {})
               })
             
-            Text("和")
-              .fontSize(14)
-              .fontColor(this.isDarkMode ? Color.White : Color.Black)
-            
-            Text("隐私政策")
-              .fontSize(14)
-              .fontColor(this.isDarkMode ? '#7EC0EE' : '#0A84FF')
-              .onClick(() => {
-                router.pushPage("pages/PrivacyPolicyPage", {})
-              })
+            // Text("和")
+            //   .fontSize(14)
+            //   .fontColor(this.isDarkMode ? Color.White : Color.Black)
+            //
+            // Text("隐私政策")
+            //   .fontSize(14)
+            //   .fontColor(this.isDarkMode ? '#7EC0EE' : '#0A84FF')
+            //   .onClick(() => {
+            //     router.pushPage("pages/PrivacyPolicyPage", {})
+            //   })
           }
           .margin({ bottom: 20 })
           
