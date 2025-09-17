@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -193,6 +194,8 @@ public class EmbyModel {
         ImageModel image;
         @JsonProperty("LayoutType")
         MediaLayoutType layoutType;
+        @JsonProperty("BackdropImageTags")
+        List<String> backdropTags;
 
         @JsonProperty("PrimaryImageAspectRatio")
         Float primaryImageAspectRatio;
@@ -201,10 +204,12 @@ public class EmbyModel {
         public void buildImage(String url, ImageType type) {
             if (!url.endsWith("/")) url = url + "/";
             var prefix = type == ImageType.Emby ? "emby/" : "";
+            String finalUrl = url;
             image = ImageModel.builder()
                     .primary(url + prefix + "Items/" + id + "/Images/Primary?maxHeight=720&quality=90&tag=" + imageTags.getPrimary())
                     .logo(url + prefix + "Items/" + id + "/Images/Logo")
                     .backdrop(url + prefix + "Items/" + id + "/Images/Backdrop")
+                    .backdrops(IntStream.range(0, backdropTags.size()).mapToObj(i -> finalUrl + prefix + "Items/" + id + "/Images/Backdrop/" + i + "?tag=" + backdropTags.get(i)).collect(Collectors.toList()))
                     .thumb(url + prefix + "Items/" + id + "/Images/Thumb?fillHeight=288&fillWidth=512&quality=96&tag=" + imageTags.getThumb())
                     .fallback(type.equals("Episode") ? List.of(url + "emby/Items/" + seriesId + "/Images/Backdrop") : List.of(""))
                     .build();

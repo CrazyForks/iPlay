@@ -33,6 +33,8 @@ import top.ourfor.app.iplay.databinding.MediaPageBinding;
 import top.ourfor.app.iplay.model.ActorModel;
 import top.ourfor.app.iplay.model.MediaModel;
 import top.ourfor.app.iplay.module.GlideApp;
+
+import com.bumptech.glide.Glide;
 import top.ourfor.app.iplay.page.Page;
 import top.ourfor.app.iplay.page.home.MediaViewCell;
 import top.ourfor.app.iplay.store.IAppStore;
@@ -54,6 +56,7 @@ public class MediaPage implements Page {
     IMediaModel model;
     ListView<ActorModel> actorList;
     ListView<MediaModel> similarList;
+    private int selectedBackdropIndex = 0;
 
     @Getter
     Context context;
@@ -182,13 +185,7 @@ public class MediaPage implements Page {
     void bind() {
         if (model == null) return;
 
-        var backdrop = model.getImage().getBackdrop();
-        if (model instanceof MediaModel media) {
-            backdrop = media.isEpisode() ? media.getImage().getPrimary() : media.getImage().getBackdrop();
-        }
-        GlideApp.with(context)
-                .load(backdrop)
-                .into(binding.posterImage);
+        setupBackdropImages();
 
         if (model instanceof MediaModel media &&
                 (media.getType().equals("Movie") ||
@@ -306,6 +303,48 @@ public class MediaPage implements Page {
         };
         binding.similarList.addView(similarList, LayoutUtil.fit());
         viewModel.fetchSimilar(id);
+    }
+
+    void setupBackdropImages() {
+        if (model == null || model.getImage() == null) return;
+        
+        // 获取所有背景图片
+        val allBackdrops = model.getImage().getAllBackdrops();
+        
+        if (allBackdrops.isEmpty()) {
+            // 如果没有背景图片，使用默认图片
+            binding.posterImage.setImageResource(R.drawable.hand_drawn_3);
+            binding.backdropList.setVisibility(View.GONE);
+            return;
+        }
+        
+        // 设置主背景图片
+        updateMainBackdropImage(allBackdrops.get(selectedBackdropIndex));
+        
+        // 设置背景图片列表
+        if (allBackdrops.size() >= 1) {
+            binding.backdropList.setVisibility(View.VISIBLE);
+            binding.backdropList.setBackdrops(allBackdrops);
+            binding.backdropList.setSelectedBackdropIndex(selectedBackdropIndex);
+            binding.backdropList.setOnBackdropSelectedListener((index, backdropUrl) -> {
+                selectedBackdropIndex = index;
+                updateMainBackdropImage(backdropUrl);
+            });
+        } else {
+            binding.backdropList.setVisibility(View.GONE);
+        }
+    }
+    
+    void updateMainBackdropImage(String backdropUrl) {
+        if (backdropUrl != null && !backdropUrl.isEmpty()) {
+            Glide.with(context)
+                .load(backdropUrl)
+                .placeholder(R.drawable.hand_drawn_3)
+                .error(R.drawable.hand_drawn_3)
+                .into(binding.posterImage);
+        } else {
+            binding.posterImage.setImageResource(R.drawable.hand_drawn_3);
+        }
     }
 
     void showActorList() {

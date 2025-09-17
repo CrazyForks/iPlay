@@ -18,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
@@ -32,6 +33,7 @@ import top.ourfor.app.iplay.action.ThemeUpdateAction;
 import top.ourfor.app.iplay.bean.INavigator;
 import top.ourfor.app.iplay.common.annotation.ViewController;
 import top.ourfor.app.iplay.databinding.HomePageBinding;
+import top.ourfor.app.iplay.model.MediaModel;
 import top.ourfor.app.iplay.model.SiteModel;
 import top.ourfor.app.iplay.page.Page;
 import top.ourfor.app.iplay.page.login.SiteViewCell;
@@ -63,11 +65,19 @@ public class HomePage implements SiteUpdateAction, ThemeUpdateAction, SiteListUp
         val view = binding.getRoot();
         store = XGET(IAppStore.class);
         viewModel = new HomeViewModel(store);
+        
         viewModel.getAlbumCollection().observe(view, albums -> {
             if (binding != null) {
                 binding.albumListView.setItems(albums);
             }
         });
+        
+        viewModel.getRecommendationMedias().observe(view, recommendationMedias -> {
+            if (binding != null && recommendationMedias != null) {
+                updateRecommendationViews(recommendationMedias);
+            }
+        });
+        
         viewModel.getIsLoading().observe(view, isLoading -> {
             if (activityIndicator == null) return;
             if (isLoading) {
@@ -77,12 +87,15 @@ public class HomePage implements SiteUpdateAction, ThemeUpdateAction, SiteListUp
                 binding.swipeRefresh.setRefreshing(false);
             }
         });
+        
         viewModel.getHasValidSite().observe(view, hasValidSite -> {
             val visible = hasValidSite ? View.VISIBLE : View.GONE;
             val invisible = hasValidSite ? View.GONE : View.VISIBLE;
             binding.homeActionBar.setVisibility(invisible);
             binding.albumListView.setVisibility(visible);
             binding.swipeRefresh.setVisibility(visible);
+            binding.carouselView.setVisibility(visible);
+            binding.recommendationLayout.setVisibility(visible);
         });
     }
 
@@ -251,6 +264,28 @@ public class HomePage implements SiteUpdateAction, ThemeUpdateAction, SiteListUp
         behavior.setPeekHeight(height);
         siteLineListView.loadData();
         dialog.show();
+    }
+
+    private void updateRecommendationViews(List<MediaModel> recommendationMedias) {
+        // 更新轮播视图
+        binding.carouselView.setRecommendationMedias(recommendationMedias);
+        
+        // 更新推荐项
+        if (recommendationMedias.size() >= 3) {
+            binding.recommendationLayout.setVisibility(View.VISIBLE);
+            
+            // 设置第一个推荐项（索引1）
+            if (recommendationMedias.size() > 1) {
+                binding.recommendationItem1.setMedia(recommendationMedias.get(1));
+            }
+            
+            // 设置第二个推荐项（索引2）
+            if (recommendationMedias.size() > 2) {
+                binding.recommendationItem2.setMedia(recommendationMedias.get(2));
+            }
+        } else {
+            binding.recommendationLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override

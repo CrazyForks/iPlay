@@ -158,4 +158,16 @@
     <color name="surfaceContainerHigh_highContrast">#E6E9E0</color>
     <color name="surfaceContainerHighest_highContrast">#E0E4DB</color>
     <color name="focus_light">#80000000</color>
+    
+    <!-- 推荐项渐变颜色 -->
+    <color name="red_400">#EF5350</color>
+    <color name="orange_400">#FF9800</color>
+    <color name="blue_400">#42A5F5</color>
+    <color name="purple_400">#AB47BC</color>
+    <color name="green_400">#66BB6A</color>
+    <color name="teal_400">#26A69A</color>
+    <color name="pink_400">#EC407A</color>
+    
+    <!-- 对比度颜色 -->
+    <color name="onBackground_lowContrast">#80181D17</color>
 </resources>

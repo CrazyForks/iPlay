@@ -4,6 +4,11 @@
         <item name="android:windowExitAnimation">@anim/dialog_exit</item>
     </style>
 
+    <style name="LeftSlideAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_in_left</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_left</item>
+    </style>
+
     <style name="ToolbarCustomStyle" parent="ThemeOverlay.Material3.ActionBar">
         <item name="colorControlNormal">@color/onBackground</item>
     </style>

@@ -53,4 +53,9 @@ public class EpisodeCellView extends ConstraintLayout implements UpdateModelActi
                 .apply(options)
                 .into(binding.posterImage);
     }
+
+    @Override
+    public <T> void updateSelectionState(T model, boolean selected) {
+        setSelected(selected);
+    }
 }
