@@ -60,15 +60,15 @@ struct AlbumPage {
       .backgroundColor(store.themeMode === AppThemeMode.DARK ? '#121212' : '#FFFFFF')
     }
     .title(this.albumTitle)
-    .menus([
-      {
-        value: "收藏",
-        icon: this.isFavorite ? $r('app.media.star_filled') : $r('app.media.star_outline'),
-        action: () => {
-          this.toggleFavorite()
-        }
-      },
-    ])
+    // .menus([
+    //   {
+    //     value: "收藏",
+    //     icon: this.isFavorite ? $r('app.media.star_filled') : $r('app.media.star_outline'),
+    //     action: () => {
+    //       this.toggleFavorite()
+    //     }
+    //   },
+    // ])
   }
 
   aboutToAppear(): void {
