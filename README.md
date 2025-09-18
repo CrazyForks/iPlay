@@ -80,7 +80,9 @@ It is developed in my free time ⏰
 </a>
 </td>
 <td>
-Coming soon
+<a href="https://appgallery.huawei.com/app/detail?id=top.ourfor.app.iPlay">
+   <img width="130" style="border-radius: 5px;object-fit:fill;" src="./doc/image/huawei_appgallery.png">
+</a>
 </td>
 </tr>
 </table>
