@@ -12,7 +12,7 @@ import top.ourfor.app.iplay.util.HTTPUtil;
 public class DanDanPlayApi {
     public static void search(String keyword, Consumer<DanDanPlayModel.AnimeSearchResult> completion) {
         var model = HTTPModel.<DanDanPlayModel.AnimeSearchResult>builder()
-                .url("https://api.dandanplay.net/api/v2/search/episodes")
+                .url("https://api.ourfor.top/api/v2/search/episodes")
                 .method("GET")
                 .query(Map.of(
                         "anime", keyword
@@ -36,7 +36,7 @@ public class DanDanPlayApi {
 
     public static void comments(Integer episodeId, Consumer<DanDanPlayModel.CommentsResult> completion) {
         var model = HTTPModel.<DanDanPlayModel.CommentsResult>builder()
-                .url("https://api.dandanplay.net/api/v2/comment/" + episodeId)
+                .url("https://api.ourfor.top/api/v2/comment/" + episodeId)
                 .method("GET")
                 .headers(Map.of("Content-Type", "application/json"))
                 .typeReference(new TypeReference<DanDanPlayModel.CommentsResult>() {})
