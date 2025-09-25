@@ -10,6 +10,8 @@ extern "C" {
 
 // 获取MPV API版本
 napi_value GetMpvApiVersion(napi_env env, napi_callback_info info);
+napi_value MpvCreate(napi_env env, napi_callback_info info);
+napi_value LoadVideo(napi_env env, napi_callback_info info);
 
 #ifdef __cplusplus
 }

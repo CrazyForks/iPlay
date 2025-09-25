@@ -6,7 +6,9 @@ export interface MpvNative {
   /**
    * 获取MPV API版本
    */
-  getMpvApiVersion(): Promise<number>;
+  GetMpvApiVersion(): Promise<number>;
+  MpvCreate(): Promise<number>;
+  LoadVideo(mpv: number, url: string): Promise<void>;
 }
 
 /**
@@ -14,4 +16,5 @@ export interface MpvNative {
  */
 export interface NativeMpvModule {
   GetMpvApiVersion(): number;
+  MpvCreate(): number;
 }

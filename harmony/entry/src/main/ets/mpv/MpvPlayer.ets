@@ -19,7 +19,27 @@ export class MpvPlayer {
    */
   async getApiVersion(): Promise<number> {
     try {
-      return await this.mpvNative.getMpvApiVersion();
+      return await this.mpvNative.GetMpvApiVersion();
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error('Failed to get MPV API version:', errorMsg);
+      throw new Error(errorMsg);
+    }
+  }
+
+  async create(): Promise<number> {
+    try {
+      return await this.mpvNative.MpvCreate();
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error('Failed to get MPV API version:', errorMsg);
+      throw new Error(errorMsg);
+    }
+  }
+
+  async loadVideo(mpv: number, url: string): Promise<void> {
+    try {
+      await this.mpvNative.LoadVideo(mpv, url);
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       console.error('Failed to get MPV API version:', errorMsg);
@@ -32,28 +52,23 @@ export class MpvPlayer {
  * MPV Native实现类
  */
 class MpvNativeImpl implements MpvNative {
-  async getMpvApiVersion(): Promise<number> {
+  async GetMpvApiVersion(): Promise<number> {
     try {
-
       console.log("mpv version" + libmpv.GetMpvApiVersion() + "")
       const version = libmpv.GetMpvApiVersion();
       return version;
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       console.error('MPV API: Failed to call native function:', errorMsg);
-      
-      // 发生错误时返回模拟值
-      const mockVersion = 0x20005; // MPV API Version 2.5
-      const majorVersion = (mockVersion >> 16) & 0xFFFF;
-      const minorVersion = mockVersion & 0xFFFF;
-      console.info(`=== MPV Client API Version Info (Error Fallback) ===`);
-      console.info(`Version: ${majorVersion}.${minorVersion} (0x${mockVersion.toString(16)})`);
-      console.info(`Implementation: Mock/Simulated`);
-      console.info(`Reason: Native call failed - ${errorMsg}`);
-      console.info(`Status: Using error fallback implementation`);
-      console.info(`==================================================`);
-      
-      return mockVersion;
+      return -1;
     }
+  }
+
+  async MpvCreate(): Promise<number> {
+    return libmpv.MpvCreate();
+  }
+
+  async LoadVideo(mpv: number, url: string): Promise<void> {
+    await libmpv.LoadVideo(mpv, url);
   }
 }
