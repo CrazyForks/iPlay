@@ -85,7 +85,7 @@ export struct Index {
         const mpvPlayer = new MpvPlayer();
         const apiVersion = await mpvPlayer.getApiVersion();
         const mpv = await mpvPlayer.create();
-        // mpvPlayer.loadVideo(mpv, "https://example.com/breaking-bad.mp4");
+        mpvPlayer.loadVideo(mpv, "https://example.com/breaking-bad.mp4");
         const majorVersion = (apiVersion >> 16) & 0xFFFF;
         const minorVersion = apiVersion & 0xFFFF;
         

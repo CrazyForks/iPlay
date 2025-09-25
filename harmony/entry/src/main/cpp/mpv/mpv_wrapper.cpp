@@ -10,6 +10,16 @@
 #define LOG_TAG "MPVWrapper"
 #define LOG_DOMAIN 0x3200
 
+typedef enum IPLXPlayerPropertyType {
+    IPLXPlayerPropertyTypeTimePos = 1,
+    IPLXPlayerPropertyTypeDuration,
+    IPLXPlayerPropertyTypeVideoParamsAspect,
+    IPLXPlayerPropertyTypePausedForCache,
+    IPLXPlayerPropertyTypePause,
+    IPLXPlayerPropertyTypeEofReached,
+    IPLXPlayerPropertyTypeDemuxerCacheState, 
+} IPLXPlayerPropertyType;
+
 // 获取MPV API版本 - 模拟实现
 napi_value GetMpvApiVersion(napi_env env, napi_callback_info info) {
     OH_LOG_INFO(LOG_APP, "GetMpvApiVersion called - Mock implementation");
@@ -29,6 +39,7 @@ napi_value MpvCreate(napi_env env, napi_callback_info info) {
     auto mpv = mpv_create();
     mpv_request_log_messages(mpv, "debug");
     mpv_set_option_string(mpv, "vo", "libmpv");
+    mpv_set_option_string(mpv, "aid", "no");
     mpv_set_option_string(mpv, "hwdec", "auto");
     mpv_initialize(mpv);
     napi_value result;
@@ -66,7 +77,15 @@ napi_value LoadVideo(napi_env env, napi_callback_info info) {
     };
     mpv_command(ctx, cmd);
     
-    auto thread = std::thread([&]() {
+    mpv_observe_property(ctx, IPLXPlayerPropertyTypeTimePos, "time-pos", MPV_FORMAT_DOUBLE);
+    mpv_observe_property(ctx, IPLXPlayerPropertyTypeDuration, "duration", MPV_FORMAT_DOUBLE);
+    mpv_observe_property(ctx, IPLXPlayerPropertyTypeVideoParamsAspect, "video-params/aspect", MPV_FORMAT_DOUBLE);
+    mpv_observe_property(ctx, IPLXPlayerPropertyTypePausedForCache, "paused-for-cache", MPV_FORMAT_FLAG);
+    mpv_observe_property(ctx, IPLXPlayerPropertyTypePause, "pause", MPV_FORMAT_FLAG);
+    mpv_observe_property(ctx, IPLXPlayerPropertyTypeEofReached, "eof-reached", MPV_FORMAT_FLAG);
+    mpv_observe_property(ctx, IPLXPlayerPropertyTypeDemuxerCacheState, "demuxer-cache-state", MPV_FORMAT_NODE);
+    
+    auto thread = std::thread([=]() {
         while (ctx) {
             mpv_event *event = mpv_wait_event(ctx, 0);
             mpv_event_id type = event->event_id;
@@ -75,6 +94,11 @@ napi_value LoadVideo(napi_env env, napi_callback_info info) {
                 case MPV_EVENT_LOG_MESSAGE: {
                     struct mpv_event_log_message *msg = (struct mpv_event_log_message *)event->data;
                     OH_LOG_DEBUG(LOG_APP, "mpv [%{public}s] %{public}s: %{public}s", msg->prefix, msg->level, msg->text);
+                }
+                case MPV_EVENT_PROPERTY_CHANGE: {
+                    auto prop = (mpv_event_property *)event->data;
+                    auto reply = (IPLXPlayerPropertyType)event->reply_userdata;
+                    OH_LOG_DEBUG(LOG_APP, "mpv [%{public}s] %{public}s", "prop", prop->name);
                 }
             }
         }
