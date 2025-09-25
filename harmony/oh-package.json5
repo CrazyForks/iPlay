@@ -2,8 +2,8 @@
   "modelVersion": "5.0.2",
   "description": "Please describe the basic information.",
   "dependencies": {
-    "@ohos/axios": "^2.2.4",
-    "@tencent/mmkv": "^2.1.0",
+    "@ohos/axios": "^2.2.6",
+    "@tencent/mmkv": "^2.2.3",
     "@ohos/gsyvideoplayer": "^1.0.2"
   },
   "devDependencies": {

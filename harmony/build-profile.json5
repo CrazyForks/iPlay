@@ -23,21 +23,21 @@
         "name": "release"
       }
     ],
-    "signingConfigs": [
-      {
-        "name": "default",
-        "type": "HarmonyOS",
-        "material": {
-          "storeFile": "C:/Users/endpne/Documents/iPlay.p12",
-          "storePassword": "0000001C4AED8E2A2227C77DAF6C43AC43BAD5BDA018E283BBEED01FE67405C47CBC03C5576F9D22B44DAFFA",
-          "keyAlias": "iPlay",
-          "keyPassword": "0000001C203D5CDC0A1E821AB01A7442D625B1EF2057D80009D1F113578EECB1C28B76FB615EB449FA9C06BF",
-          "signAlg": "SHA256withECDSA",
-          "profile": "C:/Users/endpne/Documents/iPlay ReleaseRelease.p7b",
-          "certpath": "C:/Users/endpne/Documents/iPlay Release.cer"
-        }
-      }
-    ]
+//    "signingConfigs": [
+//      {
+//        "name": "default",
+//        "type": "HarmonyOS",
+//        "material": {
+//          "storeFile": "C:/Users/endpne/Documents/iPlay.p12",
+//          "storePassword": "0000001C4AED8E2A2227C77DAF6C43AC43BAD5BDA018E283BBEED01FE67405C47CBC03C5576F9D22B44DAFFA",
+//          "keyAlias": "iPlay",
+//          "keyPassword": "0000001C203D5CDC0A1E821AB01A7442D625B1EF2057D80009D1F113578EECB1C28B76FB615EB449FA9C06BF",
+//          "signAlg": "SHA256withECDSA",
+//          "profile": "C:/Users/endpne/Documents/iPlay ReleaseRelease.p7b",
+//          "certpath": "C:/Users/endpne/Documents/iPlay Release.cer"
+//        }
+//      }
+//    ]
   },
   "modules": [
     {
