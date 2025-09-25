@@ -3,6 +3,7 @@ import { context } from "../../../bean/BeanContainer"
 import { Dict, Router, router } from "../../../module/Router"
 import { AppThemeMode, store } from "../store/Store"
 import { AlbumMediaList, AlbumMediasModel } from "../view/AlbumMediaList"
+import { MpvPlayer } from "../mpv/MpvPlayer"
 
 @Entry
 @Component
@@ -78,6 +79,25 @@ export struct Index {
     ])
     .onAppear(async () => {
       context.watch("SiteAction", this)
+      
+      // 获取MPV API版本并打印日志
+      try {
+        const mpvPlayer = new MpvPlayer();
+        const apiVersion = await mpvPlayer.getApiVersion();
+        const majorVersion = (apiVersion >> 16) & 0xFFFF;
+        const minorVersion = apiVersion & 0xFFFF;
+        
+        console.info(`=== MPV Client API Version Info ===`);
+        console.info(`Raw Version: ${apiVersion} (0x${apiVersion.toString(16)})`);
+        console.info(`Parsed Version: ${majorVersion}.${minorVersion}`);
+        console.info(`MPV Library Integration: Success`);
+        console.info(`=================================`);
+      } catch (error) {
+        console.error('=== MPV API Version Error ===');
+        console.error('Failed to get MPV API version:', error);
+        console.error('============================');
+      }
+      
       this.isLoading = true;
       this.albums = await this.fetchData()
       this.isLoading = false
