@@ -3,9 +3,11 @@
 #include <js_native_api.h>
 #include <js_native_api_types.h>
 #include <hilog/log.h>
-#include <mpv/client.h>
 #include <string>
 #include <thread>
+#include <mpv/client.h>
+#include <mpv/render.h>
+#include <mpv/render_gl.h>
 
 #define LOG_TAG "MPVWrapper"
 #define LOG_DOMAIN 0x3200
@@ -20,7 +22,27 @@ typedef enum IPLXPlayerPropertyType {
     IPLXPlayerPropertyTypeDemuxerCacheState, 
 } IPLXPlayerPropertyType;
 
-// 获取MPV API版本 - 模拟实现
+static void render_update_callback(void *ctx) {
+    int size[2] = {1280, 720};
+    int channel_size = 4;
+    int pitch_size = size[0] * channel_size;
+    auto pixels = std::vector<uint8_t>(pitch_size * size[1]);
+    mpv_render_param params[] = {
+        {MPV_RENDER_PARAM_API_TYPE, (char *)MPV_RENDER_API_TYPE_SW},
+        {MPV_RENDER_PARAM_SW_SIZE, size},
+        {MPV_RENDER_PARAM_SW_FORMAT, (char *)"rgba"},
+        {MPV_RENDER_PARAM_SW_STRIDE, &pitch_size},
+        {MPV_RENDER_PARAM_SW_POINTER, (void *)pixels.data()},
+        {MPV_RENDER_PARAM_INVALID, nullptr}
+    };
+    auto *render = (mpv_render_context *)ctx;
+    uint64_t flags = mpv_render_context_update(render);
+    if (flags & MPV_RENDER_UPDATE_FRAME) {
+        mpv_render_context_render(render, params);
+        mpv_render_context_report_swap(render);
+    }
+}
+
 napi_value GetMpvApiVersion(napi_env env, napi_callback_info info) {
     OH_LOG_INFO(LOG_APP, "GetMpvApiVersion called - Mock implementation");
     
@@ -38,10 +60,20 @@ napi_value GetMpvApiVersion(napi_env env, napi_callback_info info) {
 napi_value MpvCreate(napi_env env, napi_callback_info info) {
     auto mpv = mpv_create();
     mpv_request_log_messages(mpv, "debug");
-    mpv_set_option_string(mpv, "vo", "libmpv");
-    mpv_set_option_string(mpv, "aid", "no");
+    mpv_set_option_string(mpv, "vo", "null");
+    mpv_set_option_string(mpv, "ao", "opensles");
     mpv_set_option_string(mpv, "hwdec", "auto");
     mpv_initialize(mpv);
+    
+    mpv_render_param params[] = {
+        {MPV_RENDER_PARAM_API_TYPE, (void *)MPV_RENDER_API_TYPE_SW},
+        {MPV_RENDER_PARAM_INVALID}
+    };
+    
+    mpv_render_context *ctx;
+    mpv_render_context_create(&ctx, mpv, params);
+    mpv_render_context_set_update_callback(ctx, render_update_callback, ctx);
+    
     napi_value result;
     napi_create_int64(env, (int64_t)mpv, &result);
     return result;
