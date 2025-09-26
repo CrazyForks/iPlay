@@ -69,6 +69,6 @@ class MpvNativeImpl implements MpvNative {
   }
 
   async LoadVideo(mpv: number, url: string): Promise<void> {
-    await libmpv.LoadVideo(mpv, url);
+    await libmpv.loadVideo(mpv, url);
   }
 }

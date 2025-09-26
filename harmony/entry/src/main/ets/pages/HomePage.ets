@@ -4,6 +4,7 @@ import { Dict, Router, router } from "../../../module/Router"
 import { AppThemeMode, store } from "../store/Store"
 import { AlbumMediaList, AlbumMediasModel } from "../view/AlbumMediaList"
 import { MpvPlayer } from "../mpv/MpvPlayer"
+import { VideoPlayer } from "../components/VideoPlayer"
 
 @Entry
 @Component
@@ -22,6 +23,11 @@ export struct Index {
       Stack({ alignContent: Alignment.Center }) {
         Scroll() {
           Column({ space: 16 }) {
+            VideoPlayer({
+              url: "https://example.com/breaking-bad.mp4"
+            })
+              .width('100%')
+              .aspectRatio(16/9)
             // 轮播组件
             this.buildCarousel()
             
@@ -79,26 +85,6 @@ export struct Index {
     ])
     .onAppear(async () => {
       context.watch("SiteAction", this)
-      
-      // 获取MPV API版本并打印日志
-      try {
-        const mpvPlayer = new MpvPlayer();
-        const apiVersion = await mpvPlayer.getApiVersion();
-        const mpv = await mpvPlayer.create();
-        mpvPlayer.loadVideo(mpv, "https://example.com/breaking-bad.mp4");
-        const majorVersion = (apiVersion >> 16) & 0xFFFF;
-        const minorVersion = apiVersion & 0xFFFF;
-        
-        console.info(`=== MPV Client API Version Info ===`);
-        console.info(`Raw Version: ${apiVersion} (0x${apiVersion.toString(16)})`);
-        console.info(`Parsed Version: ${majorVersion}.${minorVersion}`);
-        console.info(`MPV Library Integration: Success`);
-        console.info(`=================================`);
-      } catch (error) {
-        console.error('=== MPV API Version Error ===');
-        console.error('Failed to get MPV API version:', error);
-        console.error('============================');
-      }
       
       this.isLoading = true;
       this.albums = await this.fetchData()
