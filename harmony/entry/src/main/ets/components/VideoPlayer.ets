@@ -63,22 +63,6 @@ export struct VideoPlayer {
               hilog.info(LOG_DOMAIN, LOG_TAG, 'libmpvnative.setupGL called.');
             }
 
-            // Load and play the video
-            if (this.url && libmpvnative.loadVideo) {
-              libmpvnative.loadVideo(this.mpvHandle, this.url);
-              hilog.info(LOG_DOMAIN, LOG_TAG, `libmpvnative.loadVideo called with URL: ${this.url}`);
-              
-              // Try manual rendering to test if render works
-              setTimeout(() => {
-                if (libmpvnative.manualRender) {
-                  hilog.info(LOG_DOMAIN, LOG_TAG, 'Calling manual render');
-                  libmpvnative.manualRender();
-                }
-              }, 2000);
-              
-            } else {
-              hilog.warn(LOG_DOMAIN, LOG_TAG, 'No URL provided or loadVideo not available.');
-            }
           }, 1000)
           // Set up OpenGL rendering context
 

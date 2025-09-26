@@ -27,12 +27,6 @@ export const setupGL: (mpvHandle: number) => void;
 export const loadVideo: (mpvHandle: number, url: string) => void;
 
 /**
- * Manually trigger a render update (for debugging)
- * Call this to force a frame render
- */
-export const manualRender: () => void;
-
-/**
  * Destroy OpenGL resources and cleanup rendering context
  * Call this when the component is being destroyed
  */
@@ -43,7 +37,3 @@ export const destroyGL: () => void;
  * @param mpvHandle - MPV instance handle to destroy
  */
 export const destroy: (mpvHandle: number) => void;
-
-// Legacy functions (kept for compatibility)
-export const GetMpvApiVersion: () => number;
-export const MpvCreate: () => number;

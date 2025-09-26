@@ -7,7 +7,7 @@
   "license": "",
   "dependencies": {},
   "devDependencies": {
-    "libmpvnative.so": "file:./src/main/cpp/types/libplayer"
+    "libplayer.so": "file:./src/main/cpp/types/libplayer"
   }
 }
 

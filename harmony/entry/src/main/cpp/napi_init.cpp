@@ -33,10 +33,6 @@ namespace {
             {"loadVideo", nullptr, LoadVideo, nullptr, nullptr, nullptr, napi_default, nullptr},
             {"destroyGL", nullptr, DestroyGL, nullptr, nullptr, nullptr, napi_default, nullptr},
             {"destroy", nullptr, Destroy, nullptr, nullptr, nullptr, napi_default, nullptr},
-            
-            // Legacy functions (keep for compatibility)
-            {"GetMpvApiVersion", nullptr, GetMpvApiVersion, nullptr, nullptr, nullptr, napi_default, nullptr},
-            {"MpvCreate", nullptr, MpvCreate, nullptr, nullptr, nullptr, napi_default, nullptr}
         };
         
         napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);

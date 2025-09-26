@@ -3,7 +3,6 @@ import { context } from "../../../bean/BeanContainer"
 import { Dict, Router, router } from "../../../module/Router"
 import { AppThemeMode, store } from "../store/Store"
 import { AlbumMediaList, AlbumMediasModel } from "../view/AlbumMediaList"
-import { MpvPlayer } from "../mpv/MpvPlayer"
 import { VideoPlayer } from "../components/VideoPlayer"
 
 @Entry

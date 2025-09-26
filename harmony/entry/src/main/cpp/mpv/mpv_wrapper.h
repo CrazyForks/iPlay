@@ -14,7 +14,6 @@ napi_value Create(napi_env env, napi_callback_info info);
 napi_value InitSurface(napi_env env, napi_callback_info info);
 napi_value SetupGL(napi_env env, napi_callback_info info);
 napi_value LoadVideo(napi_env env, napi_callback_info info);
-napi_value ManualRender(napi_env env, napi_callback_info info);
 napi_value DestroyGL(napi_env env, napi_callback_info info);
 napi_value Destroy(napi_env env, napi_callback_info info);
 
