@@ -31,7 +31,10 @@ public class WebDavFileApi {
     public void listFiles(String path, Consumer<List<File>> completion) {
         val authentication = HTTPUtil.base64Encode(username + ":" + password);
         val headers = Map.of("Authorization", "Basic " + authentication, "Depth", "1");
-        val url = PathUtil.of(serverUrl, path);
+        var url = PathUtil.of(serverUrl, path);
+        if (!url.endsWith("/")) {
+            url = url + "/";
+        }
         val request = HTTPModel.builder()
                 .url(url)
                 .method("PROPFIND")
