@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 import lombok.val;
 
 public class PathUtil {
-    static Pattern mediaExtRegex = Pattern.compile(".*\\.(mp4|ios|m2ts|mkv|avi|mov|flv|wmv|rmvb|rm|3gp|mpg|mpeg|ts|webm|vob|f4v|ogv|ogg|drc|gif|gifv|mng|avi|mov|qt|wmv|yuv|rm|rmvb|asf|amv|mp4|mpg|mpeg|m4v|3gp|3g2|flv|f4v|f4p|f4a|f4b)$", Pattern.CASE_INSENSITIVE);
+    static Pattern mediaExtRegex = Pattern.compile(".*\\.(mp4|strm|ios|m2ts|mkv|avi|mov|flv|wmv|rmvb|rm|3gp|mpg|mpeg|ts|webm|vob|f4v|ogv|ogg|drc|gif|gifv|mng|avi|mov|qt|wmv|yuv|rm|rmvb|asf|amv|mp4|mpg|mpeg|m4v|3gp|3g2|flv|f4v|f4p|f4a|f4b)$", Pattern.CASE_INSENSITIVE);
     public static String of(String ...paths) {
         StringBuilder builder = new StringBuilder();
         boolean first = true;

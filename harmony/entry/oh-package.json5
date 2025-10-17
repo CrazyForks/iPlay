@@ -5,6 +5,9 @@
   "main": "",
   "author": "",
   "license": "",
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "libplayer.so": "file:./src/main/cpp/types/libplayer"
+  }
 }
 

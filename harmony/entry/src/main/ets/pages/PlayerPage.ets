@@ -8,6 +8,12 @@ import { IconDef } from '../view/IconDef';
 import { store } from '../store/Store';
 import { display } from '@kit.ArkUI';
 import { audio } from '@kit.AudioKit';
+import {
+  BaseVideoPlayer,
+  GlobalContext,
+  IjkVideoPlayer,
+  IVideoPlayer,
+  PlayerType, StandardGSYVideoModel, StandardGSYVideoPlayer } from '@ohos/gsyvideoplayer';
 
 
 @Builder
@@ -46,8 +52,25 @@ struct FullscreenVideoPlayer {
   private screenHeight: number = 0;
   // 获取窗口对象
   private windowClass: window.Window | null = null;
+  @State ijkComponentVisible: Visibility = Visibility.Hidden;
+  videoModel: StandardGSYVideoModel = new StandardGSYVideoModel();
+  videoPlayer?: IVideoPlayer
+  videoTimer?: number
+  videoInit: (iVideoPlayer: IVideoPlayer, xid: string) => void = (iVideoPlayer: IVideoPlayer, xid: string) => {
+    this.videoPlayer = iVideoPlayer
+    this.videoPlayer.setUp(this.videoModel.getUrl(), this.videoModel.getCacheWithPlay())
+
+    this.videoPlayer?.play();
+    this.videoPlayer.firstOrSeek = true
+    this.videoPlayer?.setOnPlayingListener(() => {
+      this.duration = (this.videoPlayer?.getDuration() ?? 0) / 1000
+      this.currentTime = (this.videoPlayer?.getCurrentPosition() ?? 0) / 1000
+    })
+  }
+
 
   aboutToAppear() {
+    GlobalContext.getContext().setObject("playType", PlayerType.IJK_PLAYER);
     // 获取屏幕尺寸
     display.getDefaultDisplay().then(displayInfo => {
       this.screenWidth = displayInfo.width;
@@ -62,7 +85,10 @@ struct FullscreenVideoPlayer {
         this.isLoading = true
         let playback = await this.fetchPlayback()
         if (playback) {
+          this.ijkComponentVisible = Visibility.Visible
           this.videoSrc = playback.sources?.[0].url ?? ""
+          this.videoModel.setUrl(this.videoSrc, false);
+          this.videoModel.setTitle(this.title);
         }
         this.isLoading = false
       })
@@ -84,9 +110,14 @@ struct FullscreenVideoPlayer {
       }
       block()
     });
+
+    this.videoTimer = setInterval(() => {
+      this.currentTime = (this.videoPlayer?.getCurrentPosition() ?? 0) / 1000
+    }, 1000)
   }
 
   aboutToDisappear() {
+    clearInterval(this.videoTimer)
     window.getLastWindow(this.getUIContext().getHostContext()).then((win: window.Window) => {
       this.windowClass = win;
       let block = async () => {
@@ -231,22 +262,7 @@ struct FullscreenVideoPlayer {
   @Builder
   VideoPlayerComponent() {
     Column() {
-      Video({
-        src: this.videoSrc,
-        currentProgressRate: this.playbackRate,
-        controller: this.controller
-      })
-        .width(this.isFullScreen ? '100%' : '100%')
-        .height(this.isFullScreen ? '100%' : 300)
-        .onPrepared((event) => {
-          this.duration = event.duration
-        })
-        .autoPlay(true)
-        .objectFit(ImageFit.Auto)
-        .controls(false)
-        .onUpdate((event) => {
-          this.currentTime = event.time;
-        })
+      IjkVideoPlayer({ videoInit: this.videoInit, isVisible: this.ijkComponentVisible })
     }
     .width('100%')
     .height(this.isFullScreen ? '100%' : 300)
@@ -410,7 +426,7 @@ struct FullscreenVideoPlayer {
           })
             .margin(5)
             .onClick(() => {
-              this.controller.setCurrentTime(this.currentTime - 10)
+              this.videoPlayer?.seekTo((this.currentTime - 10) * 1000)
             })
           FontIcon({
             icon: this.isPlaying ? IconDef.ic_fluent_pause_32_filled : IconDef.ic_fluent_play_24_filled,
@@ -426,7 +442,7 @@ struct FullscreenVideoPlayer {
           })
             .margin(5)
             .onClick(() => {
-              this.controller.setCurrentTime(this.currentTime + 10)
+              this.videoPlayer?.seekTo((this.currentTime + 10) * 1000)
             })
         }
         .margin({bottom: 8})
@@ -444,7 +460,7 @@ struct FullscreenVideoPlayer {
           .height(36)
           .onChange((value: number) => {
             // seek
-            this.controller.setCurrentTime(value)
+            this.videoPlayer?.seekTo(value * 1000)
           })
 
         // 时间信息显示
@@ -497,7 +513,12 @@ struct FullscreenVideoPlayer {
   }
 
   private togglePlayback() {
-    this.isPlaying ? this.controller.pause() : this.controller.start();
+    let player = this.videoPlayer
+    if (player) {
+      if (this.isPlaying) player.pause();
+      else player.resumePlay();
+    }
+
     this.isPlaying = !this.isPlaying;
   }
 

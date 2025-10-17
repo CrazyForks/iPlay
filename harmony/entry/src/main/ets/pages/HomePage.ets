@@ -3,6 +3,7 @@ import { context } from "../../../bean/BeanContainer"
 import { Dict, Router, router } from "../../../module/Router"
 import { AppThemeMode, store } from "../store/Store"
 import { AlbumMediaList, AlbumMediasModel } from "../view/AlbumMediaList"
+import { VideoPlayer } from "../components/VideoPlayer"
 
 @Entry
 @Component
@@ -21,6 +22,11 @@ export struct Index {
       Stack({ alignContent: Alignment.Center }) {
         Scroll() {
           Column({ space: 16 }) {
+            VideoPlayer({
+              url: "https://example.com/breaking-bad.mp4"
+            })
+              .width('100%')
+              .aspectRatio(16/9)
             // 轮播组件
             this.buildCarousel()
             
@@ -78,6 +84,7 @@ export struct Index {
     ])
     .onAppear(async () => {
       context.watch("SiteAction", this)
+      
       this.isLoading = true;
       this.albums = await this.fetchData()
       this.isLoading = false

@@ -57,17 +57,30 @@ public class WebDavFileProvider implements FileProvider {
     @Override
     public void link(File file, Consumer<String> completion) {
         val source = PathUtil.of(api.serverUrl, file.getPath());
-        val token = "Basic " + HTTPUtil.base64Encode(api.username + ":" + api.password);
-        val option = Map.of(
-                "demuxer-lavf-o", "headers=Authorization: " + token,
-                "http-header-fields", "Authorization: " + token
-        );
+        if (source.endsWith(".strm")) {
+            read(file.getPath(), (res) -> {
+                if (res instanceof String content) {
+                    val url = content.trim();
+                    completion.accept(formatUrl(url));
+                }
+            });
+        } else {
+            val url = formatUrl(source);
+            completion.accept(url);
+        }
+    }
 
-        val url = Uri.parse("iplay://play/webdav").buildUpon()
-                .appendQueryParameter("source", source)
-                .appendQueryParameter("option", XGET(IJSONAdapter.class).toJSON(option))
-                .build().toString();
-        completion.accept(url);
+    String formatUrl(String source) {
+        val auth = api.username + "@" + api.password + ":";
+        val protocols = List.of("https://", "http://");
+        var url = source;
+        for (val protocol : protocols) {
+            if (source.startsWith(protocol)) {
+                url = protocol + auth + source.substring(protocol.length());
+                break;
+            }
+        }
+        return url;
     }
 
     @Override
