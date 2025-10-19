@@ -68,3 +68,6 @@ yarn-error.log
 msbuild.binlog
 harmony/.arkui-x/
 /harmony/oh_modules
+
+# VS Code
+.vscode/
