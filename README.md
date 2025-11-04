@@ -61,27 +61,27 @@ It is developed in my free time ⏰
 <tr>
 <td>
 <a href="https://apps.microsoft.com/detail/9PD0SG0LZTNL">
-   <img width="120" style="border-radius: 5px;object-fit:fill;" src="./doc/image/English_get it from MS_864X312.png">
+   <img style="min-width:100px;height:40px;border-radius: 5px;object-fit:contain;" src="./doc/image/store_microsoft.png">
 </a>
 </td>
 <td>
 <a href="https://apps.microsoft.com/detail/9NBZ2BXD4WFZ">
-   <img width="120" style="border-radius: 5px;object-fit:fill;" src="./doc/image/English_get it from MS_864X312.png">
+   <img style="min-width:100px;height:40px;border-radius: 5px;object-fit:contain;" src="./doc/image/store_microsoft.png">
 </a>
 </td>
 <td>
 <a href="https://apps.apple.com/app/iplay/id6480576133">
-   <img width="130" style="border-radius: 5px;object-fit:fill;" src="./doc/image/Download_on_the_App_Store.png">
+   <img style="min-width:110px;height:40px;border-radius: 5px;object-fit:contain;" src="./doc/image/store_apple.png">
 </a>
 </td>
 <td>
 <a href="https://www.amazon.com/gp/product/B0DB2KL58G">
-   <img width="130" style="border-radius: 5px;object-fit:fill;" src="./doc/image/amazon_appstore.png">
+   <img style="min-width:125px;height:40px;border-radius: 5px;object-fit:contain;" src="./doc/image/store_amazon.png">
 </a>
 </td>
 <td>
 <a href="https://appgallery.huawei.com/app/detail?id=top.ourfor.app.iPlay">
-   <img width="130" style="border-radius: 5px;object-fit:fill;" src="./doc/image/huawei_appgallery.png">
+   <img style="min-width:120px;height:40px;border-radius: 5px;object-fit:contain;" src="./doc/image/store_huawei.png">
 </a>
 </td>
 </tr>

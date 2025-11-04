@@ -35,11 +35,6 @@ jobs:
           fetch-depth: 0
           submodules: recursive
           token: ${{ secrets.GH_PAT }}
-          
-      - name: 🐧 set up Swift
-        uses: swift-actions/setup-swift@v2
-        with:
-          swift-version: "5.10.1"
       
       - name: ☕️ set up JDK
         uses: actions/setup-java@v3
