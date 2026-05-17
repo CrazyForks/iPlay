@@ -75,8 +75,8 @@ It is developed in my free time ⏰
 </a>
 </td>
 <td>
-<a href="https://www.amazon.com/gp/product/B0DB2KL58G">
-   <img style="min-width:125px;height:40px;border-radius: 5px;object-fit:contain;" src="./doc/image/store_amazon.png">
+<a href="https://play.google.com/store/apps/details?id=top.ourfor.app.iplay&pcampaignid=web_share">
+   <img style="min-width:125px;height:40px;border-radius: 5px;object-fit:contain;" src="./doc/image/store_play.png">
 </a>
 </td>
 <td>
